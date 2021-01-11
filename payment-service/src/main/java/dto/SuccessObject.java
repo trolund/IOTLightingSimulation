@@ -1,14 +1,16 @@
 package dto;
 
-public class ExampleObjDTO {
+import java.io.Serializable;
+
+public class SuccessObject implements Serializable {
 
     private String msg;
 
-    public ExampleObjDTO() {
+    public SuccessObject() {
 
     }
 
-    public ExampleObjDTO(String msg) {
+    public SuccessObject(String msg) {
         this.msg = msg;
     }
 
