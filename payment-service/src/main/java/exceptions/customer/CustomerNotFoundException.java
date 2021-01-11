@@ -2,7 +2,7 @@ package exceptions.customer;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
+ * CustomerNotFoundException to use when a Customer cannot be found.
  */
 public class CustomerNotFoundException extends CustomerException {
 

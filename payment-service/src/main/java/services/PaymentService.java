@@ -14,8 +14,17 @@ import services.interfaces.IPaymentService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+/**
+ * @author Troels (s161791)
+ * UserNotFoundException to use when a user cannot be found.
+ */
 
 @ApplicationScoped
 public class PaymentService implements IPaymentService {
@@ -60,12 +69,24 @@ public class PaymentService implements IPaymentService {
             }
             throw new TransactionException(e.getMessage());
         }
+    }
 
+    public void refund(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
+        createTransaction(cid, mid, amount);
     }
 
     public List<Transaction> getTransactions(String id) throws CustomerException {
         try {
             return bs.getAccount(id).getTransactions();
+        } catch (Exception e) {
+            throw new CustomerException("Account not found");
+        }
+    }
+
+    public Transaction getLatestTransaction(String id) throws CustomerException {
+        try {
+            Comparator<Transaction> comparator = (p1, p2) -> p1.getTime().compare(p2.getTime());
+            return bs.getAccount(id).getTransactions().stream().max(comparator).get();
         } catch (Exception e) {
             throw new CustomerException("Account not found");
         }

@@ -2,7 +2,7 @@ package exceptions.merchant;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
+ * MerchantException to use when a customer cannot be found.
  */
 public class MerchantNotFoundException extends MerchantException {
 

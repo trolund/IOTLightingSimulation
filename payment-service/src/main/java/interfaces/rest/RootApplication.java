@@ -10,9 +10,14 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.logging.Logger;
 
+/**
+ * @author Troels (s161791)
+ * UserNotFoundException to use when a user cannot be found.
+ */
+
 @OpenAPIDefinition(
         info = @Info(
-                title = "Group 11 API",
+                title = "Group 11 - payment-service API",
                 version = "3.0.3"
         ))
 
