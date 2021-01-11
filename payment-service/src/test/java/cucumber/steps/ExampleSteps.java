@@ -7,10 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExampleSteps {
 
-/*    private final IExampleService service = new ExampleService();
-=======
-    // private final IExampleService service = new ExampleService();
->>>>>>> 26caa6c964516be53ecb7eae02590728162014d4
+/*
+private final IExampleService service = new ExampleService();
+
     private String actual;
 
     @When("I check my health")

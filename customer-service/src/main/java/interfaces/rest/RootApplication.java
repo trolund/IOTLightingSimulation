@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Group 11 API",
+                title = "Group 11 - customer-service API",
                 version = "3.0.3"
         ))
 

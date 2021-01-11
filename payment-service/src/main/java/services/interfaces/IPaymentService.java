@@ -17,3 +17,4 @@ public interface IPaymentService {
     List<Transaction> getTransactions(String id) throws CustomerException;
     Transaction getLatestTransaction(String id) throws CustomerException;
 }
+
