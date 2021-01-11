@@ -6,8 +6,8 @@ import exceptions.customer.CustomerNotFoundException;
 import exceptions.merchant.MerchantException;
 import exceptions.merchant.MerchantNotFoundException;
 import infrastructure.bank.Account;
-import infrastructure.bank.IBankService;
 import infrastructure.bank.BankService;
+import infrastructure.bank.IBankService;
 import infrastructure.bank.Transaction;
 import org.modelmapper.ModelMapper;
 import services.interfaces.IPaymentService;
@@ -24,7 +24,8 @@ public class PaymentService implements IPaymentService {
 
     ModelMapper mapper;
 
-    @Inject public PaymentService(BankService bs, ModelMapper mapper) {
+    @Inject
+    public PaymentService(BankService bs, ModelMapper mapper) {
         this.bs = bs.getBankServicePort();
         this.mapper = mapper;
     }
