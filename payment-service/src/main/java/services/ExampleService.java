@@ -17,12 +17,14 @@ public class ExampleService implements IExampleService {
     @Inject
     IExampleRepository repo;
 
+    @Inject
+    ModelMapper mapper;
+
     public String hello() {
         return "I am healthy and ready to work!";
     }
 
     public ExampleObjDTO readExample() {
-        ModelMapper mapper = new ModelMapper();
         ExampleObj exampleDto = repo.readExample();
         return mapper.map(exampleDto, ExampleObjDTO.class);
     }
