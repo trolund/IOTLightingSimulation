@@ -3,22 +3,28 @@ package services;
 import exceptions.TransactionException;
 import exceptions.UserNotFoundException;
 import infrastructure.bank.Account;
+import infrastructure.bank.IBankService;
 import infrastructure.bank.BankService;
-import infrastructure.bank.BankServiceService;
 import infrastructure.bank.Transaction;
 import org.modelmapper.ModelMapper;
+import services.interfaces.IPaymentService;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class PaymentService {
+@ApplicationScoped
+public class PaymentService implements IPaymentService {
 
-    BankService bs = new BankServiceService().getBankServicePort();
+    IBankService bs;
 
-    @Inject
     ModelMapper mapper;
+
+    @Inject public PaymentService(BankService bs, ModelMapper mapper) {
+        this.bs = bs.getBankServicePort();
+        this.mapper = mapper;
+    }
 
     public void createTransaction(String mid, String cid, int amount) throws UserNotFoundException, TransactionException {
 

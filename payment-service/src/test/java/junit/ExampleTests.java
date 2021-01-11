@@ -3,21 +3,12 @@ package junit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.ExampleService;
-import services.interfaces.IExampleService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExampleTests {
 
-    private IExampleService service;
-
-    @BeforeEach
-    public void setUp() {
-        service = new ExampleService();
-        System.out.println("Setting up...");
-    }
-
+/*
     @AfterEach
     public void tearDown() {
         // Put teardown code here if needed.
@@ -43,5 +34,6 @@ public class ExampleTests {
         // test fails. This is useful to rapidly understand what the test expects.
         assertEquals(expected, actual, "The two strings should be equal!");
     }
+*/
 
 }
