@@ -8,16 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExampleSteps {
 
 /*    private final IExampleService service = new ExampleService();
+=======
+    // private final IExampleService service = new ExampleService();
+>>>>>>> 26caa6c964516be53ecb7eae02590728162014d4
     private String actual;
 
     @When("I check my health")
     public void iCheckMyHealth() {
-        actual = service.hello();
+        //actual = service.hello();
     }
 
     @When("I read my example")
     public void iReadMyExample() {
-        actual = service.readExample().getMsg();
+        //   actual = service.readExample().getMsg();
     }
 
     @Then("The result should be {string}")
