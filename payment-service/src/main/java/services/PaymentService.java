@@ -1,5 +1,6 @@
 package services;
 
+import dto.TransactionDTO;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
@@ -27,11 +28,10 @@ import java.util.List;
 public class PaymentService implements IPaymentService {
 
     IBankService bs;
-
-    ModelMapper mapper;
+    MapperService mapper;
 
     @Inject
-    public PaymentService(BankService bs, ModelMapper mapper) {
+    public PaymentService(BankService bs, MapperService mapper) {
         this.bs = bs.getBankServicePort();
         this.mapper = mapper;
     }
@@ -65,9 +65,9 @@ public class PaymentService implements IPaymentService {
         createTransaction(cid, mid, amount);
     }
 
-    public List<Transaction> getTransactions(String id) throws CustomerException {
+    public List<TransactionDTO> getTransactions(String id) throws CustomerException {
         try {
-            return bs.getAccount(id).getTransactions();
+            return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
             throw new CustomerException("Account not found");
         }

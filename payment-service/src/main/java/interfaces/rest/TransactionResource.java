@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
+ * TransactionResource to define the REST interface of transactions.
  */
 
 @Tag(ref = "Transactions")

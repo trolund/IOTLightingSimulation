@@ -65,7 +65,8 @@ public class PaymentResource {
                         @QueryParam("amount") int amount) {
         try{
             ps.refund(cid, mid, amount);
-            return Response.ok()
+            return Response
+                    .ok()
                     .build();
         }catch (CustomerException | MerchantException e){
             throw new NotFoundException(e.getMessage());
