@@ -40,6 +40,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
         return customerTokens;
     }
 
+    @Override
     public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
         CustomerTokens customerTokens = this.customerTokens.stream()
                 .filter(obj -> obj.findTokenInList(tokenId))
@@ -67,11 +68,6 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     @Override
     public void delete(String id) throws CustomerNotFoundException{
         customerTokens.remove(get(id));
-    }
-
-    @Override
-    public CustomerTokens readExample() {
-        return new CustomerTokens("101");
     }
 
 }

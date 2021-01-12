@@ -4,6 +4,8 @@ import domain.CustomerTokens;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 
+import java.util.List;
+
 // Specific to "Example" entity.
 // These methods should be specific to the given entity. For example,
 // getByCpr, whatever specific methods.
@@ -14,5 +16,7 @@ public interface ICustomerTokensRepository extends IRepository<CustomerTokens> {
 
     void delete(String id) throws CustomerNotFoundException;
 
-    CustomerTokens readExample();
+    List<CustomerTokens> getAll();
+
+    void update(CustomerTokens obj) throws CustomerNotFoundException;
 }

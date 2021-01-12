@@ -6,7 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-        ExampleTests.class
+        TokenTests.class
 })
 
 public class TestSuite {

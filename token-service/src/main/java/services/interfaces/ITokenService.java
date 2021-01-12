@@ -4,5 +4,4 @@ import dto.ExampleObjDTO;
 
 public interface ITokenService {
     String hello();
-    ExampleObjDTO readExample();
 }

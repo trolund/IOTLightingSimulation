@@ -7,10 +7,12 @@ import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
+import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 import org.modelmapper.ModelMapper;
 import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 
 // All of the business logic concerning the
@@ -18,17 +20,17 @@ import java.util.List;
 @ApplicationScoped
 public class TokenService implements ITokenService {
 
-    CustomerTokensRepository repo = new CustomerTokensRepository();
+    ICustomerTokensRepository repo = new CustomerTokensRepository();
 
     public String hello() {
         return "I am healthy and ready to work!";
     }
 
-    public ExampleObjDTO readExample() {
+    /*public ExampleObjDTO readExample() {
         ModelMapper mapper = new ModelMapper();
         CustomerTokens exampleDto = repo.readExample();
         return mapper.map(exampleDto, ExampleObjDTO.class);
-    }
+    }*/
 
     public void addCustomer(String customerId) {
         CustomerTokens ct = new CustomerTokens(customerId);
