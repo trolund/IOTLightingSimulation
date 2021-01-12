@@ -1,5 +1,5 @@
 Feature: Bank accounts
-    Scenario: Fetching a non-existant bank account
+    Scenario: Fetching a non-existent bank account
         When: a request to get the account information related to CPR "555555-5555"
         Then: an error message is returned
 

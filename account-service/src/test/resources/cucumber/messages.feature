@@ -15,7 +15,7 @@ Feature: RabbitMQ messages
         When: an external service requests the details of the user with CPR "555555-5555" 
         Then: the details of the user is sent in a response
 
-    Scenario: Receive request for details of a non-existant user
+    Scenario: Receive request for details of a non-existent user
         Given: that a user with CPR "444444-4444" does not exist
         When: an external service requests the details of the user with CPR "444444-4444" 
         Then: a response containing an error message is sent
