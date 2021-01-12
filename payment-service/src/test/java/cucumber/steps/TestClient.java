@@ -1,13 +1,12 @@
 package cucumber.steps;
 
-import infrastructure.bank.BankService;
-import infrastructure.bank.BankServiceException_Exception;
-import infrastructure.bank.IBankService;
-import infrastructure.bank.User;
+import dto.TransactionDTO;
+import infrastructure.bank.*;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 
@@ -49,6 +48,24 @@ public final class TestClient {
         } catch (BankServiceException_Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Account getAccount(String accountId) {
+        try {
+            return bs.getAccount(accountId);
+        } catch (BankServiceException_Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public TransactionDTO getLatestTransaction(String accountId){
+        Response r = baseUrl.path("transactions/" + accountId + "/latest")
+                .request().get();
+        if(r.getStatus() == 200){
+            return  r.readEntity(new GenericType<TransactionDTO>() {});
+        }
+        return null;
     }
 
 }
