@@ -1,51 +1,64 @@
 package cucumber.steps;
 
+import domain.Token;
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
+import exceptions.TooManyTokensException;
 import io.cucumber.java.PendingException;
 
 import io.cucumber.java.PendingException;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
+import services.ExampleService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class validatingTokensSteps {
+    String customerId, foundCustomerId;
+    ExampleService es = new ExampleService();
+    List<Token> tokens = new ArrayList<>();
+    Exception e;
 
-    @io.cucumber.java.en.And("^the customer with id \"([^\"]*)\" has a token with id \"([^\"]*)\"$")
-    public void theCustomerWithIdHasATokenWithId(String arg0, String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Given("a customer with id {string}")
+    public void aCustomerWithId(String cid) {
+        customerId = cid;
+        es.addCustomer(cid);
     }
 
-    @io.cucumber.java.en.And("^the token is unused$")
-    public void theTokenIsUnused() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @And("has an unused token")
+    public void hasAnUnusedToken() {
+        try {
+            tokens.addAll(es.addTokens(customerId, 1));
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
     }
 
-    @io.cucumber.java.en.When("^a token with id \"([^\"]*)\" is received$")
-    public void aTokenWithIdIsReceived(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @io.cucumber.java.en.And("^the token matches the customer \"([^\"]*)\"$")
-    public void theTokenMatchesTheCustomer(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @io.cucumber.java.en.And("^a token is received$")
+    public void aTokenIsReceived() {
+        try {
+            foundCustomerId = es.getCustomerFromToken(tokens.get(0).getId()).getId();
+        } catch (Exception e) {
+            this.e = e;
+        }
     }
 
     @io.cucumber.java.en.Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        Assertions.assertThrows(TokenNotFoundException.class, () -> {es.getCustomerFromToken(tokens.get(0).getId());});
     }
 
     @io.cucumber.java.en.And("^the customer \"([^\"]*)\" is returned$")
-    public void theCustomerIsReturned(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void theCustomerIsReturned(String cid) {
+        Assertions.assertEquals(cid, foundCustomerId);
     }
 
-    @io.cucumber.java.en.And("^the token is used$")
-    public void theTokenIsUsed() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("a TokenNotFound exception is returned")
+    public void aTokenNotFoundExceptionIsReturned() {
+        Assertions.assertEquals("This token can not be found: " + tokens.get(0).getId(), e.getMessage());
     }
-
 }

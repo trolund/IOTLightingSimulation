@@ -1,22 +1,16 @@
 Feature: Validation of tokens
 
   Scenario: Validation of an unused token
-    Given the customer with id "1234"
-    And the customer with id "1234" has a token with id "xyz"
-    And the token is unused
-    When a token with id "xyz" is received
-    And the token matches the customer "1234"
+    Given a customer with id "1234"
+    And has an unused token
+    When a token is received
     Then the token is invalidated
     And the customer "1234" is returned
 
   Scenario: Validation of a used token
-    Given the customer with id "1234"
-    And the customer with id "1234" has a token with id "xyz"
-    And the token is used
-    When a token with id "xyz" is received
-    And the token matches the customer "1234"
-    Then an exception is returned with the message "This token has already been used"
-
-  Scenario: Validation of an unknown token
-    When a token with id "abc" is received
-    Then an exception is returned with the message "This token does not match any customer"
+    Given a customer with id "1234"
+    And has an unused token
+    And a token is received
+    And the token is invalidated
+    When a token is received
+    Then a TokenNotFound exception is returned

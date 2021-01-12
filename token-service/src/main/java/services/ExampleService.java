@@ -1,8 +1,10 @@
 package services;
 
 import domain.CustomerTokens;
+import domain.Token;
 import dto.ExampleObjDTO;
 import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
 import infrastructure.repositories.interfaces.IExampleRepository;
@@ -11,6 +13,7 @@ import services.interfaces.IExampleService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 // All of the business logic concerning the
 // Example domain should be written here.
@@ -38,8 +41,12 @@ public class ExampleService implements IExampleService {
         return repo.get(customerId);
     }
 
-    public void addTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
-        repo.get(customerId).addTokens(amount);
+    public List<Token> addTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
+        return repo.get(customerId).addTokens(amount);
+    }
+
+    public CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException {
+        return repo.getCustomerWithTokenId(tokenId);
     }
 
 }

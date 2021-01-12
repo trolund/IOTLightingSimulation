@@ -1,5 +1,6 @@
 package cucumber.steps;
 
+import domain.Token;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
@@ -11,10 +12,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import services.ExampleService;
 
+import java.util.List;
+
 public class requestTokensSteps {
     String customerId;
     ExampleService es;
     Exception e;
+    List<Token> tokens;
 
     @io.cucumber.java.en.Given("^the customer with id \"([^\"]*)\"$")
     public void theCustomerWithId(String cid){
@@ -26,7 +30,7 @@ public class requestTokensSteps {
     @io.cucumber.java.en.And("^the customer has (\\d+) tokens$")
     public void theCustomerHasTokens(int amount) {
         try {
-            es.addTokens(customerId, amount);
+            tokens = es.addTokens(customerId, amount);
         } catch (Exception e) {
             this.e = e;
         }
@@ -35,7 +39,7 @@ public class requestTokensSteps {
     @io.cucumber.java.en.When("^the customer requests (\\d+) tokens$")
     public void theCustomerRequestsTokens(int amount) {
         try {
-            es.addTokens(customerId, amount);
+            tokens = es.addTokens(customerId, amount);
         } catch (Exception e) {
             this.e = e;
         }
@@ -48,6 +52,7 @@ public class requestTokensSteps {
         }
         try {
             Assertions.assertEquals(amount, es.getCustomer(customerId).getTokens().size());
+            Assertions.assertEquals(tokens, es.getCustomer(customerId).getTokens());
         } catch (CustomerNotFoundException e) {
             Assertions.fail(e.getMessage());
         }

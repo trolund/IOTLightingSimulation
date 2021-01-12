@@ -29,12 +29,13 @@ public class CustomerTokens implements Serializable {
         return tokens;
     }
 
-    public void addTokens(Integer amount) throws TooManyTokensException {
+    public List<Token> addTokens(Integer amount) throws TooManyTokensException {
         if (tokens.size() <= 1) {
             tokens.addAll(generateTokens(amount));
         } else {
             throw new TooManyTokensException(customerId, tokens.size());
         }
+        return tokens;
     }
 
     private List<Token> generateTokens(Integer amount){
