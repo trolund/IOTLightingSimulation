@@ -1,5 +1,8 @@
 package junit;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import cucumber.steps.TestClient;
 import dto.TransactionDTO;
 import infrastructure.bank.Transaction;
@@ -15,6 +18,10 @@ import org.junit.jupiter.api.Test;
 import services.MapperService;
 
 import javax.inject.Inject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,6 +41,27 @@ public class PaymentTests {
     public void tearDown() {
         // Put teardown code here if needed.
         System.out.println("Tearing down...");
+    }
+
+    private static final String EXCHANGE_NAME = "topic_logs";
+
+    @Test
+    public void testRabbitMQ() {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+
+            String routingKey = "t1.t2";
+            String message = "do fucking payment motherfucker!";
+
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
