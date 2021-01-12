@@ -1,7 +1,9 @@
 package services;
 
-import domain.ExampleObj;
+import domain.CustomerTokens;
 import dto.ExampleObjDTO;
+import exceptions.CustomerNotFoundException;
+import infrastructure.repositories.CustomerTokensRepository;
 import infrastructure.repositories.interfaces.IExampleRepository;
 import org.modelmapper.ModelMapper;
 import services.interfaces.IExampleService;
@@ -14,8 +16,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class ExampleService implements IExampleService {
 
-    @Inject
-    IExampleRepository repo;
+    CustomerTokensRepository repo = new CustomerTokensRepository();
 
     public String hello() {
         return "I am healthy and ready to work!";
@@ -23,8 +24,17 @@ public class ExampleService implements IExampleService {
 
     public ExampleObjDTO readExample() {
         ModelMapper mapper = new ModelMapper();
-        ExampleObj exampleDto = repo.readExample();
+        CustomerTokens exampleDto = repo.readExample();
         return mapper.map(exampleDto, ExampleObjDTO.class);
+    }
+
+    public void addCustomer(String customerId) {
+        CustomerTokens ct = new CustomerTokens(customerId);
+        repo.add(ct);
+    }
+
+    public void addTokens(String customerId, int amount) throws CustomerNotFoundException {
+        repo.get(customerId).addTokens(amount);
     }
 
 }

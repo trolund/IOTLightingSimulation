@@ -1,12 +1,18 @@
 package infrastructure.repositories.interfaces;
 
-import domain.ExampleObj;
+import domain.CustomerTokens;
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
 
 // Specific to "Example" entity.
 // These methods should be specific to the given entity. For example,
 // getByCpr, whatever specific methods.
-public interface IExampleRepository extends IRepository<ExampleObj> {
-    ExampleObj get(Integer id);
-    void delete(Integer id);
-    ExampleObj readExample();
+public interface IExampleRepository extends IRepository<CustomerTokens> {
+    CustomerTokens get(String id) throws CustomerNotFoundException;
+
+    CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException;
+
+    void delete(String id) throws CustomerNotFoundException;
+
+    CustomerTokens readExample();
 }
