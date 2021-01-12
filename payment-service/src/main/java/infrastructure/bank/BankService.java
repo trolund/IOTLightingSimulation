@@ -1,15 +1,15 @@
 
 package infrastructure.bank;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.enterprise.context.ApplicationScoped;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
 
 
 /**
@@ -18,79 +18,113 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
+@WebService(name = "BankService", targetNamespace = "http://fastmoney.ws.dtu/")
+@XmlSeeAlso({
+    ObjectFactory.class
+})
+public interface BankService {
 
-@ApplicationScoped
-@WebServiceClient(name = "BankServiceService", targetNamespace = "http://fastmoney.ws.dtu/", wsdlLocation = "http://g-00.compute.dtu.dk/BankService.wsdl.xml")
-public class BankService extends Service
-{
 
-    private final static URL BANKSERVICESERVICE_WSDL_LOCATION;
-    private final static WebServiceException BANKSERVICESERVICE_EXCEPTION;
-    private final static QName BANKSERVICESERVICE_QNAME = new QName("http://fastmoney.ws.dtu/", "BankServiceService");
+    /**
+     * 
+     * @param accountId
+     * @return
+     *     returns infrastructure.bank.Account
+     * @throws BankServiceException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getAccount", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccount")
+    @ResponseWrapper(localName = "getAccountResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccountResponse")
+    public Account getAccount(
+        @WebParam(name = "account_id", targetNamespace = "")
+        String accountId)
+        throws BankServiceException_Exception
+    ;
 
-    static {
-        URL url = null;
-        WebServiceException e = null;
-        try {
-            url = new URL("http://g-00.compute.dtu.dk/BankService.wsdl.xml");
-        } catch (MalformedURLException ex) {
-            e = new WebServiceException(ex);
-        }
-        BANKSERVICESERVICE_WSDL_LOCATION = url;
-        BANKSERVICESERVICE_EXCEPTION = e;
-    }
+    /**
+     * 
+     * @param cpr
+     * @return
+     *     returns infrastructure.bank.Account
+     * @throws BankServiceException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getAccountByCprNumber", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccountByCprNumber")
+    @ResponseWrapper(localName = "getAccountByCprNumberResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccountByCprNumberResponse")
+    public Account getAccountByCprNumber(
+        @WebParam(name = "cpr", targetNamespace = "")
+        String cpr)
+        throws BankServiceException_Exception
+    ;
 
-    public BankService() {
-        super(__getWsdlLocation(), BANKSERVICESERVICE_QNAME);
-    }
+    /**
+     * 
+     * @param balance
+     * @param user
+     * @return
+     *     returns java.lang.String
+     * @throws BankServiceException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "createAccountWithBalance", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.CreateAccountWithBalance")
+    @ResponseWrapper(localName = "createAccountWithBalanceResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.CreateAccountWithBalanceResponse")
+    public String createAccountWithBalance(
+        @WebParam(name = "user", targetNamespace = "")
+        User user,
+        @WebParam(name = "balance", targetNamespace = "")
+        BigDecimal balance)
+        throws BankServiceException_Exception
+    ;
 
-    public BankService(WebServiceFeature... features) {
-        super(__getWsdlLocation(), BANKSERVICESERVICE_QNAME, features);
-    }
-
-    public BankService(URL wsdlLocation) {
-        super(wsdlLocation, BANKSERVICESERVICE_QNAME);
-    }
-
-    public BankService(URL wsdlLocation, WebServiceFeature... features) {
-        super(wsdlLocation, BANKSERVICESERVICE_QNAME, features);
-    }
-
-    public BankService(URL wsdlLocation, QName serviceName) {
-        super(wsdlLocation, serviceName);
-    }
-
-    public BankService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
-        super(wsdlLocation, serviceName, features);
-    }
+    /**
+     * 
+     * @param accountId
+     * @throws BankServiceException_Exception
+     */
+    @WebMethod
+    @RequestWrapper(localName = "retireAccount", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.RetireAccount")
+    @ResponseWrapper(localName = "retireAccountResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.RetireAccountResponse")
+    public void retireAccount(
+        @WebParam(name = "account_id", targetNamespace = "")
+        String accountId)
+        throws BankServiceException_Exception
+    ;
 
     /**
      * 
      * @return
-     *     returns BankService
+     *     returns java.util.List<infrastructure.bank.AccountInfo>
      */
-    @WebEndpoint(name = "BankServicePort")
-    public IBankService getBankServicePort() {
-        return super.getPort(new QName("http://fastmoney.ws.dtu/", "BankServicePort"), IBankService.class);
-    }
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getAccounts", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccounts")
+    @ResponseWrapper(localName = "getAccountsResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.GetAccountsResponse")
+    public List<AccountInfo> getAccounts();
 
     /**
      * 
-     * @param features
-     *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
-     * @return
-     *     returns BankService
+     * @param amount
+     * @param debtor
+     * @param description
+     * @param creditor
+     * @throws BankServiceException_Exception
      */
-    @WebEndpoint(name = "BankServicePort")
-    public IBankService getBankServicePort(WebServiceFeature... features) {
-        return super.getPort(new QName("http://fastmoney.ws.dtu/", "BankServicePort"), IBankService.class, features);
-    }
-
-    private static URL __getWsdlLocation() {
-        if (BANKSERVICESERVICE_EXCEPTION!= null) {
-            throw BANKSERVICESERVICE_EXCEPTION;
-        }
-        return BANKSERVICESERVICE_WSDL_LOCATION;
-    }
+    @WebMethod
+    @RequestWrapper(localName = "transferMoneyFromTo", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.TransferMoneyFromTo")
+    @ResponseWrapper(localName = "transferMoneyFromToResponse", targetNamespace = "http://fastmoney.ws.dtu/", className = "infrastructure.bank.TransferMoneyFromToResponse")
+    public void transferMoneyFromTo(
+        @WebParam(name = "debtor", targetNamespace = "")
+        String debtor,
+        @WebParam(name = "creditor", targetNamespace = "")
+        String creditor,
+        @WebParam(name = "amount", targetNamespace = "")
+        BigDecimal amount,
+        @WebParam(name = "description", targetNamespace = "")
+        String description)
+        throws BankServiceException_Exception
+    ;
 
 }
