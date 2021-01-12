@@ -1,26 +1,39 @@
 package dto;
 
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 
 /**
  * @author Troels (s161791)
  * TransactionDTO.
  */
+@XmlRootElement(name = "TransactionDTO")
 public class TransactionDTO implements Serializable {
 
-    public BigDecimal amount;
-    public BigDecimal balance;
-    public String creditor;
-    public String debtor;
-    public String description;
-    @XmlSchemaType(name = "dateTime")
-    public XMLGregorianCalendar time;
+    private BigDecimal amount;
+    private BigDecimal balance;
+    private String creditor;
+    private String debtor;
+    private String description;
+    private XMLGregorianCalendar time;
 
     public TransactionDTO() {
 
+    }
+
+    public TransactionDTO(BigDecimal amount, String creditor, String debtor) {
+        this.amount = amount;
+        this.creditor = creditor;
+        this.debtor = debtor;
     }
 
     public TransactionDTO(BigDecimal amount, BigDecimal balance, String creditor, String debtor, String description, XMLGregorianCalendar time) {
@@ -78,6 +91,18 @@ public class TransactionDTO implements Serializable {
 
     public void setTime(XMLGregorianCalendar time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "TransactionDTO{" +
+                "amount=" + amount +
+                ", balance=" + balance +
+                ", creditor='" + creditor + '\'' +
+                ", debtor='" + debtor + '\'' +
+                ", description='" + description + '\'' +
+                ", time=" + time +
+                '}';
     }
 
 }

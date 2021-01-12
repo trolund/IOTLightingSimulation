@@ -7,6 +7,7 @@ import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.logging.Level;
@@ -28,6 +29,9 @@ public class RootApplication extends Application {
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
+    @Inject
+    RabbitMQAdapter rabbitMQAdapter;
+
     public RootApplication() {
         super();
     }
@@ -35,7 +39,7 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            RabbitMQAdapter.initConnection();
+            rabbitMQAdapter.initConnection();
             LOGGER.log(Level.INFO, "RabbitMQ initConnection() started successfully.");
         } catch (Exception e) {
             e.printStackTrace();

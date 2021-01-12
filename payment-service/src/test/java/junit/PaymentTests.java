@@ -1,5 +1,6 @@
 package junit;
 
+import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -18,9 +19,15 @@ import org.junit.jupiter.api.Test;
 import services.MapperService;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,22 +50,26 @@ public class PaymentTests {
         System.out.println("Tearing down...");
     }
 
-    private static final String EXCHANGE_NAME = "topic_logs";
+    private static final String EXCHANGE_NAME = "payment-service";
 
     @Test
     public void testRabbitMQ() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
+
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
 
             channel.exchangeDeclare(EXCHANGE_NAME, "topic");
 
-            String routingKey = "t1.t2";
-            String message = "do fucking payment motherfucker!";
+            String routingKey = "payment.payment";
 
-            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+            TransactionDTO dto = new TransactionDTO(BigDecimal.TEN, "creditorXXX", "debtorXXX");
+            String message = new Gson().toJson(dto);
+
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println("RabbitMQ: Sent '" + routingKey + "':'" + message + "'");
+
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
