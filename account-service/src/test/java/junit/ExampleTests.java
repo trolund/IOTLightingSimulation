@@ -3,6 +3,7 @@ package junit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import services.ExampleService;
 import services.interfaces.IExampleService;
 
@@ -34,7 +35,7 @@ public class ExampleTests {
         assertEquals(expected, actual, "The two strings should be equal!");
     }
 
-    @Test
+    @Disabled
     public void exampleRead() {
         String expected = "Example obj";
         String actual = service.readExample().getMsg();
