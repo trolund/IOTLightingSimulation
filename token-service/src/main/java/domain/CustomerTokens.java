@@ -1,5 +1,7 @@
 package domain;
 
+import exceptions.TooManyTokensException;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -27,8 +29,12 @@ public class CustomerTokens implements Serializable {
         return tokens;
     }
 
-    public void addTokens(Integer amount) {
-        tokens.addAll(generateTokens(amount));
+    public void addTokens(Integer amount) throws TooManyTokensException {
+        if (tokens.size() <= 1) {
+            tokens.addAll(generateTokens(amount));
+        } else {
+            throw new TooManyTokensException(customerId, tokens.size());
+        }
     }
 
     private List<Token> generateTokens(Integer amount){

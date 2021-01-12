@@ -3,6 +3,7 @@ package services;
 import domain.CustomerTokens;
 import dto.ExampleObjDTO;
 import exceptions.CustomerNotFoundException;
+import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
 import infrastructure.repositories.interfaces.IExampleRepository;
 import org.modelmapper.ModelMapper;
@@ -33,7 +34,11 @@ public class ExampleService implements IExampleService {
         repo.add(ct);
     }
 
-    public void addTokens(String customerId, int amount) throws CustomerNotFoundException {
+    public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
+        return repo.get(customerId);
+    }
+
+    public void addTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
         repo.get(customerId).addTokens(amount);
     }
 

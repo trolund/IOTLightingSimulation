@@ -1,14 +1,20 @@
 package cucumber.steps;
 
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
+import exceptions.TooManyTokensException;
 import io.cucumber.java.PendingException;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.internal.common.assertion.Assertion;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import services.ExampleService;
 
 public class requestTokensSteps {
     String customerId;
     ExampleService es;
+    Exception e;
 
     @io.cucumber.java.en.Given("^the customer with id \"([^\"]*)\"$")
     public void theCustomerWithId(String cid){
@@ -22,31 +28,33 @@ public class requestTokensSteps {
         try {
             es.addTokens(customerId, amount);
         } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
+    @io.cucumber.java.en.When("^the customer requests (\\d+) tokens$")
+    public void theCustomerRequestsTokens(int amount) {
+        try {
+            es.addTokens(customerId, amount);
+        } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
+    @io.cucumber.java.en.Then("^the customer owns (\\d+) tokens$")
+    public void theCustomerOwnsTokens(int amount) {
+        if (e != null) {
+            Assertions.fail(e.getMessage());
+        }
+        try {
+            Assertions.assertEquals(amount, es.getCustomer(customerId).getTokens().size());
+        } catch (CustomerNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
     }
 
-    @io.cucumber.java.en.When("^the customer request (\\d+) tokens$")
-    public void theCustomerRequestTokens(int arg0) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @io.cucumber.java.en.Then("^(\\d+) tokens are created$")
-    public void tokensAreCreated(int arg0) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-    @io.cucumber.java.en.And("^the tokens are given to the customer$")
-    public void theTokensAreGivenToTheCustomer() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
     @io.cucumber.java.en.Then("^an exception is returned with the message \"([^\"]*)\"$")
-    public void anExceptionIsReturnedWithTheMessage(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void anExceptionIsReturnedWithTheMessage(String errormessage) {
+        Assertions.assertEquals(errormessage, e.getMessage());
     }
 }
