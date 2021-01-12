@@ -6,7 +6,6 @@ import exceptions.merchant.MerchantException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;
-
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

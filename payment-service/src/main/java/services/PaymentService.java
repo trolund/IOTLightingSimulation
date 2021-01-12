@@ -10,9 +10,7 @@ import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.IBankService;
 import infrastructure.bank.Transaction;
-import org.modelmapper.ModelMapper;
 import services.interfaces.IPaymentService;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;

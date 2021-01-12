@@ -132,6 +132,21 @@
       <type>pom</type>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.jboss.arquillian.junit/arquillian-junit-container -->
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <version>1.6.0.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>5.3.2</version>
+      <scope>test</scope>
+    </dependency>
+
+
   </dependencies>
   <build>
     <plugins>
