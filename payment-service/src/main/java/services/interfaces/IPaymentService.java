@@ -16,5 +16,6 @@ public interface IPaymentService {
     void createTransaction(String mid, String cid, int amount) throws TransactionException, CustomerException, MerchantException;
     List<Transaction> getTransactions(String id) throws CustomerException;
     Transaction getLatestTransaction(String id) throws CustomerException;
+    void refund(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException;
 }
 

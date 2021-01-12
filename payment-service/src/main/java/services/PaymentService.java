@@ -40,7 +40,6 @@ public class PaymentService implements IPaymentService {
     }
 
     public void createTransaction(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
-
         Account m = null;
         Account c = null;
 
@@ -53,13 +52,6 @@ public class PaymentService implements IPaymentService {
                     c.getId(),
                     BigDecimal.valueOf(amount),
                     "Transaction");
-
-            Transaction t = new Transaction();
-            t.setBalance(c.getBalance());
-            t.setAmount(BigDecimal.valueOf(amount));
-            t.setDebtor(c.getId());
-            t.setCreditor(m.getId());
-            t.setDescription("Transaction from " + c.getId() + " to " + m.getId());
 
         } catch (Exception e) {
             if (m == null) {
