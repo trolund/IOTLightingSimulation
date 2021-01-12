@@ -1,7 +1,7 @@
 Feature: Account Service
     Scenario: Initializing the account service
-        Given a fresh instance of the service has been initialized
-        Then the system contains 0 users
+        Given: a fresh instance of the service has been initialized
+        Then: the system contains 0 users
 
     Scenario: Creating a user
         Given there exists 0 users in the system
