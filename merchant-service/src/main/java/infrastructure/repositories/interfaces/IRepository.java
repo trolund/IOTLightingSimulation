@@ -2,9 +2,8 @@ package infrastructure.repositories.interfaces;
 
 import java.util.List;
 
-// Simple and basic repository that provides some CRUD functionality.
 public interface IRepository<T> {
-    void add(T obj);
+    void add(T obj) throws Exception;
     List<T> getAll();
-    void update(T obj);
+    void update(T obj) throws Exception;
 }
