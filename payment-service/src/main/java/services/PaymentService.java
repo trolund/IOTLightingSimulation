@@ -1,5 +1,7 @@
 package services;
 
+import dto.TransactionDTO;
+import exceptions.AccountException;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
@@ -9,17 +11,12 @@ import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.IBankService;
 import infrastructure.bank.Transaction;
-import org.modelmapper.ModelMapper;
 import services.interfaces.IPaymentService;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Troels (s161791)
@@ -30,17 +27,15 @@ import java.util.Objects;
 public class PaymentService implements IPaymentService {
 
     IBankService bs;
-
-    ModelMapper mapper;
+    MapperService mapper;
 
     @Inject
-    public PaymentService(BankService bs, ModelMapper mapper) {
+    public PaymentService(BankService bs, MapperService mapper) {
         this.bs = bs.getBankServicePort();
         this.mapper = mapper;
     }
 
     public void createTransaction(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
-
         Account m = null;
         Account c = null;
 
@@ -53,13 +48,6 @@ public class PaymentService implements IPaymentService {
                     c.getId(),
                     BigDecimal.valueOf(amount),
                     "Transaction");
-
-            Transaction t = new Transaction();
-            t.setBalance(c.getBalance());
-            t.setAmount(BigDecimal.valueOf(amount));
-            t.setDebtor(c.getId());
-            t.setCreditor(m.getId());
-            t.setDescription("Transaction from " + c.getId() + " to " + m.getId());
 
         } catch (Exception e) {
             if (m == null) {
@@ -76,20 +64,20 @@ public class PaymentService implements IPaymentService {
         createTransaction(cid, mid, amount);
     }
 
-    public List<Transaction> getTransactions(String id) throws CustomerException {
+    public List<TransactionDTO> getTransactions(String id) throws AccountException {
         try {
-            return bs.getAccount(id).getTransactions();
+            return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new CustomerException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 
-    public Transaction getLatestTransaction(String id) throws CustomerException {
+    public Transaction getLatestTransaction(String id) throws AccountException {
         try {
             Comparator<Transaction> comparator = (p1, p2) -> p1.getTime().compare(p2.getTime());
             return bs.getAccount(id).getTransactions().stream().max(comparator).get();
         } catch (Exception e) {
-            throw new CustomerException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 

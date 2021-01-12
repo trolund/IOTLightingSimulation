@@ -2,20 +2,14 @@ package interfaces.rest;
 
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
-import exceptions.customer.CustomerNotFoundException;
 import exceptions.merchant.MerchantException;
-import exceptions.merchant.MerchantNotFoundException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import services.interfaces.IPaymentService;
-
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * @author Troels (s161791)
@@ -45,12 +39,10 @@ public class PaymentResource {
         try{
             ps.createTransaction(cid, mid, amount);
             return Response
-                    .created(new URI(""))
+                    .ok()
                     .build();
         }catch (CustomerException | MerchantException e){
             throw new NotFoundException(e.getMessage());
-        }catch (URISyntaxException e){
-            throw new BadRequestException(e.getMessage());
         }catch (TransactionException e){
             throw new BadRequestException(e.getMessage());
         }
@@ -71,14 +63,12 @@ public class PaymentResource {
                         @QueryParam("mid") String mid,
                         @QueryParam("amount") int amount) {
         try{
-            ps.createTransaction(cid, mid, amount);
+            ps.refund(cid, mid, amount);
             return Response
-                    .created(new URI(""))
+                    .ok()
                     .build();
         }catch (CustomerException | MerchantException e){
             throw new NotFoundException(e.getMessage());
-        }catch (URISyntaxException e){
-            throw new BadRequestException(e.getMessage());
         }catch (TransactionException e){
             throw new BadRequestException(e.getMessage());
         }

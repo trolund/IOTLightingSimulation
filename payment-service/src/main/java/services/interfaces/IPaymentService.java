@@ -1,5 +1,7 @@
 package services.interfaces;
 
+import dto.TransactionDTO;
+import exceptions.AccountException;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.merchant.MerchantException;
@@ -14,7 +16,8 @@ import java.util.List;
 
 public interface IPaymentService {
     void createTransaction(String mid, String cid, int amount) throws TransactionException, CustomerException, MerchantException;
-    List<Transaction> getTransactions(String id) throws CustomerException;
-    Transaction getLatestTransaction(String id) throws CustomerException;
+    List<TransactionDTO> getTransactions(String id) throws CustomerException, AccountException;
+    Transaction getLatestTransaction(String id) throws CustomerException, AccountException;
+    void refund(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException;
 }
 

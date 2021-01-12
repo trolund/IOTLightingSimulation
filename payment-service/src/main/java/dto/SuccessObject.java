@@ -6,7 +6,6 @@ import java.io.Serializable;
  * @author Troels (s161791)
  * SuccessObject.
  */
-
 public class SuccessObject implements Serializable {
 
     private String msg;

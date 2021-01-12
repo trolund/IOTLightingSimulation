@@ -3,7 +3,6 @@ package interfaces.rest;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
+ * TransactionResource to define the REST interface of transactions.
  */
 
 @Tag(ref = "Transactions")
@@ -36,7 +35,7 @@ public class TransactionResource {
     public Response getTransactions(@PathParam("id") String id) {
         try {
             return Response
-                    .status(Response.Status.OK)
+                    .ok()
                     .entity(ps.getTransactions(id))
                     .build();
         } catch (Exception e){
