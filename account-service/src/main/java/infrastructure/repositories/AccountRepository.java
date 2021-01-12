@@ -1,32 +1,32 @@
 package infrastructure.repositories;
 
-import domain.ExampleObj;
-import infrastructure.repositories.interfaces.IExampleRepository;
+import domain.AccountObj;
+import infrastructure.repositories.interfaces.IAccountRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class ExampleRepository implements IExampleRepository {
+public class AccountRepository implements IAccountRepository {
 
     // This class should probably be a singleton class (?)
     // or maybe this does not matter because dependency injection?
 
-    private final List<ExampleObj> exampleObjs;
+    private final List<AccountObj> exampleObjs;
 
-    public ExampleRepository() {
+    public AccountRepository() {
         exampleObjs = new ArrayList<>();
     }
 
     @Override
-    public void add(ExampleObj obj) {
+    public void add(AccountObj obj) {
         exampleObjs.add(obj);
     }
 
     @Override
-    public ExampleObj get(Integer id) {
-        ExampleObj exampleObj = exampleObjs.stream()
+    public AccountObj get(Integer id) {
+        AccountObj exampleObj = exampleObjs.stream()
                 .filter(obj -> obj.getId().equals(id))
                 .findAny()
                 .orElse(null);
@@ -39,12 +39,12 @@ public class ExampleRepository implements IExampleRepository {
     }
 
     @Override
-    public List<ExampleObj> getAll() {
+    public List<AccountObj> getAll() {
         return exampleObjs;
     }
 
     @Override
-    public void update(ExampleObj obj) {
+    public void update(AccountObj obj) {
         delete(obj.getId());
         add(obj);
     }
@@ -55,8 +55,8 @@ public class ExampleRepository implements IExampleRepository {
     }
 
     @Override
-    public ExampleObj readExample() {
-        return new ExampleObj(101, "Example obj");
+    public AccountObj readAccount() {
+        return new AccountObj(101, "Account obj");
     }
 
 }

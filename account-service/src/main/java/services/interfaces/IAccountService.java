@@ -6,8 +6,7 @@ import exceptions.EmptyCprException;
 import exceptions.EmptyNameException;
 import exceptions.MissingIdException;
 
-
 public interface IAccountService {
-    void createUser(String firstName, String lastName, String cpr) throws DuplicateException, EmptyCprException, EmptyNameException;
-    void disableAccount(String id) throws MissingIdException;
+//    void createUser(String firstName, String lastName, String cpr) throws DuplicateException, EmptyCprException, EmptyNameException;
+//    void disableAccount(String id) throws MissingIdException;
 }

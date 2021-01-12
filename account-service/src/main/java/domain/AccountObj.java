@@ -3,12 +3,12 @@ package domain;
 import java.io.Serializable;
 
 // Are we 100% sure that we need to implement serializable here?
-public class ExampleObj implements Serializable {
+public class AccountObj implements Serializable {
 
     private Integer id;
     private String msg;
 
-    public ExampleObj(Integer id, String msg) {
+    public AccountObj(Integer id, String msg) {
         this.id = id;
         this.msg = msg;
     }

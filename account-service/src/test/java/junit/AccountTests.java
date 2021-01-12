@@ -4,18 +4,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
-import services.ExampleService;
-import services.interfaces.IExampleService;
+import services.AccountService;
+import services.interfaces.IAccountService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExampleTests {
+public class AccountTests {
 
-    private IExampleService service;
+    private IAccountService service;
 
     @BeforeEach
     public void setUp() {
-        service = new ExampleService();
+        service = new AccountService();
         System.out.println("Setting up...");
     }
 
@@ -25,21 +25,21 @@ public class ExampleTests {
         System.out.println("Tearing down...");
     }
 
-    @Test
-    public void testHealth() {
-        String expected = "I am healthy and ready to work!";
-        String actual = service.hello();
-
-        // The third argument to assertEquals is a message displayed when the
-        // test fails. This is useful to rapidly understand what the test expects.
-        assertEquals(expected, actual, "The two strings should be equal!");
-    }
+//    @Test
+//    public void testHealth() {
+//        String expected = "I am healthy and ready to work!";
+//        String actual = service.hello();
+//
+//        // The third argument to assertEquals is a message displayed when the
+//        // test fails. This is useful to rapidly understand what the test expects.
+//        assertEquals(expected, actual, "The two strings should be equal!");
+//    }
 
     @Disabled
     public void exampleRead() {
-        String expected = "Example obj";
+        String expected = "Account obj";
         assertEquals(true, true);
-        //String actual = service.readExample().getMsg();
+        //String actual = service.readAccount().getMsg();
 
         // The third argument to assertEquals is a message displayed when the
         // test fails. This is useful to rapidly understand what the test expects.
