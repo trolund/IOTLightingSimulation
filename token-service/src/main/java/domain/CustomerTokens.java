@@ -41,14 +41,22 @@ public class CustomerTokens implements Serializable {
     private List<Token> generateTokens(Integer amount){
         List<Token> newTokens = new ArrayList<>();
         for (int i = 0; i < amount; i++){
-            newTokens.add(new Token(String.valueOf(Math.random() * 8100352)));
+            newTokens.add(new Token(generateId()));
         }
         return newTokens;
 
     }
 
+    private String generateId() {
+        return String.valueOf(Math.random() * 8100352);
+    }
+
     public boolean findTokenInList(String tokenId) {
-        Token result = this.getTokens().stream().filter(obj -> obj.getId().equals(tokenId)).findAny().orElse(null);
+        Token result = this.getTokens().stream()
+                .filter(obj -> obj.getId()
+                .equals(tokenId))
+                .findAny()
+                .orElse(null);
         if (result == null){
             return false;
         } else {

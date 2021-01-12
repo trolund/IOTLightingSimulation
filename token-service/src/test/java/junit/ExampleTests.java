@@ -3,18 +3,18 @@ package junit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.ExampleService;
-import services.interfaces.IExampleService;
+import services.TokenService;
+import services.interfaces.ITokenService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExampleTests {
 
-    private IExampleService service;
+    private ITokenService service;
 
     @BeforeEach
     public void setUp() {
-        service = new ExampleService();
+        service = new TokenService();
         System.out.println("Setting up...");
     }
 

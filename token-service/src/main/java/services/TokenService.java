@@ -7,18 +7,16 @@ import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
-import infrastructure.repositories.interfaces.IExampleRepository;
 import org.modelmapper.ModelMapper;
-import services.interfaces.IExampleService;
+import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.List;
 
 // All of the business logic concerning the
 // Example domain should be written here.
 @ApplicationScoped
-public class ExampleService implements IExampleService {
+public class TokenService implements ITokenService {
 
     CustomerTokensRepository repo = new CustomerTokensRepository();
 

@@ -7,7 +7,7 @@ import exceptions.TokenNotFoundException;
 // Specific to "Example" entity.
 // These methods should be specific to the given entity. For example,
 // getByCpr, whatever specific methods.
-public interface IExampleRepository extends IRepository<CustomerTokens> {
+public interface ICustomerTokensRepository extends IRepository<CustomerTokens> {
     CustomerTokens get(String id) throws CustomerNotFoundException;
 
     CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException;

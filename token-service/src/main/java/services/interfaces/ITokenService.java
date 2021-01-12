@@ -2,7 +2,7 @@ package services.interfaces;
 
 import dto.ExampleObjDTO;
 
-public interface IExampleService {
+public interface ITokenService {
     String hello();
     ExampleObjDTO readExample();
 }

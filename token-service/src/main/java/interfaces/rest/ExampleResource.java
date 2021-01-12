@@ -1,7 +1,7 @@
 package interfaces.rest;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import services.interfaces.IExampleService;
+import services.interfaces.ITokenService;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 public class ExampleResource {
 
     @Inject
-    IExampleService service;
+    ITokenService service;
 
     @Tag(ref = "hello")
     @GET

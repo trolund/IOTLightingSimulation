@@ -1,25 +1,20 @@
 package cucumber.steps;
 
 import domain.Token;
-import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
-import exceptions.TooManyTokensException;
-import io.cucumber.java.PendingException;
 
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import services.ExampleService;
+import services.TokenService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class validatingTokensSteps {
     String customerId, foundCustomerId;
-    ExampleService es = new ExampleService();
+    TokenService es = new TokenService();
     List<Token> tokens = new ArrayList<>();
     Exception e;
 

@@ -1,17 +1,16 @@
 package infrastructure.repositories;
 
 import domain.CustomerTokens;
-import domain.Token;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
-import infrastructure.repositories.interfaces.IExampleRepository;
+import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class CustomerTokensRepository implements IExampleRepository {
+public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     // This class should probably be a singleton class (?)
     // or maybe this does not matter because dependency injection?

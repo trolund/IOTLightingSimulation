@@ -2,28 +2,22 @@ package cucumber.steps;
 
 import domain.Token;
 import exceptions.CustomerNotFoundException;
-import exceptions.TokenNotFoundException;
-import exceptions.TooManyTokensException;
-import io.cucumber.java.PendingException;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.internal.common.assertion.Assertion;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
-import services.ExampleService;
+import services.TokenService;
 
 import java.util.List;
 
 public class requestTokensSteps {
     String customerId;
-    ExampleService es;
+    TokenService es;
     Exception e;
     List<Token> tokens;
 
     @io.cucumber.java.en.Given("^the customer with id \"([^\"]*)\"$")
     public void theCustomerWithId(String cid){
         customerId = "1234";
-        es = new ExampleService();
+        es = new TokenService();
         es.addCustomer(cid);
     }
 
