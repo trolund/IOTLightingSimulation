@@ -1,6 +1,7 @@
 package services;
 
 import dto.TransactionDTO;
+import exceptions.AccountException;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
@@ -63,20 +64,20 @@ public class PaymentService implements IPaymentService {
         createTransaction(cid, mid, amount);
     }
 
-    public List<TransactionDTO> getTransactions(String id) throws CustomerException {
+    public List<TransactionDTO> getTransactions(String id) throws AccountException {
         try {
             return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new CustomerException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 
-    public Transaction getLatestTransaction(String id) throws CustomerException {
+    public Transaction getLatestTransaction(String id) throws AccountException {
         try {
             Comparator<Transaction> comparator = (p1, p2) -> p1.getTime().compare(p2.getTime());
             return bs.getAccount(id).getTransactions().stream().max(comparator).get();
         } catch (Exception e) {
-            throw new CustomerException("Account not found");
+            throw new AccountException("Account not found");
         }
     }
 

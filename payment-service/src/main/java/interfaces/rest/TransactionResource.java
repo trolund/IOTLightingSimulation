@@ -35,7 +35,7 @@ public class TransactionResource {
     public Response getTransactions(@PathParam("id") String id) {
         try {
             return Response
-                    .status(Response.Status.OK)
+                    .ok()
                     .entity(ps.getTransactions(id))
                     .build();
         } catch (Exception e){
