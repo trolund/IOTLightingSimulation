@@ -2,14 +2,15 @@ package cucumber.steps;
 
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import services.ExampleService;
-import services.interfaces.IExampleService;
+import services.MerchantService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExampleSteps {
 
-    private final IExampleService service = new ExampleService();
+    /*
+
+    private final IExampleService service = new MerchantService();
     private String actual;
 
     @When("I check my health")
@@ -28,5 +29,7 @@ public class ExampleSteps {
         // test fails. This is useful to rapidly understand what the test expects.
         assertEquals(expected, actual, "The two strings should be equal!");
     }
+
+     */
 
 }
