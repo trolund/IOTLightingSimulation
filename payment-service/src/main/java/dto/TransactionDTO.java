@@ -9,8 +9,8 @@ import java.math.BigDecimal;
  * @author Troels (s161791)
  * TransactionDTO.
  */
-
 public class TransactionDTO implements Serializable {
+
     public BigDecimal amount;
     public BigDecimal balance;
     public String creditor;
@@ -20,6 +20,7 @@ public class TransactionDTO implements Serializable {
     public XMLGregorianCalendar time;
 
     public TransactionDTO() {
+
     }
 
     public TransactionDTO(BigDecimal amount, BigDecimal balance, String creditor, String debtor, String description, XMLGregorianCalendar time) {
@@ -78,4 +79,5 @@ public class TransactionDTO implements Serializable {
     public void setTime(XMLGregorianCalendar time) {
         this.time = time;
     }
+
 }
