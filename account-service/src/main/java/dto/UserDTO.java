@@ -2,17 +2,17 @@ package dto;
 
 import java.io.Serializable;
 
-public class PersonDTO implements Serializable {
+public class UserDTO implements Serializable {
 
     private String firstName;
     private String lastName;
     private String cpr;
     private String id;
 
-    public PersonDTO() {
+    public UserDTO() {
     }
 
-    public PersonDTO(String firstName, String lastName, String cpr, String id) {
+    public UserDTO(String firstName, String lastName, String cpr, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;

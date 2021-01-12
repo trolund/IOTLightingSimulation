@@ -1,17 +1,18 @@
 package cucumber.steps;
 
+import dto.UserDTO;
+import infrastructure.bank.Account;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import services.ExampleService;
-import services.interfaces.IExampleService;
+import io.quarkus.test.junit.QuarkusTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExampleSteps {
-
-    private final IExampleService service = new ExampleService();
-    private String actual;
-
+@QuarkusTest
+public class AccountSteps {
+/*
     @When("I check my health")
     public void iCheckMyHealth() {
         actual = service.hello();
@@ -28,5 +29,7 @@ public class ExampleSteps {
         // test fails. This is useful to rapidly understand what the test expects.
         assertEquals(expected, actual, "The two strings should be equal!");
     }
+
+*/
 
 }
