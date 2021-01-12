@@ -6,14 +6,6 @@ Feature: Account
         And the account is not disabled
         And the account has a bank account attached
 
-        #    Do we need to test for this?
-        #
-        #    Scenario: Creating multiple accounts with the same name
-        # Given there exists a account with first name "Bjarne", last name "Ivertsen"
-        # When another user with first name "Bjarne" and last name "Ivertsen" requests to create an account
-        # Then a new account with first name "Bjarne" and last name "Ivertsen" is created
-        # And the identifiers for the two similarly named accounts are distinct
-
     Scenario: Creating multiple accounts with the same CPR number
         Given there exists an account with CPR number "123456-7890"
         When a user requests to create a new account with CPR number "123456-7890" 
