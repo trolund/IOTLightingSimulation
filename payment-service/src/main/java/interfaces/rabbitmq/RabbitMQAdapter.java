@@ -83,7 +83,6 @@ public class RabbitMQAdapter {
                 try {
                     // send this transaction to the caller!
                     Transaction t = service.getLatestTransaction(message);
-                    channel.basicPublish(EXCHANGE_NAME, "transaction.reply", null, new Gson().toJson(t).getBytes(StandardCharsets.UTF_8));
                 } catch (CustomerException e) {
                     e.printStackTrace();
                 } catch (AccountException e) {
@@ -92,7 +91,6 @@ public class RabbitMQAdapter {
             } else if (routingKey.contains("transaction.all")) {
 
             }
-
 
             LOGGER.log(Level.INFO, log);
         };
