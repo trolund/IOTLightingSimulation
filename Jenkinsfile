@@ -2,10 +2,8 @@
 // author Daniel (s151641)
 
 try {
-    def CONTAINER_NAMES = ['payment', 'account', 'token', 'report', 'client']
-
     node {
-        stage ('Package all applications') {
+        stage ('Package All Applications') {
             checkout scm
             sh './mvn_package_all.sh'
         }
@@ -16,27 +14,27 @@ try {
             sh 'docker-compose up -d'
         }
 
-/*         stage ('Payment tests') {
+/*         stage ('Payment Tests') {
             checkout scm
             sh 'mvn -f payment-service/pom.xml test'
         }
 
-        stage ('Account tests') {
+        stage ('Account Tests') {
             checkout scm
             sh 'mvn -f account-service/pom.xml test'
         }
 
-        stage ('Token tests') {
+        stage ('Token Tests') {
             checkout scm
             sh 'mvn -f token-service/pom.xml test'
         }
 
-        stage ('Report tests') {
+        stage ('Report Tests') {
             checkout scm
             sh 'mvn -f report-service/pom.xml test'
         }
         
-        stage ('Client tests (end-to-end)') {
+        stage ('Client Tests (end-to-end)') {
             checkout scm
             sh 'mvn -f client/pom.xml test'
         } */
