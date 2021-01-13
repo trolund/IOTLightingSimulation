@@ -30,9 +30,15 @@ public class TokenServiceClient {
     }
 
     public boolean validateToken(String tokenId) {
-        Response r = baseUrl.path("token/validate/" + tokenId)
+        Response r = baseUrl.path("token")
+                .queryParam("tokenId", tokenId)
                 .request()
                 .post(null);
+        return r.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
+    public boolean retireCustomerTokens(String customerId) {
+        Response r = baseUrl.path("token/" + customerId).request().delete();
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
