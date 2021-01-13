@@ -16,7 +16,7 @@ try {
             sh 'docker-compose up -d'
         }
 
-        stage ('Payment tests') {
+/*         stage ('Payment tests') {
             checkout scm
             sh 'mvn -f payment-service/pom.xml test'
         }
@@ -39,7 +39,8 @@ try {
         stage ('Client tests (end-to-end)') {
             checkout scm
             sh 'mvn -f client/pom.xml test'
-        }
+        } */
+
     }
 } catch (e) {
     node {
