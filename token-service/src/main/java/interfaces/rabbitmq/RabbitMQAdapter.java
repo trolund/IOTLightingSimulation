@@ -21,7 +21,7 @@ public class RabbitMQAdapter {
 
     static ITokenService service = new TokenService();
 
-    private static final String EXCHANGE_NAME = "topic_logs";
+    private static final String EXCHANGE_NAME = "message-hub";
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
