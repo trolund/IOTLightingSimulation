@@ -13,10 +13,10 @@ public class UserAccount implements Serializable {
     public UserAccount() {
     }
 
-    public UserAccount(String firstName, String lastName, String cpr, String id) {
+    public UserAccount(String firstName, String lastName, String cpr) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = id;
+        this.id = "";
         this.cpr = cpr;
         this.disabled = false;
     }
@@ -60,4 +60,5 @@ public class UserAccount implements Serializable {
     public boolean getDisabled() {
         return disabled;
     }
+
 }

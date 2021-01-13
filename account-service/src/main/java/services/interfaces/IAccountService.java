@@ -1,6 +1,6 @@
 package services.interfaces;
 
-import dto.UserDTO;
+import domain.UserAccount;
 import exceptions.DuplicateException;
 import exceptions.EmptyCprException;
 import exceptions.EmptyNameException;

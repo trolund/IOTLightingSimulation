@@ -5,6 +5,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import domain.UserAccount;
 import exceptions.EmptyNameException;
+import exceptions.EmptyCprException;
 import services.AccountService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,20 +14,20 @@ public class UserAccountSteps {
     UserAccount u;
     @When("a user with first name {string}, last name {string}, CPR {string} requests to create an account")
     public void a_user_with_first_name_last_name_cpr_requests_to_create_an_account(String string, String string2, String string3) {
-        // AccountService as;
-        // as.createUserAccount("x","x","x");
-        throw new io.cucumber.java.PendingException();
+        u = new UserAccount(string, string2, string3);
     }
 
     @Then("a new account with first name {string}, last name {string} and CPR {string} is created")
     public void a_new_account_with_first_name_last_name_and_cpr_is_created(String string, String string2, String string3) {
-        u = new UserAccount("Bjarne", "Ivertsen", "123456-7890");
+        assertEquals(u.getFirstName(), string);
+        assertEquals(u.getLastName(), string2);
+        assertEquals(u.getCpr(), string3);
     }
 
     @Then("a unique identifier for the account is some string")
     public void a_unique_identifier_for_the_account_is_some_string() {
         u.setId("some string");
-        assertEquals("some strong", u.getId());
+        assertEquals("some string", u.getId());
     }
 
     @Then("the account is not disabled")
@@ -63,7 +64,7 @@ public class UserAccountSteps {
 
     @Then("an empty name exception is thrown")
     public void an_empty_name_exception_is_thrown() {
-        throw new EmptyNameException("First name can not be empty");
+        throw new io.cucumber.java.PendingException();
     }
 
     @When("a user requests to create an account giving {string} as the CPR number")
@@ -73,7 +74,7 @@ public class UserAccountSteps {
 
     @Then("a missing CPR exception is thrown")
     public void a_missing_cpr_exception_is_thrown() {
-        throw new EmptyCprException("CPR number is missing");
+        throw new io.cucumber.java.PendingException();
     }
 
     @Given("that the system contains an account with CPR {string}")
