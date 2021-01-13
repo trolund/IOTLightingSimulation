@@ -1,3 +1,6 @@
+# Author: Daniel (s151641)
+# Author: Troels (s161791)
+
 FROM adoptopenjdk:11-jre-hotspot
 
 WORKDIR /usr/src
