@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author Troels (s161791)
- * client to Payment service test.
+ * com.client to Payment service test.
  */
 
 public class PaymentServiceClient {
