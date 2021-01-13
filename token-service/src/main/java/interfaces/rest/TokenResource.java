@@ -1,10 +1,7 @@
 package interfaces.rest;
 
 import domain.Token;
-import exceptions.CustomerAlreadyRegisteredException;
-import exceptions.CustomerNotFoundException;
-import exceptions.TokenNotFoundException;
-import exceptions.TooManyTokensException;
+import exceptions.*;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.ITokenService;
 
@@ -49,7 +46,7 @@ public class TokenResource {
                     .status(Response.Status.OK)
                     .entity(token)
                     .build();
-        } catch (CustomerNotFoundException e) {
+        } catch (CustomerNotFoundException | CustomerHasNoTokensException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

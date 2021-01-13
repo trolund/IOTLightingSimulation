@@ -2,10 +2,7 @@ package services;
 
 import domain.CustomerToken;
 import domain.Token;
-import exceptions.CustomerAlreadyRegisteredException;
-import exceptions.CustomerNotFoundException;
-import exceptions.TokenNotFoundException;
-import exceptions.TooManyTokensException;
+import exceptions.*;
 import infrastructure.repositories.CustomerTokensRepository;
 import services.interfaces.ITokenService;
 
@@ -31,7 +28,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Token getToken(String customerId) throws CustomerNotFoundException {
+    public Token getToken(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException {
         return repo.getTokenFromCustomer(customerId);
     }
 

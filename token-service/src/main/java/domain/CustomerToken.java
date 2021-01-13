@@ -18,10 +18,11 @@ public class CustomerToken implements Serializable {
     }
 
     public List<Token> addTokens(Integer amount) throws TooManyTokensException {
-        if (tokens.size() <= 1) {
+        // Only allowed to request 1-5 tokens if you have one or less tokens
+        if (tokens.size() < 2 && amount < 6 && amount > 0) {
             tokens.addAll(generateTokens(amount));
         } else {
-            throw new TooManyTokensException(customerId, tokens.size());
+            throw new TooManyTokensException(customerId, amount);
         }
         return tokens;
     }

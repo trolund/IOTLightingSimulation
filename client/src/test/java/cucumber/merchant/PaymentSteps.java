@@ -23,12 +23,9 @@ public class PaymentSteps {
     private final MerchantApp merchantApp = new MerchantApp();
 
     private final AccountServiceClient accountService = new AccountServiceClient();
-    private final TokenServiceClient tokenService = new TokenServiceClient();
     private final PaymentServiceClient paymentService = new PaymentServiceClient();
 
     private User customerUser, merchantUser;
-    private BankAccount customerBank, merchantBank;
-
     private User customerFromSystem, merchantFromSystem;
 
     private Token customerToken;
@@ -39,8 +36,7 @@ public class PaymentSteps {
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_customer_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
         customerUser = new User();
-        customerBank = new BankAccount();
-        customerUser.setBankAccount(customerBank);
+        customerUser.setBankAccount(new BankAccount());
 
         customerUser.setCprNumber(cpr);
         customerUser.setFirstName(firstName);
@@ -69,8 +65,7 @@ public class PaymentSteps {
     @Given("a new merchant with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_merchant_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
         merchantUser = new User();
-        merchantBank = new BankAccount();
-        merchantUser.setBankAccount(merchantBank);
+        merchantUser.setBankAccount(new BankAccount());
 
         merchantUser.setCprNumber(cpr);
         merchantUser.setFirstName(firstName);
@@ -123,8 +118,8 @@ public class PaymentSteps {
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        cusLatestTran = paymentService.getLatestTransaction(customerBank.getId());
-        mercLatestTran = paymentService.getLatestTransaction(merchantBank.getId());
+        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getId());
+        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getId());
         Assert.assertNotNull(cusLatestTran);
         Assert.assertNotNull(mercLatestTran);
         Assert.assertEquals(BigDecimal.valueOf(transactionAmount), cusLatestTran.getAmount());
@@ -140,5 +135,19 @@ public class PaymentSteps {
     public void the_latest_transaction_related_to_the_merchant_contain_balance(Integer balance) {
         Assert.assertEquals(BigDecimal.valueOf(balance), mercLatestTran.getBalance());
     }
+
+    private String customerAccIdNonExist;
+
+    @Given("a customer with accountId {string} that does not exist in the system")
+    public void a_customer_with_cpr_that_does_not_exist_in_the_system(String accountId) {
+
+    }
+
+    @Then("the payment is unsuccessful")
+    public void the_payment_is_unsuccessful() {
+        boolean isUnsuccessful = merchantApp.processPayment(customerAccIdNonExist, merchantFromSystem.getId(), paymentAmount);
+        Assert.assertTrue(isUnsuccessful);
+    }
+
 
 }

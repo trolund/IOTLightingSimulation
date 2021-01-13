@@ -9,6 +9,7 @@ Feature: Payment
     When the merchant is created
     Then the new merchant exists in the system
 
+
   Scenario Outline: Successful Payment
     When the merchant initiates a payment for <amount> by the customer
     Then the merchant asks for a token from the customer
@@ -27,15 +28,13 @@ Feature: Payment
       | 500    | 500       | 1500      |
 
 
+  Scenario: Customer accountId not found
+   Given a customer with accountId "does-not-exist" that does not exist in the system
+   When the merchant initiates a payment for 10 by the customer
+   Then the payment is unsuccessful
 
-# Scenario: Customer not found
-#    Given a wrong customer "?"
-#    And a correct merchant ""
+
+#  Scenario: Merchant accountID not found
+#    Given a merchant with accountId "does-not-exist" that does not exist in the system
 #    When the merchant initiates a payment for 10 by the customer
-#    Then an error message "Customer (2954f5aa-25ce-47ca-8371-615070ead10a) is not found!" is returned
-
-  #Scenario: Merchant not found
-    # Given a customer with id "2954f5aa-25ce-47ca-8371-615070ead10a"
-  #  And a merchant with id "bf4c54c3-d3dd-4595-95ed-4b6ac99b4ba4"
-  #  When the merchant initiates a payment for 10 by the customer
-  #  Then an error message "Merchant (bf4c54c3-d3dd-4595-95ed-4b6ac99b4ba4) is not found!" is returned
+#    Then the payment is unsuccessful
