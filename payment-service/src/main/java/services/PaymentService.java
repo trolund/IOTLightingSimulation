@@ -9,7 +9,6 @@ import exceptions.merchant.MerchantException;
 import exceptions.merchant.MerchantNotFoundException;
 import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
-import infrastructure.bank.IBankService;
 import infrastructure.bank.Transaction;
 import services.interfaces.IPaymentService;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,42 +18,43 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author Troels (s161791)
- * PaymentService all services related to payments.
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s15641)
+ *
+ * Payment microservice REST resource.
  */
-
 @ApplicationScoped
 public class PaymentService implements IPaymentService {
 
-    IBankService bs;
+    BankService bs;
     MapperService mapper;
 
     @Inject
-    public PaymentService(BankService bs, MapperService mapper) {
-        this.bs = bs.getBankServicePort();
+    public PaymentService(Bank bank, MapperService mapper) {
+        this.bs = bank.getBankServicePort();
         this.mapper = mapper;
     }
 
-    public void createTransaction(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
-        Account m = null;
-        Account c = null;
+    public void createTransaction(String mId, String cId, int amount) throws CustomerException, MerchantException, TransactionException {
+        Account merchant = null;
+        Account customer = null;
 
         try {
-            m = bs.getAccount(mid);
-            c = bs.getAccount(cid);
+            merchant = bs.getAccount(mId);
+            customer = bs.getAccount(cId);
 
             bs.transferMoneyFromTo(
-                    m.getId(),
-                    c.getId(),
+                    merchant.getId(),
+                    customer.getId(),
                     BigDecimal.valueOf(amount),
-                    "Transaction");
+                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount);
 
         } catch (Exception e) {
-            if (m == null) {
-                throw new MerchantNotFoundException("merchant with id " + mid + " is not found!");
+            if (merchant == null) {
+                throw new MerchantNotFoundException("Merchant (" + mId + ") is not found!");
             }
-            if (c == null) {
-                throw new CustomerNotFoundException("customer with id " + cid + " is not found!");
+            if (customer == null) {
+                throw new CustomerNotFoundException("Customer (" + cId + ") is not found!");
             }
             throw new TransactionException(e.getMessage());
         }
@@ -68,7 +68,7 @@ public class PaymentService implements IPaymentService {
         try {
             return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new AccountException("Account not found");
+            throw new AccountException("User (" + id + ") is not found!");
         }
     }
 
@@ -77,7 +77,7 @@ public class PaymentService implements IPaymentService {
             Comparator<Transaction> comparator = (p1, p2) -> p1.getTime().compare(p2.getTime());
             return bs.getAccount(id).getTransactions().stream().max(comparator).get();
         } catch (Exception e) {
-            throw new AccountException("Account not found");
+            throw new AccountException("User (" + id + ") is not found!");
         }
     }
 

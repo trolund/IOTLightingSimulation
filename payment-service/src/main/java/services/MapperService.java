@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
  * @author Troels (s161791)
  * UserNotFoundException to use when a user cannot be found.
  */
-
 @ApplicationScoped
 public class MapperService extends ModelMapper {
 

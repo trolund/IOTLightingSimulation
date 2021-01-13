@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  payment:
+    image: payment:0.1
+    container_name: payment
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.payment
+    ports:
+      - "8084:8080"

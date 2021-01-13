@@ -13,12 +13,12 @@ import java.math.BigDecimal;
 public final class TestClient {
 
     private WebTarget baseUrl;
-    private IBankService bs;
+    private BankService bs;
 
     public TestClient() {
         Client client = ClientBuilder.newClient();
         baseUrl = client.target("http://localhost:8080/api/v1/");
-        bs = new BankService().getBankServicePort();
+        bs = new BankServiceService().getBankServicePort();
     }
 
     public boolean createTransaction(String cId, String mId, Integer amount) {

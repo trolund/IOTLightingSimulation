@@ -57,7 +57,8 @@ public class RabbitMQAdapter {
             LOGGER.log(Level.INFO, "RABBITMQ: Raw message: " + message);
 
             if (messageType.equals("payment")) {
-                TransactionDTO dto = gson.fromJson(message, TransactionDTO.class);
+                String payload = splitMessage[1];
+                TransactionDTO dto = gson.fromJson(payload, TransactionDTO.class);
                 try {
                     service.createTransaction(dto.getCreditor(), dto.getDebtor(), dto.getAmount().intValue());
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, "PaymentSuccessful".getBytes(StandardCharsets.UTF_8));
@@ -65,7 +66,8 @@ public class RabbitMQAdapter {
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
                 }
             } else if (messageType.equals("refund")) {
-                TransactionDTO dto = gson.fromJson(message, TransactionDTO.class);
+                String payload = splitMessage[1];
+                TransactionDTO dto = gson.fromJson(payload, TransactionDTO.class);
                 try {
                     service.refund(dto.getCreditor(), dto.getDebtor(), dto.getAmount().intValue());
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, "RefundSuccessful".getBytes(StandardCharsets.UTF_8));
