@@ -2,12 +2,14 @@ package cucumber.steps;
 
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
+import exceptions.CustomerHasNoTokensException;
 import exceptions.CustomerNotFoundException;
 
 import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import services.TokenService;
 
@@ -74,5 +76,19 @@ public class validatingTokensSteps {
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
+    }
+
+    @When("the customer tries to receive a token")
+    public void theCustomerTriesToReceiveAToken() {
+        try {
+            ts.getToken(customerId);
+        } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
+    @Then("a {string} exception is returned")
+    public void aExceptionIsReturned(String error) {
+        Assertions.assertEquals(error, e.getMessage());
     }
 }

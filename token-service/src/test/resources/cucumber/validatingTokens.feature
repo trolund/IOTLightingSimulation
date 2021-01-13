@@ -15,3 +15,8 @@ Feature: Validation of tokens
     And the token is deleted
     When a token is sent to the server
     Then a TokenNotFound exception is returned
+
+  Scenario: Customer tries to get while having no tokens
+    Given a customer with id "1234"
+    When the customer tries to receive a token
+    Then a "Customer (1234) has no tokens." exception is returned

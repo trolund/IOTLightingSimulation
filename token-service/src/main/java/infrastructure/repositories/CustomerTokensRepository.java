@@ -3,6 +3,7 @@ package infrastructure.repositories;
 import domain.CustomerToken;
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
+import exceptions.CustomerHasNoTokensException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
@@ -25,7 +26,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     @Override
     public void add(CustomerToken customerToken) throws CustomerAlreadyRegisteredException {
-        if (!customerTokens.stream().anyMatch(obj -> obj.getCustomerId().equals(customerToken.getCustomerId()))) {
+        if (customerTokens.stream().noneMatch(obj -> obj.getCustomerId().equals(customerToken.getCustomerId()))) {
             this.customerTokens.add(customerToken);
         } else {
             throw new CustomerAlreadyRegisteredException(customerToken.getCustomerId());
@@ -71,7 +72,11 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException {
-        return get(customerId).getTokens().get(0);
+    public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException {
+        if (!get(customerId).getTokens().isEmpty()) {
+            return get(customerId).getTokens().get(0);
+        } else {
+            throw new CustomerHasNoTokensException(customerId);
+        }
     }
 }

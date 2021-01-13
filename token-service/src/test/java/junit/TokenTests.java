@@ -33,7 +33,7 @@ public class TokenTests {
 
     private static final String EXCHANGE_NAME = "topic_logs";
 
-    //@Test
+    @Test
     public void testRabbitMQ() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");

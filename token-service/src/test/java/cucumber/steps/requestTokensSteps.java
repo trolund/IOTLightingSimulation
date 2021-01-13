@@ -8,6 +8,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.After;
 import org.junit.jupiter.api.Assertions;
 import services.TokenService;
 
@@ -21,8 +22,8 @@ public class requestTokensSteps {
 
     @Given("^the customer with id \"([^\"]*)\"$")
     public void theCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
-        customerId = "1234";
-        es.registerCustomer(customerId);
+        customerId = cid;
+        es.registerCustomer(cid);
     }
 
     @And("^the customer has (\\d+) tokens$")
@@ -31,15 +32,6 @@ public class requestTokensSteps {
             es.requestTokens(customerId, amount);
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
-        }
-    }
-
-    @When("^the customer requests (\\d+) tokens$")
-    public void theCustomerRequestsTokens(int amount) {
-        try {
-            es.requestTokens(customerId, amount);
-        } catch (Exception e) {
-            this.e = e;
         }
     }
 
@@ -87,4 +79,14 @@ public class requestTokensSteps {
             this.e = e;
         }
     }
+
+    @When("the customer requests {int} tokens")
+    public void theCustomerRequestsTokens(int amount) {
+        try {
+            es.requestTokens(customerId, amount);
+        } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
 }

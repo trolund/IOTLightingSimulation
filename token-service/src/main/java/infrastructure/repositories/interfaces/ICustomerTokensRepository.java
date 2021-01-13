@@ -3,6 +3,7 @@ package infrastructure.repositories.interfaces;
 import domain.CustomerToken;
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
+import exceptions.CustomerHasNoTokensException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 
@@ -14,5 +15,5 @@ public interface ICustomerTokensRepository extends IRepository<CustomerToken> {
 
     void invalidateTokenFromCustomer(String tokenId) throws TokenNotFoundException, CustomerNotFoundException;
 
-    Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException;
+    Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException;
 }
