@@ -1,0 +1,10 @@
+FROM adoptopenjdk:11-jre-hotspot
+
+WORKDIR /usr/src
+
+COPY ./client/target/client-1.0.0.jar /usr/src
+
+#COPY ./client/target/lib /usr/src/lib
+
+CMD java -Xmx64m \
+      -jar client-1.0.0.jar

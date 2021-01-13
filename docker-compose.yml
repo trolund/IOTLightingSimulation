@@ -48,5 +48,3 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.client
-    ports:
-      - "8084:8080"

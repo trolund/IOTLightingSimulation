@@ -4,10 +4,9 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dtu</groupId>
-	<artifactId>DTUPay-client</artifactId>
-	<name>demo-com.client</name>
-	<version>SNAPSHOT 0.0.1</version>
+	<groupId>group11</groupId>
+	<artifactId>client</artifactId>
+	<version>1.0.0</version>
 
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
