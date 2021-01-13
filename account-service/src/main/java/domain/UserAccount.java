@@ -1,22 +1,24 @@
-package dto;
+package domain;
 
 import java.io.Serializable;
 
-public class UserDTO implements Serializable {
+public class UserAccount implements Serializable {
 
     private String firstName;
     private String lastName;
     private String cpr;
     private String id;
+    private boolean disabled;
 
-    public UserDTO() {
+    public UserAccount() {
     }
 
-    public UserDTO(String firstName, String lastName, String cpr, String id) {
+    public UserAccount(String firstName, String lastName, String cpr, String id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
         this.cpr = cpr;
+        this.disabled = false;
     }
 
     public String getFirstName() {
@@ -49,5 +51,13 @@ public class UserDTO implements Serializable {
 
     public void setCpr(String cpr) {
         this.cpr = cpr;
+    }
+
+    public void setDisabled(boolean bool) {
+        this.disabled = bool;
+    }
+
+    public boolean getDisabled() {
+        return disabled;
     }
 }
