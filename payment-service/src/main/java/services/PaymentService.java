@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
+ * PaymentService all services related to payments.
  */
 
 @ApplicationScoped

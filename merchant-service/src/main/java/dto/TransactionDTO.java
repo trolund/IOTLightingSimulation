@@ -1,15 +1,8 @@
 package dto;
 
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 
 /**

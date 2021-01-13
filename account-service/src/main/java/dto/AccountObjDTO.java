@@ -1,14 +1,14 @@
 package dto;
 
-public class ExampleObjDTO {
+public class AccountObjDTO {
 
     private String msg;
 
-    public ExampleObjDTO() {
+    public AccountObjDTO() {
 
     }
 
-    public ExampleObjDTO(String msg) {
+    public AccountObjDTO(String msg) {
         this.msg = msg;
     }
 

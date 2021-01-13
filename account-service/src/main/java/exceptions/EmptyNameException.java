@@ -7,6 +7,8 @@ package exceptions;
 // exception like CustomerNotFoundException extend CustomerException.
 //
 // If its an exception for web, perhaps extending the WebException is a better idea.
-public class ExampleException extends Exception {
-
+public class EmptyNameException extends Exception {
+    public EmptyNameException(String errorMessage) {
+        super(errorMessage);
+    }
 }
