@@ -2,14 +2,12 @@ Feature: Payment
 
   Background:
     Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
-    Then when the customer is created
+    When the customer is created
     Then the new customer exists in the system
-    Then the customer requests 4 tokens
-    Then the customer has 4 tokens available for use
+    And the customer requests 5 tokens
     Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
-    Then when the merchant is created
+    When the merchant is created
     Then the new merchant exists in the system
-
 
   Scenario Outline: Successful Payment
     When the merchant initiates a payment for <amount> by the customer
