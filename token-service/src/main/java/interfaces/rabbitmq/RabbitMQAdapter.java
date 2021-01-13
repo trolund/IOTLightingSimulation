@@ -30,7 +30,7 @@ public class RabbitMQAdapter {
 
     public static void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("172.26.0.2");
+        factory.setHost("localhost");
         factory.setPort(5672);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
