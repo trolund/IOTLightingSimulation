@@ -12,9 +12,6 @@ import java.util.List;
 @ApplicationScoped
 public class CustomerTokensRepository implements ICustomerTokensRepository {
 
-    // This class should probably be a singleton class (?)
-    // or maybe this does not matter because dependency injection?
-
     private final List<CustomerTokens> customerTokens;
 
     public CustomerTokensRepository() {
@@ -22,19 +19,19 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void add(CustomerTokens obj) {
-        customerTokens.add(obj);
+    public void add(CustomerTokens customerTokens) {
+        this.customerTokens.add(customerTokens);
     }
 
     @Override
-    public CustomerTokens get(String id) throws CustomerNotFoundException {
+    public CustomerTokens get(String customerId) throws CustomerNotFoundException {
         CustomerTokens customerTokens = this.customerTokens.stream()
-                .filter(obj -> obj.getId().equals(id))
+                .filter(obj -> obj.getCustomerId().equals(customerId))
                 .findAny()
                 .orElse(null);
 
         if (customerTokens == null) {
-            throw new CustomerNotFoundException(id);
+            throw new CustomerNotFoundException(customerId);
         }
 
         return customerTokens;
@@ -54,24 +51,14 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public List<CustomerTokens> getAll() {
-        return customerTokens;
+    public void update(CustomerTokens customerTokens) throws CustomerNotFoundException {
+        delete(customerTokens.getCustomerId());
+        add(customerTokens);
     }
 
     @Override
-    public void update(CustomerTokens obj) throws CustomerNotFoundException {
-        delete(obj.getId());
-        add(obj);
-    }
-
-    @Override
-    public void delete(String id) throws CustomerNotFoundException{
-        customerTokens.remove(get(id));
-    }
-
-    @Override
-    public CustomerTokens readExample() {
-        return new CustomerTokens("101");
+    public void delete(String customerId) throws CustomerNotFoundException{
+        customerTokens.remove(get(customerId));
     }
 
 }

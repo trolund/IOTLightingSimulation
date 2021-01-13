@@ -10,4 +10,4 @@ Feature: Customer requests tokens
     Given the customer with id "1234"
     And the customer has 2 tokens
     When the customer requests 2 tokens
-    Then an exception is returned with the message "1234 has 2 tokens, and cannot request more."
+    Then an exception is returned with the message "Customer (1234) has 2 tokens, and cannot request more."

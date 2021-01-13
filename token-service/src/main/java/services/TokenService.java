@@ -2,49 +2,48 @@ package services;
 
 import domain.CustomerTokens;
 import domain.Token;
-import dto.ExampleObjDTO;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
-import org.modelmapper.ModelMapper;
 import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 
-// All of the business logic concerning the
-// Example domain should be written here.
 @ApplicationScoped
 public class TokenService implements ITokenService {
 
     CustomerTokensRepository repo = new CustomerTokensRepository();
 
-    public String hello() {
-        return "I am healthy and ready to work!";
+    @Override
+    public void registerCustomer(String customerId) {
+        CustomerTokens customerTokens = new CustomerTokens(customerId);
+        repo.add(customerTokens);
     }
 
-    public ExampleObjDTO readExample() {
-        ModelMapper mapper = new ModelMapper();
-        CustomerTokens exampleDto = repo.readExample();
-        return mapper.map(exampleDto, ExampleObjDTO.class);
-    }
-
-    public void addCustomer(String customerId) {
-        CustomerTokens ct = new CustomerTokens(customerId);
-        repo.add(ct);
-    }
-
-    public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
-        return repo.get(customerId);
-    }
-
-    public List<Token> addTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
+    @Override
+    public List<Token> requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
         return repo.get(customerId).addTokens(amount);
     }
 
+    @Override
+    public CustomerTokens getTokens(String customerId) throws CustomerNotFoundException {
+        return repo.get(customerId);
+    }
+
+    @Override
     public CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException {
         return repo.getCustomerWithTokenId(tokenId);
+    }
+
+    /*
+      Delete the given token (with tokenId) at
+      given customer (with customerId) maybe??
+     */
+    @Override
+    public void invalidateToken(String customerId, String tokenId) throws CustomerNotFoundException, TokenNotFoundException {
+        repo.delete(customerId);
     }
 
 }
