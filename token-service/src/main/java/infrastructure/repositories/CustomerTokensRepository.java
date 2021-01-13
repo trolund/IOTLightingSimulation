@@ -41,6 +41,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
         return customerTokens;
     }
 
+    @Override
     public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
         CustomerTokens customerTokens = this.customerTokens.stream()
                 .filter(obj -> obj.findTokenInList(tokenId))
