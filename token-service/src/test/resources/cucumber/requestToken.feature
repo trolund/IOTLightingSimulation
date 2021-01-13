@@ -15,7 +15,12 @@ Feature: Customer requests tokens
   Scenario: Customer not found
     Given no customer exists with id "2345"
     When the customer requests 2 tokens
-    Then an exception is returned with the message "Customer (2345) was not found."
+    Then the customer owns 2 tokens
+
+  Scenario: Customer already registered
+    Given the customer with id "1234"
+    When another customer with id "1234" is registered
+    Then an exception is returned with the message "Customer (1234) is already registered."
 
   Scenario: Delete customer
     Given the customer with id "1234"

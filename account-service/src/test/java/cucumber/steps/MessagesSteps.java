@@ -44,12 +44,6 @@ public class MessagesSteps {
         throw new io.cucumber.java.PendingException();
     }
 
-    @Then("the account is disabled")
-    public void the_account_is_disabled() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
     @When("an external service requests the details of the user with CPR {string}")
     public void an_external_service_requests_the_details_of_the_user_with_cpr(String string) {
         // Write code here that turns the phrase above into concrete actions

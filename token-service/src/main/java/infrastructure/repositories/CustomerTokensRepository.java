@@ -1,6 +1,8 @@
 package infrastructure.repositories;
 
-import domain.CustomerTokens;
+import domain.CustomerToken;
+import domain.Token;
+import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
@@ -15,51 +17,61 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     // This class should probably be a singleton class (?)
     // or maybe this does not matter because dependency injection?
 
-    private final List<CustomerTokens> customerTokens;
+    private final List<CustomerToken> customerTokens;
 
     public CustomerTokensRepository() {
         customerTokens = new ArrayList<>();
     }
 
     @Override
-    public void add(CustomerTokens customerTokens) {
-        this.customerTokens.add(customerTokens);
+    public void add(CustomerToken customerToken) throws CustomerAlreadyRegisteredException {
+        if (!customerTokens.stream().anyMatch(obj -> obj.getCustomerId().equals(customerToken.getCustomerId()))) {
+            this.customerTokens.add(customerToken);
+        } else {
+            throw new CustomerAlreadyRegisteredException(customerToken.getCustomerId());
+        }
     }
 
     @Override
-    public CustomerTokens get(String customerId) throws CustomerNotFoundException {
-        CustomerTokens customerTokens = this.customerTokens.stream()
+    public CustomerToken get(String customerId) throws CustomerNotFoundException {
+        CustomerToken customerToken = this.customerTokens.stream()
                 .filter(obj -> obj.getCustomerId().equals(customerId))
                 .findAny()
                 .orElse(null);
 
-        if (customerTokens == null) {
+        if (customerToken == null) {
             throw new CustomerNotFoundException(customerId);
         }
 
-        return customerTokens;
+        return customerToken;
     }
 
-    public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
-        CustomerTokens customerTokens = this.customerTokens.stream()
+    @Override
+    public CustomerToken getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
+        CustomerToken customerToken = this.customerTokens.stream()
                 .filter(obj -> obj.findTokenInList(tokenId))
                 .findAny()
                 .orElse(null);
 
-        if (customerTokens == null) {
+        if (customerToken == null) {
             throw new TokenNotFoundException(tokenId);
         }
 
-        return customerTokens;
+        return customerToken;
     }
 
     @Override
-    public void delete(String id) throws CustomerNotFoundException{
+    public void deleteCustomer(String id) throws CustomerNotFoundException{
         customerTokens.remove(get(id));
     }
 
     @Override
-    public void deleteToken(String customerId, String tokenId) throws TokenNotFoundException {
-        getCustomerWithTokenId(tokenId).deleteToken(tokenId);
+    public void invalidateTokenFromCustomer(String tokenId) throws TokenNotFoundException {
+        getCustomerWithTokenId(tokenId).invalidateToken(tokenId);
+    }
+
+    @Override
+    public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException {
+        return get(customerId).getTokens().get(0);
     }
 }

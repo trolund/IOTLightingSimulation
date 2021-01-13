@@ -1,44 +1,42 @@
 package cucumber.steps;
 
 import domain.Token;
+import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
-import exceptions.TokenNotFoundException;
 
-import exceptions.TooManyTokensException;
+import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 import services.TokenService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class validatingTokensSteps {
     String customerId, foundCustomerId;
-    TokenService es = new TokenService();
-    List<Token> tokens = new ArrayList<>();
+    TokenService ts = new TokenService();
+    Token token;
     Exception e;
 
     @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid) {
+    public void aCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
         customerId = cid;
-        es.registerCustomer(cid);
+        ts.registerCustomer(cid);
     }
 
     @And("has an unused token")
     public void hasAnUnusedToken() {
         try {
-            tokens.addAll(es.requestTokens(customerId, 1));
+            ts.requestTokens(customerId, 1);
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
     }
 
-    @And("^a token is received$")
-    public void aTokenIsReceived() {
+    @And("^a token is sent to the server")
+    public void aTokenIsSentToTheServer() {
         try {
-            foundCustomerId = es.getCustomerFromToken(tokens.get(0).getId()).getCustomerId();
+            foundCustomerId = ts.getCustomerFromToken(token.getId()).getCustomerId();
+            ts.invalidateToken(token.getId());
         } catch (Exception e) {
             this.e = e;
         }
@@ -46,7 +44,7 @@ public class validatingTokensSteps {
 
     @Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
-        Assertions.assertThrows(TokenNotFoundException.class, () -> {es.getCustomerFromToken(tokens.get(0).getId());});
+        Assertions.assertThrows(TokenNotFoundException.class, () -> ts.invalidateToken(token.getId()));
         Assertions.assertNull(e);
     }
 
@@ -57,13 +55,13 @@ public class validatingTokensSteps {
 
     @Then("a TokenNotFound exception is returned")
     public void aTokenNotFoundExceptionIsReturned() {
-        Assertions.assertEquals("Token (" + tokens.get(0).getId() + ") can not be found.", e.getMessage());
+        Assertions.assertEquals("Token (" + token.getId() + ") can not be found.", e.getMessage());
     }
 
     @And("the token is deleted")
     public void theTokenIsDeleted() {
         try {
-            es.invalidateToken(customerId, tokens.get(0).getId());
+            ts.invalidateToken(token.getId());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
@@ -72,7 +70,7 @@ public class validatingTokensSteps {
     @And("the customer receives a token")
     public void theCustomerReceivesAToken() {
         try {
-            es.requestTokens(customerId, 1);
+            token = ts.getToken(customerId);
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }

@@ -1,20 +1,20 @@
 package services.interfaces;
 
-import domain.CustomerTokens;
+import domain.CustomerToken;
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 
-import java.util.List;
-
 public interface ITokenService {
     void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException;
-    List<Token> requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException;
-    CustomerTokens getTokens(String customerId) throws CustomerNotFoundException;
-    CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException;
-    void invalidateToken(String customerId, String tokenId) throws CustomerNotFoundException, TokenNotFoundException;
+    void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException, CustomerAlreadyRegisteredException;
+    Token getToken(String customerId) throws CustomerNotFoundException;
+    CustomerToken getCustomerFromToken(String tokenId) throws TokenNotFoundException, CustomerNotFoundException;
+    void invalidateToken(String tokenId) throws CustomerNotFoundException, TokenNotFoundException;
     void deleteCustomer(String customerId) throws CustomerNotFoundException;
-    CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException;
+    CustomerToken getCustomer(String customerId) throws CustomerNotFoundException;
+
+    boolean customerExists(String customerId);
 }
