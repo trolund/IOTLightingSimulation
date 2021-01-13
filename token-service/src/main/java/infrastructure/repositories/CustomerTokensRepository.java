@@ -54,13 +54,12 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void update(CustomerTokens customerTokens) throws CustomerNotFoundException {
-        delete(customerTokens.getCustomerId());
-        add(customerTokens);
+    public void delete(String id) throws CustomerNotFoundException{
+        customerTokens.remove(get(id));
     }
 
     @Override
-    public void delete(String id) throws CustomerNotFoundException{
-        customerTokens.remove(get(id));
+    public void deleteToken(String customerId, String tokenId) throws TokenNotFoundException {
+        getCustomerWithTokenId(tokenId).deleteToken(tokenId);
     }
 }

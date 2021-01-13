@@ -10,7 +10,7 @@ Feature: Validation of tokens
   Scenario: Validation of a used token
     Given a customer with id "1234"
     And has an unused token
-    And a token is received
-    And the token is invalidated
+    And the customer receives a token
+    And the token is deleted
     When a token is received
     Then a TokenNotFound exception is returned

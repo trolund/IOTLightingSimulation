@@ -37,13 +37,18 @@ public class TokenService implements ITokenService {
         return repo.getCustomerWithTokenId(tokenId);
     }
 
-    /*
-      Delete the given token (with tokenId) at
-      given customer (with customerId) maybe??
-     */
     @Override
     public void invalidateToken(String customerId, String tokenId) throws CustomerNotFoundException, TokenNotFoundException {
+        repo.deleteToken(customerId, tokenId);
+    }
+
+    @Override
+    public void deleteCustomer(String customerId) throws CustomerNotFoundException {
         repo.delete(customerId);
     }
 
+    @Override
+    public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
+        return repo.get(customerId);
+    }
 }

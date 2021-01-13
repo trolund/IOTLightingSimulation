@@ -1,8 +1,10 @@
 package cucumber.steps;
 
 import domain.Token;
+import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 
+import exceptions.TooManyTokensException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -45,6 +47,7 @@ public class validatingTokensSteps {
     @io.cucumber.java.en.Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
         Assertions.assertThrows(TokenNotFoundException.class, () -> {es.getCustomerFromToken(tokens.get(0).getId());});
+        Assertions.assertNull(e);
     }
 
     @io.cucumber.java.en.And("^the customer \"([^\"]*)\" is returned$")
@@ -57,4 +60,21 @@ public class validatingTokensSteps {
         Assertions.assertEquals("Token (" + tokens.get(0).getId() + ") can not be found.", e.getMessage());
     }
 
+    @And("the token is deleted")
+    public void theTokenIsDeleted() {
+        try {
+            es.invalidateToken(customerId, tokens.get(0).getId());
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @And("the customer receives a token")
+    public void theCustomerReceivesAToken() {
+        try {
+            es.requestTokens(customerId, 1);
+        } catch (Exception e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 }

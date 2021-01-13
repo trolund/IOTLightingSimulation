@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.TokenService;
@@ -30,23 +31,9 @@ public class TokenTests {
         System.out.println("Tearing down...");
     }
 
-    @Test
-    public void testHealth() {
-        String expected = "I am healthy and ready to work!";
-
-        // The third argument to assertEquals is a message displayed when the
-        // test fails. This is useful to rapidly understand what the test expects.
-        assertEquals(expected, "", "The two strings should be equal!");
-    }
-
     private static final String EXCHANGE_NAME = "topic_logs";
 
-    @Test
-    public void exampleRead() {
-        String expected = "Example obj";
-        // The third argument to assertEquals is a message displayed when the
-        // test fails. This is useful to rapidly understand what the test expects.
-        assertEquals(expected, "", "The two strings should be equal!");
+    //@Test
     public void testRabbitMQ() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -62,6 +49,7 @@ public class TokenTests {
             System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
+            Assertions.fail();
         }
     }
 

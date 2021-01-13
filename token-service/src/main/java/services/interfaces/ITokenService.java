@@ -15,4 +15,6 @@ public interface ITokenService {
     CustomerTokens getTokens(String customerId) throws CustomerNotFoundException;
     CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException;
     void invalidateToken(String customerId, String tokenId) throws CustomerNotFoundException, TokenNotFoundException;
+    void deleteCustomer(String customerId) throws CustomerNotFoundException;
+    CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException;
 }

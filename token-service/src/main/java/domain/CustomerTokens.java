@@ -33,10 +33,6 @@ public class CustomerTokens implements Serializable {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
     public boolean findTokenInList(String tokenId) {
         Token result = this.getTokens().stream()
                 .filter(obj -> obj.getId()
@@ -63,4 +59,7 @@ public class CustomerTokens implements Serializable {
         return newTokens;
     }
 
+    public void deleteToken(String tokenId) {
+        tokens.removeIf(obj -> obj.getId().equals(tokenId));
+    }
 }
