@@ -22,25 +22,24 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void add(CustomerTokens obj) {
-        customerTokens.add(obj);
+    public void add(CustomerTokens customerTokens) {
+        this.customerTokens.add(customerTokens);
     }
 
     @Override
-    public CustomerTokens get(String id) throws CustomerNotFoundException {
+    public CustomerTokens get(String customerId) throws CustomerNotFoundException {
         CustomerTokens customerTokens = this.customerTokens.stream()
-                .filter(obj -> obj.getId().equals(id))
+                .filter(obj -> obj.getCustomerId().equals(customerId))
                 .findAny()
                 .orElse(null);
 
         if (customerTokens == null) {
-            throw new CustomerNotFoundException(id);
+            throw new CustomerNotFoundException(customerId);
         }
 
         return customerTokens;
     }
 
-    @Override
     public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
         CustomerTokens customerTokens = this.customerTokens.stream()
                 .filter(obj -> obj.findTokenInList(tokenId))
@@ -55,19 +54,13 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public List<CustomerTokens> getAll() {
-        return customerTokens;
-    }
-
-    @Override
-    public void update(CustomerTokens obj) throws CustomerNotFoundException {
-        delete(obj.getId());
-        add(obj);
+    public void update(CustomerTokens customerTokens) throws CustomerNotFoundException {
+        delete(customerTokens.getCustomerId());
+        add(customerTokens);
     }
 
     @Override
     public void delete(String id) throws CustomerNotFoundException{
         customerTokens.remove(get(id));
     }
-
 }

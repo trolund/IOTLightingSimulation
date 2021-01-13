@@ -2,31 +2,18 @@ package domain;
 
 import exceptions.TooManyTokensException;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-// Are we 100% sure that we need to implement serializable here?
 public class CustomerTokens implements Serializable {
 
+    private final List<Token> tokens;
     private String customerId;
-    private List<Token> tokens;
 
     public CustomerTokens(String customerId) {
         this.customerId = customerId;
         this.tokens = new ArrayList<>();
-    }
-
-    public String getId() {
-        return customerId;
-    }
-
-    public void setId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public List<Token> getTokens() {
-        return tokens;
     }
 
     public List<Token> addTokens(Integer amount) throws TooManyTokensException {
@@ -38,31 +25,42 @@ public class CustomerTokens implements Serializable {
         return tokens;
     }
 
-    private List<Token> generateTokens(Integer amount){
-        List<Token> newTokens = new ArrayList<>();
-        for (int i = 0; i < amount; i++){
-            newTokens.add(new Token(generateId()));
-        }
-        return newTokens;
+    public List<Token> getTokens() {
+        return tokens;
+    }
 
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public boolean findTokenInList(String tokenId) {
+        Token result = this.getTokens().stream()
+                .filter(obj -> obj.getId()
+                        .equals(tokenId))
+                .findAny()
+                .orElse(null);
+        if (result == null) {
+            return false;
+        } else {
+            tokens.remove(result);
+            return true;
+        }
     }
 
     private String generateId() {
         return String.valueOf(Math.random() * 8100352);
     }
 
-    public boolean findTokenInList(String tokenId) {
-        Token result = this.getTokens().stream()
-                .filter(obj -> obj.getId()
-                .equals(tokenId))
-                .findAny()
-                .orElse(null);
-        if (result == null){
-            return false;
-        } else {
-            tokens.remove(result);
-            return true;
+    private List<Token> generateTokens(Integer amount) {
+        List<Token> newTokens = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            newTokens.add(new Token(generateId()));
         }
+        return newTokens;
     }
 
 }

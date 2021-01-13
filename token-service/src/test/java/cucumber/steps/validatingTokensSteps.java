@@ -21,13 +21,13 @@ public class validatingTokensSteps {
     @Given("a customer with id {string}")
     public void aCustomerWithId(String cid) {
         customerId = cid;
-        es.addCustomer(cid);
+        es.registerCustomer(cid);
     }
 
     @And("has an unused token")
     public void hasAnUnusedToken() {
         try {
-            tokens.addAll(es.addTokens(customerId, 1));
+            tokens.addAll(es.requestTokens(customerId, 1));
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }
@@ -36,7 +36,7 @@ public class validatingTokensSteps {
     @io.cucumber.java.en.And("^a token is received$")
     public void aTokenIsReceived() {
         try {
-            foundCustomerId = es.getCustomerFromToken(tokens.get(0).getId()).getId();
+            foundCustomerId = es.getCustomerFromToken(tokens.get(0).getId()).getCustomerId();
         } catch (Exception e) {
             this.e = e;
         }
@@ -54,6 +54,7 @@ public class validatingTokensSteps {
 
     @Then("a TokenNotFound exception is returned")
     public void aTokenNotFoundExceptionIsReturned() {
-        Assertions.assertEquals("This token can not be found: " + tokens.get(0).getId(), e.getMessage());
+        Assertions.assertEquals("Token (" + tokens.get(0).getId() + ") can not be found.", e.getMessage());
     }
+
 }

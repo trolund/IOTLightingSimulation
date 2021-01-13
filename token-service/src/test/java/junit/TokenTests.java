@@ -33,16 +33,20 @@ public class TokenTests {
     @Test
     public void testHealth() {
         String expected = "I am healthy and ready to work!";
-        String actual = service.hello();
 
         // The third argument to assertEquals is a message displayed when the
         // test fails. This is useful to rapidly understand what the test expects.
-        assertEquals(expected, actual, "The two strings should be equal!");
+        assertEquals(expected, "", "The two strings should be equal!");
     }
 
     private static final String EXCHANGE_NAME = "topic_logs";
 
     @Test
+    public void exampleRead() {
+        String expected = "Example obj";
+        // The third argument to assertEquals is a message displayed when the
+        // test fails. This is useful to rapidly understand what the test expects.
+        assertEquals(expected, "", "The two strings should be equal!");
     public void testRabbitMQ() {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");

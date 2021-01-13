@@ -2,7 +2,6 @@ package domain;
 
 import java.io.Serializable;
 
-// Are we 100% sure that we need to implement serializable here?
 public class Token implements Serializable {
 
     private String id;
@@ -18,4 +17,5 @@ public class Token implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+
 }

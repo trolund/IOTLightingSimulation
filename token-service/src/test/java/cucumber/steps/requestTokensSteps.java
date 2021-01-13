@@ -18,13 +18,13 @@ public class requestTokensSteps {
     public void theCustomerWithId(String cid){
         customerId = "1234";
         es = new TokenService();
-        es.addCustomer(cid);
+        es.registerCustomer(customerId);
     }
 
     @io.cucumber.java.en.And("^the customer has (\\d+) tokens$")
     public void theCustomerHasTokens(int amount) {
         try {
-            tokens = es.addTokens(customerId, amount);
+            tokens = es.requestTokens(customerId, amount);
         } catch (Exception e) {
             this.e = e;
         }
@@ -33,7 +33,7 @@ public class requestTokensSteps {
     @io.cucumber.java.en.When("^the customer requests (\\d+) tokens$")
     public void theCustomerRequestsTokens(int amount) {
         try {
-            tokens = es.addTokens(customerId, amount);
+            tokens = es.requestTokens(customerId, amount);
         } catch (Exception e) {
             this.e = e;
         }
@@ -45,8 +45,8 @@ public class requestTokensSteps {
             Assertions.fail(e.getMessage());
         }
         try {
-            Assertions.assertEquals(amount, es.getCustomer(customerId).getTokens().size());
-            Assertions.assertEquals(tokens, es.getCustomer(customerId).getTokens());
+            Assertions.assertEquals(amount, es.getTokens(customerId).getTokens().size());
+            Assertions.assertEquals(tokens, es.getTokens(customerId).getTokens());
         } catch (CustomerNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
