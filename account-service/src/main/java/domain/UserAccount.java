@@ -7,7 +7,7 @@ public class UserAccount implements Serializable {
 
     private String firstName;
     private String lastName;
-    private String cpr;
+    private String cprNumber;
     private String id;
     private BankAccount bankAccount;
     private boolean disabled;
@@ -15,11 +15,11 @@ public class UserAccount implements Serializable {
     public UserAccount() {
     }
 
-    public UserAccount(String firstName, String lastName, String cpr) {
+    public UserAccount(String firstName, String lastName, String cprNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = "";
-        this.cpr = cpr;
+        this.cprNumber = cprNumber;
         this.bankAccount = bankAccount;
         this.disabled = false;
     }
@@ -48,12 +48,12 @@ public class UserAccount implements Serializable {
         this.id = id;
     }
 
-    public String getCpr() {
-        return cpr;
+    public String getCprNumber() {
+        return cprNumber;
     }
 
-    public void setCpr(String cpr) {
-        this.cpr = cpr;
+    public void setCprNumber(String cprNumber) {
+        this.cprNumber = cprNumber;
     }
 
     public boolean getDisabled() {

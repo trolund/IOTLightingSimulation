@@ -26,7 +26,7 @@ public class UserAccountSteps {
     public void a_new_account_with_first_name_last_name_and_cpr_is_created(String string, String string2, String string3) {
         assertEquals(userAccount.getFirstName(), string);
         assertEquals(userAccount.getLastName(), string2);
-        assertEquals(userAccount.getCpr(), string3);
+        assertEquals(userAccount.getCprNumber(), string3);
     }
 
     @Then("a unique identifier for the account is some string")
@@ -57,7 +57,7 @@ public class UserAccountSteps {
 
     @Then("the CPR number of the bank account is same as that of the user")
     public void the_cpr_number_of_the_bank_account_is_same_as_that_of_the_user() {
-        String userCpr = userAccount.getCpr();
+        String userCpr = userAccount.getCprNumber();
         String bankAccountCpr = bankAccount.getCprNumber();
         assertEquals(userCpr, bankAccountCpr);
     }
