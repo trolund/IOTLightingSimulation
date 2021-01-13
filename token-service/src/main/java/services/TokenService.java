@@ -23,6 +23,9 @@ public class TokenService implements ITokenService {
 
     @Override
     public void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
+        if (!customerExists(customerId)) {
+            registerCustomer(customerId);
+        }
         repo.get(customerId).addTokens(amount);
     }
 
@@ -49,5 +52,15 @@ public class TokenService implements ITokenService {
     @Override
     public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
         return repo.get(customerId);
+    }
+
+    @Override
+    public boolean customerExists(String customerId) {
+        try {
+            repo.get(customerId);
+        } catch (CustomerNotFoundException e) {
+            return true;
+        }
+        return false;
     }
 }

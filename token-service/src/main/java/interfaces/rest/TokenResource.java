@@ -21,24 +21,6 @@ public class TokenResource {
     @Inject
     ITokenService service;
 
-    @Tag(ref = "registerCustomer")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{customerId}")
-    public Response registerCustomer(@PathParam("customerId") String customerId) {
-        try {
-            service.registerCustomer(customerId);
-            return Response
-                    .status(Response.Status.OK)
-                    .build();
-        } catch (CustomerAlreadyRegisteredException e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
-        }
-    }
-
     @Tag(ref = "requestTokens")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -57,11 +39,11 @@ public class TokenResource {
         }
     }
 
-    @Tag(ref = "getTokens")
+    @Tag(ref = "getToken")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{customerId}")
-    public Response getTokens(@PathParam("customerId") String customerId) {
+    public Response getToken(@PathParam("customerId") String customerId) {
         try {
             Token token = service.getToken(customerId);
             return Response
@@ -76,11 +58,10 @@ public class TokenResource {
         }
     }
 
-    @Tag(ref = "invalidateToken")
-    @DELETE
+    @Tag(ref = "validateToken")
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response invalidateToken(@QueryParam("customerId") String customerId,
-                                    @QueryParam("tokenId") String tokenId) {
+    public Response invalidateToken(@QueryParam("tokenId") String tokenId) {
         try {
             service.invalidateToken(tokenId);
             return Response
@@ -91,6 +72,25 @@ public class TokenResource {
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
+        }
+    }
+
+    @Tag(ref = "deleteCustomer")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{customerId}")
+    public Response deleteCustomer(@PathParam("customerId") String customerId) {
+        try {
+            service.deleteCustomer(customerId);
+            return Response
+                    .status(Response.Status.OK)
+                    .build();
+        } catch (CustomerNotFoundException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+
         }
     }
 
