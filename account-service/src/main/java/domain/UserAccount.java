@@ -1,6 +1,7 @@
 package domain;
 
 import java.io.Serializable;
+import exceptions.EmptyNameException;
 
 public class UserAccount implements Serializable {
 
@@ -8,6 +9,7 @@ public class UserAccount implements Serializable {
     private String lastName;
     private String cpr;
     private String id;
+    private BankAccount bankAccount;
     private boolean disabled;
 
     public UserAccount() {
@@ -18,6 +20,7 @@ public class UserAccount implements Serializable {
         this.lastName = lastName;
         this.id = "";
         this.cpr = cpr;
+        this.bankAccount = bankAccount;
         this.disabled = false;
     }
 
@@ -53,12 +56,20 @@ public class UserAccount implements Serializable {
         this.cpr = cpr;
     }
 
+    public boolean getDisabled() {
+        return disabled;
+    }
+
     public void setDisabled(boolean bool) {
         this.disabled = bool;
     }
 
-    public boolean getDisabled() {
-        return disabled;
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
     }
 
 }
