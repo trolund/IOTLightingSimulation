@@ -35,7 +35,7 @@ public class validatingTokensSteps {
         }
     }
 
-    @io.cucumber.java.en.And("^a token is received$")
+    @And("^a token is received$")
     public void aTokenIsReceived() {
         try {
             foundCustomerId = es.getCustomerFromToken(tokens.get(0).getId()).getCustomerId();
@@ -44,13 +44,13 @@ public class validatingTokensSteps {
         }
     }
 
-    @io.cucumber.java.en.Then("^the token is invalidated$")
+    @Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
         Assertions.assertThrows(TokenNotFoundException.class, () -> {es.getCustomerFromToken(tokens.get(0).getId());});
         Assertions.assertNull(e);
     }
 
-    @io.cucumber.java.en.And("^the customer \"([^\"]*)\" is returned$")
+    @And("^the customer \"([^\"]*)\" is returned$")
     public void theCustomerIsReturned(String cid) {
         Assertions.assertEquals(cid, foundCustomerId);
     }
