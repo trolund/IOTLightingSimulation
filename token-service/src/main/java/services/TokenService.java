@@ -1,7 +1,8 @@
 package services;
 
-import domain.CustomerTokens;
+import domain.CustomerToken;
 import domain.Token;
+import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
@@ -16,13 +17,13 @@ public class TokenService implements ITokenService {
     CustomerTokensRepository repo = new CustomerTokensRepository();
 
     @Override
-    public void registerCustomer(String customerId) {
-        CustomerTokens customerTokens = new CustomerTokens(customerId);
-        repo.add(customerTokens);
+    public void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException {
+        CustomerToken customerToken = new CustomerToken(customerId);
+        repo.add(customerToken);
     }
 
     @Override
-    public void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
+    public void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException, CustomerAlreadyRegisteredException {
         if (!customerExists(customerId)) {
             registerCustomer(customerId);
         }
@@ -35,7 +36,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException {
+    public CustomerToken getCustomerFromToken(String tokenId) throws TokenNotFoundException {
         return repo.getCustomerWithTokenId(tokenId);
     }
 
@@ -50,7 +51,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
+    public CustomerToken getCustomer(String customerId) throws CustomerNotFoundException {
         return repo.get(customerId);
     }
 
@@ -59,8 +60,8 @@ public class TokenService implements ITokenService {
         try {
             repo.get(customerId);
         } catch (CustomerNotFoundException e) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }

@@ -1,6 +1,5 @@
 package interfaces.rest;
 
-import domain.CustomerTokens;
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
@@ -31,7 +30,7 @@ public class TokenResource {
             return Response
                     .status(Response.Status.OK)
                     .build();
-        } catch (CustomerNotFoundException | TooManyTokensException e) {
+        } catch (CustomerNotFoundException | TooManyTokensException | CustomerAlreadyRegisteredException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

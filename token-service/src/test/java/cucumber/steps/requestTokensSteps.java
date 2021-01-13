@@ -1,6 +1,7 @@
 package cucumber.steps;
 
 import domain.Token;
+import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 
 import io.cucumber.java.en.And;
@@ -19,7 +20,7 @@ public class requestTokensSteps {
     Token token;
 
     @Given("^the customer with id \"([^\"]*)\"$")
-    public void theCustomerWithId(String cid){
+    public void theCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
         customerId = "1234";
         es.registerCustomer(customerId);
     }
@@ -76,5 +77,14 @@ public class requestTokensSteps {
     public void theCustomerIsNotFound() {
         Assertions.assertNull(e);
         Assertions.assertThrows(CustomerNotFoundException.class, () -> es.getCustomer(customerId));
+    }
+
+    @When("another customer with id {string} is registered")
+    public void anotherCustomerWithIdIsRegistered(String cid) {
+        try {
+            es.registerCustomer(cid);
+        } catch (Exception e) {
+            this.e = e;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package cucumber.steps;
 
 import domain.Token;
+import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 
 import exceptions.TokenNotFoundException;
@@ -17,7 +18,7 @@ public class validatingTokensSteps {
     Exception e;
 
     @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid) {
+    public void aCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
         customerId = cid;
         ts.registerCustomer(cid);
     }
@@ -43,7 +44,7 @@ public class validatingTokensSteps {
 
     @Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
-        Assertions.assertThrows(TokenNotFoundException.class, () -> ts.getCustomerFromToken(token.getId()));
+        Assertions.assertThrows(TokenNotFoundException.class, () -> ts.invalidateToken(token.getId()));
         Assertions.assertNull(e);
     }
 

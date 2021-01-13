@@ -7,12 +7,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerTokens implements Serializable {
+public class CustomerToken implements Serializable {
 
     private final List<Token> tokens;
     private String customerId;
 
-    public CustomerTokens(String customerId) {
+    public CustomerToken(String customerId) {
         this.customerId = customerId;
         this.tokens = new ArrayList<>();
     }
@@ -55,9 +55,7 @@ public class CustomerTokens implements Serializable {
         return newTokens;
     }
 
-    public void invalidateToken(String tokenId) throws TokenNotFoundException {
-        if (!tokens.removeIf(obj -> obj.getId().equals(tokenId))) {
-            throw new TokenNotFoundException(tokenId);
-        }
+    public void invalidateToken(String tokenId) {
+        tokens.removeIf(obj -> obj.getId().equals(tokenId));
     }
 }
