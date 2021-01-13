@@ -48,16 +48,10 @@ public class TokenResource {
             return Response
                     .status(Response.Status.OK)
                     .build();
-        } catch (CustomerNotFoundException e) {
+        } catch (CustomerNotFoundException | TooManyTokensException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("Customer (" + customerId + ") not found!")
-                    .build();
-        } catch (TooManyTokensException e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity("Customer (" + customerId + ") can't request " + amount +
-                            " more tokens, as they will then have too many!")
+                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -76,7 +70,7 @@ public class TokenResource {
         } catch (CustomerNotFoundException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("Customer (" + customerId + ") not found!")
+                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -91,15 +85,10 @@ public class TokenResource {
             return Response
                     .status(Response.Status.OK)
                     .build();
-        } catch (CustomerNotFoundException e) {
+        } catch (CustomerNotFoundException | TokenNotFoundException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("Customer (" + customerId + ") not found!")
-                    .build();
-        } catch (TokenNotFoundException e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity("Customer (" + customerId + ") does not have any tokens to invalidate!")
+                    .entity(e.getMessage())
                     .build();
         }
     }
