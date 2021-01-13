@@ -42,12 +42,9 @@ try {
         } */
 
     }
-} catch (e) {
-    node {
-       stage ('Deployment failed!') {
-          echo e
-        }
-    }
+} catch (exc) {
+    echo 'Deployment failed!'
+    throw
 } finally {
     node {
         stage ('Deployment finished') {
