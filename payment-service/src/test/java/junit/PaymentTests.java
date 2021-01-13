@@ -1,16 +1,27 @@
 package junit;
 
+import dto.TransactionDTO;
+import infrastructure.bank.Transaction;
+import io.quarkus.test.junit.QuarkusTest;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import services.MapperService;
+
+import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExampleTests {
+@QuarkusTest
+public class PaymentTests {
 
-/*
-=======
-    //private IExampleService service;
+    @Inject
+    private MapperService mapper;
 
     @BeforeEach
     public void setUp() {
@@ -18,7 +29,6 @@ public class ExampleTests {
         System.out.println("Setting up...");
     }
 
->>>>>>> 26caa6c964516be53ecb7eae02590728162014d4
     @AfterEach
     public void tearDown() {
         // Put teardown code here if needed.
@@ -28,11 +38,12 @@ public class ExampleTests {
     @Test
     public void testHealth() {
         String expected = "I am healthy and ready to work!";
+        TransactionDTO dto = mapper.map(new Transaction(), TransactionDTO.class);
         //String actual = service.hello();
 
         // The third argument to assertEquals is a message displayed when the
         // test fails. This is useful to rapidly understand what the test expects.
-    //   assertEquals(expected, actual, "The two strings should be equal!");
+        assertEquals("", "", "The two strings should be equal!");
     }
 
     @Test
@@ -44,6 +55,5 @@ public class ExampleTests {
         // test fails. This is useful to rapidly understand what the test expects.
        // assertEquals(expected, actual, "The two strings should be equal!");
     }
-*/
 
 }
