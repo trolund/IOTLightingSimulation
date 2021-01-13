@@ -42,9 +42,6 @@ try {
         } */
 
     }
-} catch (exc) {
-    echo 'Deployment failed!'
-    throw
 } finally {
     node {
         stage ('Deployment finished') {
