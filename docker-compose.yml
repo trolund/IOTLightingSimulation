@@ -1,11 +1,52 @@
+# Author: Daniel (s151641)
+# Author: Troels (s161791)
+
 version: '3'
 
 services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   payment:
     image: payment:0.1
     container_name: payment
     build:
       context: .
       dockerfile: ./docker/Dockerfile.payment
+    ports:
+      - "8080:8080"
+  token:
+    image: token:0.1
+    container_name: token
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.token
+    ports:
+      - "8081:8080"
+  account:
+    image: account:0.1
+    container_name: account
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.account
+    ports:
+      - "8082:8080"
+  report:
+    image: report:0.1
+    container_name: report
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.report
+    ports:
+      - "8083:8080"
+  client:
+    image: client:0.1
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.client
     ports:
       - "8084:8080"
