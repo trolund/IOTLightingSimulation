@@ -1,5 +1,6 @@
 package domain;
 
+import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
 
 import java.io.Serializable;
@@ -39,12 +40,7 @@ public class CustomerTokens implements Serializable {
                         .equals(tokenId))
                 .findAny()
                 .orElse(null);
-        if (result == null) {
-            return false;
-        } else {
-            tokens.remove(result);
-            return true;
-        }
+        return result != null;
     }
 
     private String generateId() {
@@ -59,7 +55,9 @@ public class CustomerTokens implements Serializable {
         return newTokens;
     }
 
-    public void deleteToken(String tokenId) {
-        tokens.removeIf(obj -> obj.getId().equals(tokenId));
+    public void invalidateToken(String tokenId) throws TokenNotFoundException {
+        if (!tokens.removeIf(obj -> obj.getId().equals(tokenId))) {
+            throw new TokenNotFoundException(tokenId);
+        }
     }
 }

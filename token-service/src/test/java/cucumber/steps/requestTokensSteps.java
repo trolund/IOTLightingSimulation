@@ -16,7 +16,7 @@ public class requestTokensSteps {
     String customerId;
     TokenService es = new TokenService();
     Exception e;
-    List<Token> tokens;
+    Token token;
 
     @Given("^the customer with id \"([^\"]*)\"$")
     public void theCustomerWithId(String cid){
@@ -27,16 +27,16 @@ public class requestTokensSteps {
     @And("^the customer has (\\d+) tokens$")
     public void theCustomerHasTokens(int amount) {
         try {
-            tokens = es.requestTokens(customerId, amount);
+            es.requestTokens(customerId, amount);
         } catch (Exception e) {
-            this.e = e;
+            Assertions.fail(e.getMessage());
         }
     }
 
     @When("^the customer requests (\\d+) tokens$")
     public void theCustomerRequestsTokens(int amount) {
         try {
-            tokens = es.requestTokens(customerId, amount);
+            es.requestTokens(customerId, amount);
         } catch (Exception e) {
             this.e = e;
         }
@@ -46,8 +46,7 @@ public class requestTokensSteps {
     public void theCustomerOwnsTokens(int amount) {
         Assertions.assertNull(e);
         try {
-            Assertions.assertEquals(amount, es.getTokens(customerId).getTokens().size());
-            Assertions.assertEquals(tokens, es.getTokens(customerId).getTokens());
+            Assertions.assertEquals(amount, es.getCustomer(customerId).getTokens().size());
         } catch (CustomerNotFoundException e) {
             Assertions.fail(e.getMessage());
         }
@@ -76,6 +75,6 @@ public class requestTokensSteps {
     @Then("the customer is not found")
     public void theCustomerIsNotFound() {
         Assertions.assertNull(e);
-        Assertions.assertThrows(CustomerNotFoundException.class, () -> {es.getCustomer(customerId);});
+        Assertions.assertThrows(CustomerNotFoundException.class, () -> es.getCustomer(customerId));
     }
 }

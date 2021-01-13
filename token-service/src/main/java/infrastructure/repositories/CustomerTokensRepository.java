@@ -1,6 +1,7 @@
 package infrastructure.repositories;
 
 import domain.CustomerTokens;
+import domain.Token;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
@@ -54,12 +55,17 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void delete(String id) throws CustomerNotFoundException{
+    public void deleteCustomer(String id) throws CustomerNotFoundException{
         customerTokens.remove(get(id));
     }
 
     @Override
-    public void deleteToken(String customerId, String tokenId) throws TokenNotFoundException {
-        getCustomerWithTokenId(tokenId).deleteToken(tokenId);
+    public void invalidateTokenFromCustomer(String tokenId) throws TokenNotFoundException {
+        getCustomerWithTokenId(tokenId).invalidateToken(tokenId);
+    }
+
+    @Override
+    public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException {
+        return get(customerId).getTokens().get(0);
     }
 }

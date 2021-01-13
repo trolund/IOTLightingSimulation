@@ -1,6 +1,7 @@
 package interfaces.rest;
 
 import domain.CustomerTokens;
+import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
@@ -62,10 +63,10 @@ public class TokenResource {
     @Path("{customerId}")
     public Response getTokens(@PathParam("customerId") String customerId) {
         try {
-            CustomerTokens customerTokens = service.getTokens(customerId);
+            Token token = service.getToken(customerId);
             return Response
                     .status(Response.Status.OK)
-                    .entity(customerTokens)
+                    .entity(token)
                     .build();
         } catch (CustomerNotFoundException e) {
             return Response
@@ -81,7 +82,7 @@ public class TokenResource {
     public Response invalidateToken(@QueryParam("customerId") String customerId,
                                     @QueryParam("tokenId") String tokenId) {
         try {
-            service.invalidateToken(customerId, tokenId);
+            service.invalidateToken(tokenId);
             return Response
                     .status(Response.Status.OK)
                     .build();
