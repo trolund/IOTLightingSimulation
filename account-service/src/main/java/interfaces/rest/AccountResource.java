@@ -32,10 +32,10 @@ public class AccountResource {
         /* TODO: userAccount =  service.getUser(id);
          * using dummy user to pass compilation
          */
-          
+
         UserAccount userAccount = new UserAccount("Bjarne", "Ivertsen", "123456-7890");
         userAccount.setId("88");
-         
+
         try{
             return Response
                     .status(Response.Status.OK)
@@ -49,7 +49,7 @@ public class AccountResource {
                     .build();
         }
     }
-    
+
 
     @Tag(ref = "register a user")
     @POST
@@ -69,7 +69,7 @@ public class AccountResource {
                     .entity(e.getMessage())
                     .build();
         }
-                                 
+
     }
 
 
