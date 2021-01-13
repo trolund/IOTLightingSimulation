@@ -4,7 +4,7 @@ pipeline {
     stage('build') {
       steps {
         sh 'echo Building Token Service'
-        sh './token-service/mvnw package'
+        sh 'mvn package'
       }
     }
     stage('deploy') {
