@@ -9,7 +9,6 @@ import infrastructure.repositories.CustomerTokensRepository;
 import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.List;
 
 @ApplicationScoped
 public class TokenService implements ITokenService {
@@ -23,13 +22,13 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public List<Token> requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
-        return repo.get(customerId).addTokens(amount);
+    public void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
+        repo.get(customerId).addTokens(amount);
     }
 
     @Override
-    public CustomerTokens getTokens(String customerId) throws CustomerNotFoundException {
-        return repo.get(customerId);
+    public Token getToken(String customerId) throws CustomerNotFoundException {
+        return repo.getTokenFromCustomer(customerId);
     }
 
     @Override
@@ -38,13 +37,13 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public void invalidateToken(String customerId, String tokenId) throws CustomerNotFoundException, TokenNotFoundException {
-        repo.deleteToken(customerId, tokenId);
+    public void invalidateToken(String tokenId) throws TokenNotFoundException {
+        repo.invalidateTokenFromCustomer(tokenId);
     }
 
     @Override
     public void deleteCustomer(String customerId) throws CustomerNotFoundException {
-        repo.delete(customerId);
+        repo.deleteCustomer(customerId);
     }
 
     @Override
