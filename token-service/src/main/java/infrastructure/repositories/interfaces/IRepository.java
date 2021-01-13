@@ -1,10 +1,8 @@
 package infrastructure.repositories.interfaces;
 
-import java.util.List;
+import exceptions.CustomerNotFoundException;
 
-// Simple and basic repository that provides some CRUD functionality.
 public interface IRepository<T> {
     void add(T obj);
-    List<T> getAll();
-    void update(T obj);
+    void update(T obj) throws CustomerNotFoundException;
 }
