@@ -5,10 +5,10 @@ import com.dto.Token;
 
 public class MerchantApp {
 
-    CustomerApp ca = new CustomerApp();
+    CustomerApp customerApp = new CustomerApp();
 
-    public Token merchantRequestsToken(String cid){
-        return ca.CustomerRequestsToken(cid);
+    public Token merchantRequestCustomerToken(String customerId) {
+        return customerApp.getToken(customerId);
     }
 
 }

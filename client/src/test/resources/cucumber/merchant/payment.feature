@@ -1,14 +1,12 @@
 Feature: Payment
 
   Background:
-    Given a new customer with cpr "001122-XXXX", first name "Michael",
-    And last name "Hardy", a balance of 1000
+    Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
     Then when the customer is created
     Then the new customer exists in the system
     Then the customer requests 4 tokens
     Then the customer has 4 tokens available for use
-    Given a new merchant with cpr "221100-XXXX", first name "Elyse",
-    And last name "Williams", a balance of 1000
+    Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
     Then when the merchant is created
     Then the new merchant exists in the system
 
@@ -16,9 +14,10 @@ Feature: Payment
   Scenario Outline: Successful Payment
     When the merchant initiates a payment for <amount> by the customer
     Then the merchant asks for a token from the customer
+    And the payment is successful
     Then the customer should have a balance of <c_end_bal> left
     And the merchant should have a balance of <m_end_bal> left
-    And the latest transaction contain the amount <amount> for both accounts
+    Then the latest transaction contain the amount <amount> for both accounts
     And the latest transaction related to the customer contain balance <c_end_bal>
     And the latest transaction related to the merchant contain balance <m_end_bal>
 

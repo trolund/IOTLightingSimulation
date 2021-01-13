@@ -1,14 +1,18 @@
 package com.CustomerApp;
 
+import com.client.TokenServiceClient;
+import com.dto.Token;
+
 public class CustomerApp {
 
+    private final TokenServiceClient tokenService = new TokenServiceClient();
 
-/*
-    public Token CustomerRequestsToken(String cid){
-       return as.getToken(cid);
+    public Token getToken(String customerId) {
+        return tokenService.getToken(customerId);
     }
-*/
 
-
+    public boolean requestTokens(String customerId, int amount) {
+        return tokenService.requestTokens(customerId, amount);
+    }
 
 }
