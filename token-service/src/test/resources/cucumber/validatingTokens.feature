@@ -19,4 +19,4 @@ Feature: Validation of tokens
   Scenario: Customer tries to get while having no tokens
     Given a customer with id "1234"
     When the customer tries to receive a token
-    Then a "Customer (1234) has no tokens." exception is returned
+    Then a "Customer 1234 has no tokens." exception is returned
