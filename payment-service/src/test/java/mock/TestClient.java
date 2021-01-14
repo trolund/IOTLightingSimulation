@@ -1,4 +1,4 @@
-package cucumber.steps;
+package mock;
 
 import dto.TransactionDTO;
 import infrastructure.bank.*;
@@ -19,6 +19,10 @@ public final class TestClient {
         Client client = ClientBuilder.newClient();
         baseUrl = client.target("http://localhost:8080/api/v1/");
         bs = new BankServiceService().getBankServicePort();
+    }
+
+    public TestClient(boolean isLocalMode) {
+        bs = new MockBank();
     }
 
     public boolean createTransaction(String cId, String mId, Integer amount) {

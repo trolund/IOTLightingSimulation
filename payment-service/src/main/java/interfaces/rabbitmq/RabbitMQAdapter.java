@@ -35,6 +35,9 @@ public class RabbitMQAdapter {
     private final static String routingKeyRead = "payment.*";
     private final static String routingKeyWrite = "payment.service";
 
+    private final static String tokenServiceKeyRead = "token.service";
+    private final static String tokenServiceKeyWrite = "token.*";
+
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -47,6 +50,15 @@ public class RabbitMQAdapter {
 
         Gson gson = new Gson();
         MapperService mapper = new MapperService();
+
+        DeliverCallback tokenCallback = (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            String[] splitMessage = message.split(" ");
+            String messageType = splitMessage[0];
+
+
+
+        };
 
         DeliverCallback paymentsCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
@@ -100,6 +112,11 @@ public class RabbitMQAdapter {
 
         channel.basicConsume(queueNamePayments, true, paymentsCallback, consumerTag -> {
         });
+    }
+
+    public boolean validateToken(Channel channel) {
+        channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
+        return true;
     }
 
 }

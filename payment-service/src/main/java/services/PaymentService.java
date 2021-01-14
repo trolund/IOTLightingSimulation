@@ -35,9 +35,11 @@ public class PaymentService implements IPaymentService {
         this.mapper = mapper;
     }
 
-    public void createTransaction(String mId, String cId, int amount) throws CustomerException, MerchantException, TransactionException {
+    public void createTransaction(String mId, String cId, int amount, String token) throws CustomerException, MerchantException, TransactionException {
         Account merchant = null;
         Account customer = null;
+
+
 
         try {
             merchant = bs.getAccount(mId);
@@ -64,11 +66,11 @@ public class PaymentService implements IPaymentService {
         createTransaction(cid, mid, amount);
     }
 
-    public List<TransactionDTO> getTransactions(String id) throws AccountException {
+    public List<TransactionDTO> getTransactions(String accountId) throws AccountException {
         try {
-            return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
+            return mapper.mapList(bs.getAccount(accountId).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new AccountException("User (" + id + ") is not found!");
+            throw new AccountException("User (" + accountId + ") is not found!");
         }
     }
 

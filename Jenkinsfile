@@ -4,40 +4,82 @@
 try {
     node {
         stage ('Package All Applications') {
-            checkout scm
-            sh './mvn_package_all.sh'
+            script {
+                try {
+                    checkout scm
+                    sh './mvn_package_all.sh'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
 
         stage ('Build Docker Images') {
-            checkout scm
-            sh 'docker-compose build'
-            sh 'docker-compose up -d'
+            script {
+                try {
+                    checkout scm
+                    sh 'docker-compose build'
+                    sh 'docker-compose up -d'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
 
-/*         stage ('Payment Tests') {
-            checkout scm
-            sh 'mvn -f payment-service/pom.xml test'
+         /*stage ('Payment Tests') {
+            script {
+                try {
+                    checkout scm
+                    sh 'mvn -f payment-service/pom.xml test'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
 
         stage ('Account Tests') {
-            checkout scm
-            sh 'mvn -f account-service/pom.xml test'
+            script {
+                try {
+                    checkout scm
+                    sh 'mvn -f account-service/pom.xml test'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
 
         stage ('Token Tests') {
-            checkout scm
-            sh 'mvn -f token-service/pom.xml test'
+            script {
+                try {
+                    checkout scm
+                    sh 'mvn -f token-service/pom.xml test'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
 
         stage ('Report Tests') {
-            checkout scm
-            sh 'mvn -f report-service/pom.xml test'
+            script {
+                try {
+                    checkout scm
+                    sh 'mvn -f report-service/pom.xml test'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
         }
         
         stage ('Client Tests (end-to-end)') {
-            checkout scm
-            sh 'mvn -f client/pom.xml test'
-        } */
+            script {
+                try {
+                    checkout scm
+                    sh 'mvn -f client/pom.xml test'
+                } catch(error) {
+                    echo err.getMessage()
+                }
+            }
+        }*/
 
     }
 } finally {
