@@ -56,7 +56,7 @@ public class RabbitMQAdapter {
             if (messageType.equals("getUser")) {
                 String userId = splitMessage[1];
                 try {
-                    UserAccount userAccount = service.getUser(userId);
+                    UserAccount userAccount = service.getById(userId);
                     String json = gson.toJson(userAccount);
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
                 } catch (Exception e) {
@@ -64,7 +64,7 @@ public class RabbitMQAdapter {
                 }
             } else if (messageType.equals("getAllUsers")) {
                 try {
-                    List<UserAccount> users = service.getUsers();
+                    List<UserAccount> users = service.getAll();
                     String json = gson.toJson(users);
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
                 } catch (Exception e) {
@@ -73,16 +73,17 @@ public class RabbitMQAdapter {
             } else if (messageType.equals("getUserByCpr")) {
                 String userCprNumber = splitMessage[1];
                 try {
-                    UserAccount userAccount = service.getUserByCpr(userCprNumber);
+                    UserAccount userAccount = service.getByCpr(userCprNumber);
                     String json = gson.toJson(userAccount);
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
                 } catch (Exception e) {
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
                 }
             } else if (messageType.equals("registerUser")) {
-                UserAccount userAccount = splitMessage[1];
+                String payload = splitMessage[1];
+                UserAccount userAccount = gson.fromJson(payload, UserAccount.class);
                 try {
-                    service.createUser(userAccount);
+                    service.add(userAccount);
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, "RegisterUserSuccessful".getBytes(StandardCharsets.UTF_8));
                 } catch (Exception e) {
                     channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
