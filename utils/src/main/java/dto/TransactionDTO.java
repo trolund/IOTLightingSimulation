@@ -18,6 +18,7 @@ public class TransactionDTO implements Serializable {
     private String debtor;
     private String description;
     private XMLGregorianCalendar time;
+    private String token;
 
     public TransactionDTO() {
 
@@ -36,6 +37,14 @@ public class TransactionDTO implements Serializable {
         this.debtor = debtor;
         this.description = description;
         this.time = time;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public BigDecimal getAmount() {

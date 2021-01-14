@@ -42,8 +42,6 @@ public class PaymentService implements IPaymentService {
         Account merchant = null;
         Account customer = null;
 
-
-
         try {
 
             // checks if token i valid
@@ -60,7 +58,7 @@ public class PaymentService implements IPaymentService {
                     merchant.getId(),
                     customer.getId(),
                     BigDecimal.valueOf(amount),
-                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount);
+                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount + ", with token: " + token);
 
         } catch (Exception e) {
             if (merchant == null) {
