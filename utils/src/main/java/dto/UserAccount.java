@@ -1,4 +1,4 @@
-package domain;
+package dto;
 
 import java.io.Serializable;
 import exceptions.EmptyNameException;
