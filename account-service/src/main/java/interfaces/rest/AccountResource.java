@@ -23,7 +23,7 @@ public class AccountResource {
     @Inject
     IAccountService service;
 
-    @Tag(ref = "retrieve a single user by id")
+    @Tag(ref = "getUser")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
@@ -51,7 +51,7 @@ public class AccountResource {
     }
 
 
-    @Tag(ref = "register a user")
+    @Tag(ref = "registerUser")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(@QueryParam("firstName") String firstName,
@@ -73,7 +73,7 @@ public class AccountResource {
     }
 
 
-    @Tag(ref = "retrieve user by cpr number")
+    @Tag(ref = "getUserByCpr")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{cprNumber}")
@@ -96,7 +96,7 @@ public class AccountResource {
         }
     }
 
-    @Tag(ref = "retrieve all users")
+    @Tag(ref = "getAllUsers")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
