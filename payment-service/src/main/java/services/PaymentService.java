@@ -63,7 +63,7 @@ public class PaymentService implements IPaymentService {
     }
 
     public void refund(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
-        createTransaction(cid, mid, amount);
+        createTransaction(cid, mid, amount, "");
     }
 
     public List<TransactionDTO> getTransactions(String accountId) throws AccountException {

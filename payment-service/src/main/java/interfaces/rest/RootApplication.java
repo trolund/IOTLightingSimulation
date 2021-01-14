@@ -1,6 +1,8 @@
 package interfaces.rest;
 
 import interfaces.rabbitmq.RabbitMQAdapter;
+import interfaces.rabbitmq.RabbitMQAdapterFactory;
+import interfaces.rabbitmq.RabbitMQListener;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -29,9 +31,6 @@ public class RootApplication extends Application {
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
-    @Inject
-    RabbitMQAdapter rabbitMQAdapter;
-
     public RootApplication() {
         super();
     }
@@ -39,11 +38,11 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            rabbitMQAdapter.initConnection();
-            LOGGER.log(Level.INFO, "RabbitMQ initConnection() started successfully.");
+            RabbitMQAdapter adapter = new RabbitMQAdapterFactory().getAdapter();
+            LOGGER.log(Level.INFO, "RabbitMQ listening...");
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.log(Level.SEVERE, "RabbitMQ initConnection() failed: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "RabbitMQ failed to start: " + e.getMessage());
         }
     }
 
