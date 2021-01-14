@@ -39,9 +39,8 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Token invalidateToken(String tokenId) throws TokenNotFoundException {
-        repo.invalidateTokenFromCustomer(tokenId);
-        return null;
+    public Token validateToken(String tokenId) throws TokenNotFoundException, InvalidTokenException {
+        return repo.validateTokenFromCustomer(tokenId);
     }
 
     @Override

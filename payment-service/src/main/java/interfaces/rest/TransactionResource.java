@@ -12,31 +12,29 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Troels (s161791)
- * TransactionResource to define the REST interface of transactions.
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
  */
-
 @Tag(ref = "Transactions")
 @Path("/transactions")
 public class TransactionResource {
 
     @Inject
-    IPaymentService ps;
+    IPaymentService service;
 
     /**
      * Get all transactions for a account
-     * @param id - account GUID
-     * @Param amount - amount of money to be payed.
+     * @param accountId - account GUID
      */
     @Operation(summary = "Get all transactions for a account")
     @GET
-    @Path("{id}")
+    @Path("{accountId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTransactions(@PathParam("id") String id) {
+    public Response getTransactions(@PathParam("accountId") String accountId) {
         try {
             return Response
                     .ok()
-                    .entity(ps.getTransactions(id))
+                    .entity(service.getTransactions(accountId))
                     .build();
         } catch (Exception e){
             return Response
@@ -47,17 +45,17 @@ public class TransactionResource {
 
     /**
      * Get the latest transaction for a account
-     * @param id - account GUID
+     * @param accountId - account GUID
      */
     @Operation(summary = "Get the latest transaction for a account")
     @GET
-    @Path("{id}/latest")
+    @Path("{accountId}/latest")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLatestTransactions(@PathParam("id") String id) {
+    public Response getLatestTransactions(@PathParam("accountId") String accountId) {
         try {
             return Response
                     .status(Response.Status.OK)
-                    .entity(ps.getLatestTransaction(id))
+                    .entity(service.getLatestTransaction(accountId))
                     .build();
         } catch (Exception e){
             return Response

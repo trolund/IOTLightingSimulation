@@ -12,9 +12,6 @@ import java.util.List;
 @ApplicationScoped
 public class CustomerTokensRepository implements ICustomerTokensRepository {
 
-    // This class should probably be a singleton class (?)
-    // or maybe this does not matter because dependency injection?
-
     private final List<CustomerToken> customerTokens;
 
     public CustomerTokensRepository() {
@@ -24,7 +21,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     private void testToken() {
         // for testing
-        CustomerToken testct = new CustomerToken("c1TEST");
+        CustomerToken testct = new CustomerToken("0c4143e2-aed2-4cb8-bcb8-058ddd0a0929");
         testct.getTokens().add(new Token("42"));
         testct.getTokens().add(new Token("42"));
         testct.getTokens().add(new Token("42"));
@@ -76,8 +73,8 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void invalidateTokenFromCustomer(String tokenId) throws TokenNotFoundException {
-        getCustomerWithTokenId(tokenId).invalidateToken(tokenId);
+    public Token validateTokenFromCustomer(String tokenId) throws TokenNotFoundException, InvalidTokenException {
+        return getCustomerWithTokenId(tokenId).validateToken(tokenId);
     }
 
     @Override

@@ -29,11 +29,13 @@ public class RabbitMQTokenAdapterFactory {
         EventSender b = new RabbitMQTokenSender();
         tokenEventService = new TokenEventService(b);
         RabbitMQTokenListener r = new RabbitMQTokenListener(tokenEventService);
+
         try {
             r.listen();
         } catch (Exception e) {
             throw new Error(e);
         }
+
         return tokenEventService;
     }
 }
