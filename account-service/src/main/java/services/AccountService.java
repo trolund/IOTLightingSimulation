@@ -1,25 +1,39 @@
 package services;
 
-import domain.AccountObj;
-import dto.AccountObjDTO;
+import domain.UserAccount;
 import infrastructure.repositories.interfaces.IAccountRepository;
-import org.modelmapper.ModelMapper;
+import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;
+
+import org.modelmapper.ModelMapper;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-// All of the business logic concerning the
-// Account domain should be written here.
+import java.util.List;
+
 @ApplicationScoped
 public class AccountService implements IAccountService {
 
-    @Inject
-    IAccountRepository repo;
+    AccountRepository repo = new AccountRepository();
+    
+    @Override
+    public void add(UserAccount account) {
+        repo.add(account);
+    }
 
-    public AccountObjDTO readAccount() {
-        ModelMapper mapper = new ModelMapper();
-        AccountObj exampleDto = repo.readAccount();
-        return mapper.map(exampleDto, AccountObjDTO.class);
+    @Override
+    public UserAccount getById(String id) {
+        return repo.getById(id);
+    }
+
+    @Override
+    public UserAccount getByCpr(String cpr) {
+        return repo.getByCpr(cpr);
+    }
+
+    @Override
+    public List<UserAccount> getAll() {
+        return repo.getAll();
     }
 }

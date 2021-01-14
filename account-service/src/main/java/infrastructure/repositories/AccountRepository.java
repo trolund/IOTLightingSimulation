@@ -1,6 +1,6 @@
 package infrastructure.repositories;
 
-import domain.AccountObj;
+import domain.UserAccount;
 import infrastructure.repositories.interfaces.IAccountRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -9,54 +9,52 @@ import java.util.List;
 
 @ApplicationScoped
 public class AccountRepository implements IAccountRepository {
-
-    // This class should probably be a singleton class (?)
-    // or maybe this does not matter because dependency injection?
-
-    private final List<AccountObj> exampleObjs;
+    private final List<UserAccount> accounts;
 
     public AccountRepository() {
-        exampleObjs = new ArrayList<>();
+        accounts = new ArrayList<>();
     }
 
     @Override
-    public void add(AccountObj obj) {
-        exampleObjs.add(obj);
+    public void add(UserAccount account) {
+        accounts.add(account);
     }
 
     @Override
-    public AccountObj get(Integer id) {
-        AccountObj exampleObj = exampleObjs.stream()
-                .filter(obj -> obj.getId().equals(id))
-                .findAny()
-                .orElse(null);
+    public void add(String firstName, String lastName, String cprNumber) {
+        accounts.add(new UserAccount(firstName, lastName, cprNumber));
+    }
 
-        if (exampleObj == null) {
+    @Override
+    public UserAccount getById(String id) {
+        UserAccount account = accounts.stream()
+                                      .filter(a -> a.getId().equals(id))
+                                      .findAny()
+                                      .orElse(null);
+
+        if (account == null) {
             // throw exception if null
         }
 
-        return exampleObj;
+        return account;
     }
 
     @Override
-    public List<AccountObj> getAll() {
-        return exampleObjs;
+    public UserAccount getByCpr(String cpr) {
+        UserAccount account = accounts.stream()
+                                      .filter(a -> a.getCprNumber().equals(cpr))
+                                      .findAny()
+                                      .orElse(null);
+
+        if (account == null) {
+            // throw exception if null
+        }
+
+        return account;
     }
 
     @Override
-    public void update(AccountObj obj) {
-        delete(obj.getId());
-        add(obj);
+    public List<UserAccount> getAll() {
+        return accounts;
     }
-
-    @Override
-    public void delete(Integer id) {
-        exampleObjs.remove(get(id));
-    }
-
-    @Override
-    public AccountObj readAccount() {
-        return new AccountObj(101, "Account obj");
-    }
-
 }

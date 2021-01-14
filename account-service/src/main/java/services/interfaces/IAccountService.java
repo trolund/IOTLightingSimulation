@@ -6,7 +6,11 @@ import exceptions.EmptyCprException;
 import exceptions.EmptyNameException;
 import exceptions.MissingIdException;
 
+import java.util.List;
+
 public interface IAccountService {
-//    void createUser(String firstName, String lastName, String cpr) throws DuplicateException, EmptyCprException, EmptyNameException;
-//    void disableAccount(String id) throws MissingIdException;
+    void add(UserAccount account);
+    UserAccount getById(String id);
+    UserAccount getByCpr(String cpr);
+    List<UserAccount> getAll();
 }

@@ -6,5 +6,5 @@ import java.util.List;
 public interface IRepository<T> {
     void add(T obj);
     List<T> getAll();
-    void update(T obj);
+    //void update(T obj);
 }
