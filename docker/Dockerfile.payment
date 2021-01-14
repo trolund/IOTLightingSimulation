@@ -12,4 +12,4 @@ COPY ./payment-service/target/lib /usr/src/lib
 EXPOSE 8080
 
 CMD java -Xmx64m \
-      -jar payment-service-1.0.0-runner.jar
+      -jar payment-service-1.0.0-runner.jar > payment-log.txt
