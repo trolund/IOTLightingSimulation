@@ -3,6 +3,8 @@ package interfaces.rest;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IAccountService;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import domain.UserAccount;
@@ -19,7 +22,6 @@ import exceptions.*;
 @Tag(ref = "AccountResource")
 @Path("/users")
 public class AccountResource {
-
     @Inject
     IAccountService service;
 
@@ -28,71 +30,46 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public Response getUser(@PathParam("id") String id) {
-
-        /* TODO: userAccount =  service.getUser(id);
-         * using dummy user to pass compilation
-         */
-
-        UserAccount userAccount = new UserAccount("Bjarne", "Ivertsen", "123456-7890");
-        userAccount.setId("88");
-
-        try{
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(userAccount)
-                    .build();
+        try {
+            UserAccount user = service.getById(id);
+            return Response.ok().entity(user).build();
         // TODO: add correct exception
         } catch (Exception e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
         }
     }
-
 
     @Tag(ref = "registerUser")
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerUser(@QueryParam("firstName") String firstName,
-                                 @QueryParam("lastName") String lastName,
-                                 @QueryParam("cprNumber") String cprNumber) {
+    public Response registerUser(UserAccount user) {
         try {
-            // TODO: service.createUser(firstName, lastName, cprNumber);
-            return Response
-                    .ok()
-                    .build();
-        // TODO: add correct exception
+            service.add(user);
+            return Response.ok().build();
         } catch (Exception e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            // TODO: add correct exception
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
         }
-
     }
-
 
     @Tag(ref = "getUserByCpr")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{cprNumber}")
-    public Response getUserByCpr(@QueryParam("cprNumber") String cprNumber) {
-        // dummy account to pass compilation
-        UserAccount userAccount = new UserAccount("Dummy", "Account", cprNumber);
-
+    @Path("/by-cpr/{cprNumber}")
+    public Response getUserByCpr(@PathParam("cprNumber") String cprNumber) {
         try {
-            // TODO: service.getUserByCpr(cprNumber);
-            return Response
-                    .ok()
-                    .entity(userAccount)
-                    .build();
-            // add correct exception
+            UserAccount user = service.getByCpr(cprNumber);
+            return Response.ok().entity(user).build();
         } catch (Exception e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            // TODO: throw correct exception
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
         }
     }
 
@@ -101,15 +78,13 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
         try {
-            // TODO: service.getUsers();
-            return Response
-                    .ok()
-                    .build();
+            List<UserAccount> accounts = service.getAll();
+            return Response.ok().entity(accounts).build();
         } catch (Exception e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            // TODO correct exception
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
         }
     }
 }

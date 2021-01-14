@@ -32,5 +32,4 @@ public class RootApplication extends Application {
     void onStop(@Observes ShutdownEvent ev) {
         LOGGER.info("The application is stopping...");
     }
-
 }
