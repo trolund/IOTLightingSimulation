@@ -13,7 +13,7 @@ public class RabbitMQSender implements EventSender {
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "report.service";
+    private static final String TOPIC = "token.service";
 
     private EventReceiver service;
     private Channel channel;

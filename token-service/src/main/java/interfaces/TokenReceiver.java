@@ -5,13 +5,13 @@ import exceptions.TokenNotFoundException;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
+import services.TokenService;
 import services.interfaces.ITokenService;
 
 import javax.inject.Inject;
 
 public class TokenReceiver implements EventReceiver {
-    @Inject
-    ITokenService rs;
+    ITokenService rs = new TokenService();
 
     EventSender eventSender;
 

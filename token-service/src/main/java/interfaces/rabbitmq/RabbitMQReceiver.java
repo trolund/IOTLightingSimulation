@@ -9,14 +9,17 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import io.cucumber.java.an.E;
 import messaging.Event;
 import messaging.EventReceiver;
 
+import java.util.Arrays;
+
 public class RabbitMQReceiver {
 
-    private static final String EXCHANGE_NAME = "eventsExchange";
+    private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "report.*";
+    private static final String TOPIC = "token.*";
 
     EventReceiver service;
 
