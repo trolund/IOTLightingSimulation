@@ -57,7 +57,7 @@ public class validatingTokensSteps {
 
     @Then("a TokenNotFound exception is returned")
     public void aTokenNotFoundExceptionIsReturned() {
-        Assertions.assertEquals("Token (" + token.getId() + ") can not be found.", e.getMessage());
+        Assertions.assertEquals("Token " + token.getId() + " can not be found.", e.getMessage());
     }
 
     @And("the token is deleted")

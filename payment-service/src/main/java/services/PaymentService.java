@@ -2,6 +2,7 @@ package services;
 
 import dto.TransactionDTO;
 import exceptions.AccountException;
+import exceptions.TokenNotValidException;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
@@ -10,6 +11,8 @@ import exceptions.merchant.MerchantNotFoundException;
 import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
+import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
+import messaging.Event;
 import services.interfaces.IPaymentService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,9 +42,15 @@ public class PaymentService implements IPaymentService {
         Account merchant = null;
         Account customer = null;
 
-
-
         try {
+
+            // checks if token i valid
+            TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
+            if (!service.validateToken(token)){
+                throw new TokenNotValidException("The token: " + token + " is not valid" );
+            }
+
+            // TODO get with aacount service
             merchant = bs.getAccount(mId);
             customer = bs.getAccount(cId);
 
@@ -49,7 +58,7 @@ public class PaymentService implements IPaymentService {
                     merchant.getId(),
                     customer.getId(),
                     BigDecimal.valueOf(amount),
-                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount);
+                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount + ", with token: " + token);
 
         } catch (Exception e) {
             if (merchant == null) {
