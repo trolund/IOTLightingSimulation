@@ -1,25 +1,26 @@
 package interfaces.rabbitmq;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import interfaces.ReportReceiver;
+
 import messaging.Event;
 import messaging.EventReceiver;
-import messaging.EventSender;
 
-public class RabbitMqListener {
+public class RabbitMQReceiver {
 
-	private static final String EXCHANGE_NAME = "message-hub";
+	private static final String EXCHANGE_NAME = "eventsExchange";
 	private static final String QUEUE_TYPE = "topic";
 	private static final String TOPIC = "report.*";
 
-	EventSender service;
-	private static Channel channel;
+	EventReceiver service;
 
-	public RabbitMqListener(ReportReceiver service) {
+	public RabbitMQReceiver(EventReceiver service) {
 		this.service = service;
 	}
 
@@ -27,7 +28,7 @@ public class RabbitMqListener {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("rabbitMq");
 		Connection connection = factory.newConnection();
-		channel = connection.createChannel();
+		Channel channel = connection.createChannel();
 		channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
 		String queueName = channel.queueDeclare().getQueue();
 		channel.queueBind(queueName, EXCHANGE_NAME, TOPIC);

@@ -17,12 +17,6 @@ public class ExampleTests {
 
     @BeforeEach
     public void setUp() {
-        rs = new ReportService(new EventSender() {
-            @Override
-            public void sendEvent(Event ev) throws Exception {
-                event = ev;
-            }
-        });
         System.out.println("Setting up...");
     }
 
