@@ -35,9 +35,10 @@ public class PaymentResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response pay(@QueryParam("cid") String cid,
                         @QueryParam("mid") String mid,
-                        @QueryParam("amount") int amount) {
+                        @QueryParam("amount") int amount,
+                        @QueryParam("token") String token) {
         try{
-            ps.createTransaction(cid, mid, amount);
+            ps.createTransaction(cid, mid, amount, token);
             return Response
                     .ok()
                     .build();

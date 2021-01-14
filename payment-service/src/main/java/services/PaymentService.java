@@ -35,9 +35,11 @@ public class PaymentService implements IPaymentService {
         this.mapper = mapper;
     }
 
-    public void createTransaction(String mId, String cId, int amount) throws CustomerException, MerchantException, TransactionException {
+    public void createTransaction(String mId, String cId, int amount, String token) throws CustomerException, MerchantException, TransactionException {
         Account merchant = null;
         Account customer = null;
+
+
 
         try {
             merchant = bs.getAccount(mId);
