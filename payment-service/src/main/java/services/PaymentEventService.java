@@ -8,6 +8,8 @@ import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 import services.interfaces.IPaymentService;
+
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,12 +18,15 @@ import java.util.stream.Collectors;
 
 public class PaymentEventService implements EventReceiver {
 
+    /*
+     * This DI is NOT working..
+     */
+    @Inject
+    IPaymentService ps;
+
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
     private final EventSender eventSender;
-
-    @Inject
-    IPaymentService ps;
 
     public PaymentEventService(EventSender eventSender) {
         this.eventSender = eventSender;
@@ -29,51 +34,69 @@ public class PaymentEventService implements EventReceiver {
 
     @Override
     public void receiveEvent(Event event) {
+        switch (event.getEventType()) {
+            case "getLatestTransaction":
+                getLatestTransaction(event);
+                break;
+            case "getTransactions":
+                getTransactions(event);
+                break;
+            default:
+                LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
+                break;
+        }
+    }
+
+    private void getLatestTransaction(Event event) {
+        Object[] arguments;
         Event eventToSend;
-        Object[] arguments = null;
 
-        String accountId;
+        String accountId = (String) event.getArguments()[0];
+
         try {
-            switch (event.getEventType()) {
-                case "getLatestTransaction":
-                     accountId = (String) event.getArguments()[0];
-                     try {
-                         arguments = new Object[]{ps.getLatestTransaction(accountId)};
-                         eventToSend = new Event("getLatestTransactionSuccessful", arguments);
-                     }catch (Exception e){
-                         e.printStackTrace();
-                         eventToSend = new Event("getLatestTransactionFailed");
-                     }
-                    eventSender.sendEvent(eventToSend);
-                    break;
-                case "getTransactions":
-                     accountId = (String) event.getArguments()[0];
+            arguments = new Object[]{ps.getLatestTransaction(accountId)};
+            eventToSend = new Event("getLatestTransactionSuccessful", arguments);
+        } catch (Exception e) {
+            e.printStackTrace();
+            eventToSend = new Event("getLatestTransactionFailed");
+        }
 
-                    List<TransactionDTO> dtosMapped = null;
-                    try {
-                        dtosMapped = ps.getTransactions(accountId).stream().map(t -> {
+        try {
+            eventSender.sendEvent(eventToSend);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Event send failed: " + e.getMessage());
+        }
+    }
 
-                            String[] tokenarray = t.getDescription().split(" ");
-                            String token = tokenarray[tokenarray.length - 1];
+    private void getTransactions(Event event) {
+        Object[] arguments;
+        Event eventToSend;
 
-                            t.setToken(token);
+        String accountId = (String) event.getArguments()[0];
 
-                            return t;
-                        }).collect(Collectors.toList());
-                        arguments = new Object[]{dtosMapped};
-                        eventToSend = new Event("getAllTransactionsSuccessful", arguments);
-                    } catch (CustomerException | AccountException e) {
-                        e.printStackTrace();
-                        eventToSend = new Event("getAllTransactionsFailed");
-                    }
+        try {
+            List<TransactionDTO> dtos = ps.getTransactions(accountId);
 
-                    eventSender.sendEvent(eventToSend);
-                    break;
-                default:
-                    LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
-                    break;
-            }
-        }catch (Exception e){
+            List<TransactionDTO> dtosMapped = dtos.stream().peek(t -> {
+
+                String[] tokenarray = t.getDescription().split(" ");
+                String token = tokenarray[tokenarray.length - 1];
+
+                t.setToken(token);
+
+            }).collect(Collectors.toList());
+            arguments = new Object[]{dtosMapped};
+            eventToSend = new Event("getAllTransactionsSuccessful", arguments);
+        } catch (AccountException | CustomerException e) {
+            e.printStackTrace();
+            eventToSend = new Event("getAllTransactionsFailed");
+        }
+
+        try {
+            eventSender.sendEvent(eventToSend);
+        } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.log(Level.WARNING, "Event send failed: " + e.getMessage());
         }
     }
