@@ -1,4 +1,4 @@
-package interfaces.rabbitmq;
+package interfaces.rabbitmq.token;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -11,13 +11,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RabbitMQSender implements EventSender {
+public class RabbitMQTokenSender implements EventSender {
 
-    private final static Logger LOGGER = Logger.getLogger(RabbitMQSender.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(RabbitMQTokenSender.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "payment.service";
+    private static final String TOPIC = "token.service";
 
     @Override
     public void sendEvent(Event event) throws Exception {

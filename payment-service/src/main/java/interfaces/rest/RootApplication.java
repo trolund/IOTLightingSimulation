@@ -1,15 +1,13 @@
 package interfaces.rest;
 
-import interfaces.rabbitmq.RabbitMQAdapter;
-import interfaces.rabbitmq.RabbitMQAdapterFactory;
-import interfaces.rabbitmq.RabbitMQListener;
+import services.PaymentEventService;
+import interfaces.rabbitmq.payment.RabbitMQPaymentAdapterFactory;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.logging.Level;
@@ -38,7 +36,7 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            RabbitMQAdapter adapter = new RabbitMQAdapterFactory().getAdapter();
+            PaymentEventService adapter = new RabbitMQPaymentAdapterFactory().getAdapter();
             LOGGER.log(Level.INFO, "RabbitMQ listening...");
         } catch (Exception e) {
             e.printStackTrace();
