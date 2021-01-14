@@ -64,11 +64,11 @@ public class PaymentService implements IPaymentService {
         createTransaction(cid, mid, amount);
     }
 
-    public List<TransactionDTO> getTransactions(String id) throws AccountException {
+    public List<TransactionDTO> getTransactions(String accountId) throws AccountException {
         try {
-            return mapper.mapList(bs.getAccount(id).getTransactions(), TransactionDTO.class);
+            return mapper.mapList(bs.getAccount(accountId).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new AccountException("User (" + id + ") is not found!");
+            throw new AccountException("User (" + accountId + ") is not found!");
         }
     }
 
