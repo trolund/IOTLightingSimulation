@@ -2,10 +2,7 @@ package infrastructure.repositories;
 
 import domain.CustomerToken;
 import domain.Token;
-import exceptions.CustomerAlreadyRegisteredException;
-import exceptions.CustomerHasNoTokensException;
-import exceptions.CustomerNotFoundException;
-import exceptions.TokenNotFoundException;
+import exceptions.*;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,6 +19,18 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     public CustomerTokensRepository() {
         customerTokens = new ArrayList<>();
+        testToken();
+    }
+
+    private void testToken() {
+        // for testing
+        CustomerToken testct = new CustomerToken("c1TEST");
+        testct.getTokens().add(new Token("42"));
+        testct.getTokens().add(new Token("42"));
+        testct.getTokens().add(new Token("42"));
+        testct.getTokens().add(new Token("42"));
+        testct.getTokens().add(new Token("42"));
+        customerTokens.add(testct);
     }
 
     @Override

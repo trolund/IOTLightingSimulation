@@ -2,7 +2,10 @@ package interfaces.rabbitmq.token;
 
 import messaging.EventSender;
 import services.TokenEventService;
-
+/**
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
+ */
 public class RabbitMQTokenAdapterFactory {
 
     static TokenEventService tokenEventService = null;

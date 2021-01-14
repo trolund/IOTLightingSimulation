@@ -20,7 +20,7 @@ public class RabbitMQSender implements EventSender {
 
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbitMq");
+        factory.setHost("localhost");
         Connection connection = factory.newConnection();
         channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);

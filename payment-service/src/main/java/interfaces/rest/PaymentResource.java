@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
  */
 
 @Tag(ref = "Payment")

@@ -2,34 +2,33 @@ package services;
 
 import dto.TransactionDTO;
 import exceptions.AccountException;
-import exceptions.customer.CustomerException;
 import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
-import services.interfaces.IPaymentService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ *
+ * Payment microservice REST resource.
+ */
 public class PaymentEventService implements EventReceiver {
 
-    /*
-     * This DI is NOT working..
-     */
-    @Inject
-    IPaymentService ps;
+    PaymentService ps;
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
     private final EventSender eventSender;
 
-    public PaymentEventService(EventSender eventSender) {
+    public PaymentEventService(EventSender eventSender, PaymentService ps) {
         this.eventSender = eventSender;
+        this.ps = ps;
     }
 
     @Override
@@ -88,7 +87,7 @@ public class PaymentEventService implements EventReceiver {
             }).collect(Collectors.toList());
             arguments = new Object[]{dtosMapped};
             eventToSend = new Event("getAllTransactionsSuccessful", arguments);
-        } catch (AccountException | CustomerException e) {
+        } catch (AccountException e) {
             e.printStackTrace();
             eventToSend = new Event("getAllTransactionsFailed");
         }
