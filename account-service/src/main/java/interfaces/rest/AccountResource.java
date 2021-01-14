@@ -25,7 +25,7 @@ public class AccountResource {
     @Inject
     IAccountService service;
 
-    @Tag(ref = "getUser")
+    @Tag(ref = "getUserById")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
