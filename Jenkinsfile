@@ -26,7 +26,7 @@ try {
             }
         }
 
-         stage ('Payment Tests') {
+         /*stage ('Payment Tests') {
             script {
                 try {
                     checkout scm
@@ -79,7 +79,7 @@ try {
                     echo err.getMessage()
                 }
             }
-        }
+        }*/
 
     }
 } finally {
