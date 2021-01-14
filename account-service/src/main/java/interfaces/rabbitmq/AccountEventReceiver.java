@@ -10,7 +10,7 @@ import services.interfaces.IAccountService;
 import javax.inject.Inject;
 import java.util.List;
 
-// authors: group effort
+// authors: help from group
 public class AccountEventReceiver implements EventReceiver {
 
     private final EventSender eventSender;
@@ -24,6 +24,8 @@ public class AccountEventReceiver implements EventReceiver {
 
     @Override
     public void receiveEvent(Event in) throws Exception {
+
+        // TODO: add correct exceptions
 
         switch (in.getEventType()) {
             case "getAllUsers":
