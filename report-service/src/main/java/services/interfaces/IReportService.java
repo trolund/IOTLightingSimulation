@@ -2,12 +2,11 @@ package services.interfaces;
 
 import dto.ExampleObjDTO;
 import dto.TransactionDTO;
-import messaging.EventSender;
+import messaging.Event;
 
 public interface IReportService {
     String hello();
     ExampleObjDTO readExample();
-    void requestAllTransactions(EventSender eventSender) throws Exception;
-
+    Event requestAllTransactions() throws Exception;
     TransactionDTO[] displayAllTransactions(TransactionDTO[] transactions);
 }

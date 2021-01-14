@@ -9,6 +9,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
 import messaging.EventSender;
+import org.junit.jupiter.api.Assertions;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -53,11 +54,12 @@ public class AdminSteps {
         Object[] output = new Object[1];
         output[0] = inputTransactions;
         rr.receiveEvent(new Event("requestAllTransactions", output));
+
     }
 
     @Then("the list of transactions is shown")
     public void theListOfTransactionsIsShown() {
-        throw new PendingException();
+        Assertions.assertEquals(inputTransactions, event.getArguments()[0]);
     }
 
     @When("a request for summary is made")

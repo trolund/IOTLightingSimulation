@@ -7,7 +7,6 @@ import messaging.EventSender;
 import services.interfaces.IReportService;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class ReportReceiver implements EventReceiver {
     @Inject
@@ -24,7 +23,8 @@ public class ReportReceiver implements EventReceiver {
     public void receiveEvent(Event event) throws Exception {
         System.out.println("handling event: "+event);
         if (event.getEventType().equals("requestAllTransactions")) {
-            rs.requestAllTransactions(eventSender);
+            Event ev = rs.requestAllTransactions();
+            eventSender.sendEvent(ev);
         } else if (event.getEventType().equals("RequestAllTransactionsReply")) {
             TransactionDTO[] transactions = rs.displayAllTransactions((TransactionDTO[]) event.getArguments()[0]);
             Object[] output = new Object[1];
