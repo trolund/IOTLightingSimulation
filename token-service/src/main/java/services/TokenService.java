@@ -20,11 +20,12 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public void requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException, CustomerAlreadyRegisteredException {
+    public String requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException, CustomerAlreadyRegisteredException {
         if (!customerExists(customerId)) {
             registerCustomer(customerId);
         }
         repo.get(customerId).addTokens(amount);
+        return customerId;
     }
 
     @Override
@@ -38,13 +39,15 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public void invalidateToken(String tokenId) throws TokenNotFoundException {
+    public Token invalidateToken(String tokenId) throws TokenNotFoundException {
         repo.invalidateTokenFromCustomer(tokenId);
+        return null;
     }
 
     @Override
-    public void deleteCustomer(String customerId) throws CustomerNotFoundException {
+    public String deleteCustomer(String customerId) throws CustomerNotFoundException {
         repo.deleteCustomer(customerId);
+        return customerId;
     }
 
     @Override

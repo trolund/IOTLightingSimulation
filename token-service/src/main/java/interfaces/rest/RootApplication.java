@@ -1,6 +1,8 @@
 package interfaces.rest;
 
-import interfaces.rabbitmq.RabbitMQAdapter;
+import interfaces.ReportReceiver;
+import interfaces.rabbitmq.RabbitMQReceiver;
+import interfaces.rabbitmq.RabbitMQSender;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -22,6 +24,7 @@ import java.util.logging.Logger;
 public class RootApplication extends Application {
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
+    private RabbitMQReceiver receiver = new RabbitMQReceiver(new ReportReceiver(new RabbitMQSender()));
 
     public RootApplication() {
         super();
@@ -30,7 +33,11 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            RabbitMQAdapter.initConnection();
+            RabbitMQSender sender = new RabbitMQSender();
+            sender.initConnection();
+            ReportReceiver reportReceiver = new ReportReceiver(sender);
+            RabbitMQReceiver receiver = new RabbitMQReceiver(reportReceiver);
+            receiver.initConnection();
             LOGGER.log(Level.INFO, "RabbitMQ initConnection() started successfully.");
         } catch (Exception e) {
             e.printStackTrace();
