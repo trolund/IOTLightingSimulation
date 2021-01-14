@@ -9,13 +9,13 @@ import services.interfaces.ITokenService;
 
 import javax.inject.Inject;
 
-public class ReportReceiver implements EventReceiver {
+public class TokenReceiver implements EventReceiver {
     @Inject
     ITokenService rs;
 
     EventSender eventSender;
 
-    public ReportReceiver(EventSender eventSender) {
+    public TokenReceiver(EventSender eventSender) {
         this.eventSender = eventSender;
     }
 
@@ -33,7 +33,7 @@ public class ReportReceiver implements EventReceiver {
         if (event.getEventType().equals("getToken")) {
             try {
                 Token token = rs.getToken((String) event.getArguments()[0]);
-                eventSender.sendEvent(new Event("GetTokenSuccessful", new Object[]{token.getId()}));
+                eventSender.sendEvent(new Event("GetTokenSuccessful", new Object[]{token.getId(), event.getArguments()[0]}));
             } catch (Exception e) {
                 eventSender.sendEvent(new Event("GetTokenFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
