@@ -12,7 +12,6 @@ import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
 import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
-import messaging.Event;
 import services.interfaces.IPaymentService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,7 +21,7 @@ import java.util.List;
 
 /**
  * @primary-author Troels (s161791)
- * @co-author Daniel (s15641)
+ * @co-author Daniel (s151641)
  *
  * Payment microservice REST resource.
  */
@@ -44,13 +43,13 @@ public class PaymentService implements IPaymentService {
 
         try {
 
-            // checks if token i valid
+            // Checks if a token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
             if (!service.validateToken(token)){
                 throw new TokenNotValidException("The token: " + token + " is not valid" );
             }
 
-            // TODO get with aacount service
+            // TODO get with account service
             merchant = bs.getAccount(mId);
             customer = bs.getAccount(cId);
 
