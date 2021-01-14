@@ -1,122 +1,47 @@
 package interfaces.rabbitmq;
 
-import com.google.gson.Gson;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
 import dto.TransactionDTO;
-import exceptions.AccountException;
-import exceptions.TransactionException;
-import exceptions.customer.CustomerException;
-import exceptions.merchant.MerchantException;
-import infrastructure.bank.Transaction;
 import interfaces.rest.RootApplication;
-import services.MapperService;
-import services.interfaces.IPaymentService;
+import messaging.Event;
+import messaging.EventReceiver;
+import messaging.EventSender;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@ApplicationScoped
-public class RabbitMQAdapter {
+public class RabbitMQAdapter implements EventReceiver {
 
-    private static final String EXCHANGE_NAME = "message-hub";
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
-    @Inject
-    IPaymentService service;
+    private final EventSender eventSender;
 
-    private final static String routingKeyRead = "payment.*";
-    private final static String routingKeyWrite = "payment.service";
-
-    private final static String tokenServiceKeyRead = "token.service";
-    private final static String tokenServiceKeyWrite = "token.*";
-
-    public void initConnection() throws Exception {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
-
-        channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-        String queueNamePayments = channel.queueDeclare().getQueue();
-        channel.queueBind(queueNamePayments, EXCHANGE_NAME, routingKeyRead);
-
-        Gson gson = new Gson();
-        MapperService mapper = new MapperService();
-
-        DeliverCallback tokenCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            String[] splitMessage = message.split(" ");
-            String messageType = splitMessage[0];
-
-
-
-        };
-
-        DeliverCallback paymentsCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            String[] splitMessage = message.split(" ");
-            String messageType = splitMessage[0];
-
-            LOGGER.log(Level.INFO, "RABBITMQ: Message type: " + messageType);
-            LOGGER.log(Level.INFO, "RABBITMQ: Raw message: " + message);
-
-            if (messageType.equals("payment")) {
-                String payload = splitMessage[1];
-                TransactionDTO dto = gson.fromJson(payload, TransactionDTO.class);
-                try {
-                    service.createTransaction(dto.getCreditor(), dto.getDebtor(), dto.getAmount().intValue());
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, "PaymentSuccessful".getBytes(StandardCharsets.UTF_8));
-                } catch (TransactionException | MerchantException | CustomerException e) {
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
-                }
-            } else if (messageType.equals("refund")) {
-                String payload = splitMessage[1];
-                TransactionDTO dto = gson.fromJson(payload, TransactionDTO.class);
-                try {
-                    service.refund(dto.getCreditor(), dto.getDebtor(), dto.getAmount().intValue());
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, "RefundSuccessful".getBytes(StandardCharsets.UTF_8));
-                } catch (TransactionException | MerchantException | CustomerException e) {
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
-                }
-            } else if (messageType.equals("getLatestTransaction")) {
-                String userId = splitMessage[1];
-                try {
-                    Transaction transaction = service.getLatestTransaction(userId);
-                    TransactionDTO dto = mapper.map(transaction, TransactionDTO.class);
-                    String json = gson.toJson(dto);
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
-                } catch (CustomerException | AccountException e) {
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
-                }
-            } else if (messageType.equals("getTransactions")) {
-                String userId = splitMessage[1];
-                try {
-                    List<TransactionDTO> transactions = service.getTransactions(userId);
-                    String json = gson.toJson(transactions);
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
-                } catch (CustomerException | AccountException e) {
-                    channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, e.getMessage().getBytes(StandardCharsets.UTF_8));
-                }
-            } else {
-                LOGGER.log(Level.INFO, "RABBITMQ: Message was ignored.");
-            }
-        };
-
-        channel.basicConsume(queueNamePayments, true, paymentsCallback, consumerTag -> {
-        });
+    public RabbitMQAdapter(EventSender eventSender) {
+        this.eventSender = eventSender;
     }
 
-    public boolean validateToken(Channel channel) {
-        channel.basicPublish(EXCHANGE_NAME, routingKeyWrite, null, json.getBytes(StandardCharsets.UTF_8));
-        return true;
+    @Override
+    public void receiveEvent(Event event) throws Exception {
+        Event eventToSend;
+        Object[] arguments;
+
+        switch (event.getEventType()) {
+            case "getLatestTransaction":
+                TransactionDTO dto = (TransactionDTO) event.getArguments()[0];
+                arguments = new Object[]{dto};
+                eventToSend = new Event("getLatestTransaction", arguments);
+                eventSender.sendEvent(eventToSend);
+                break;
+            case "getTransactions":
+                List<TransactionDTO> dtos = (List<TransactionDTO>) event.getArguments()[0];
+                arguments = new Object[]{dtos};
+                eventToSend = new Event("getAllTransactions", arguments);
+                eventSender.sendEvent(eventToSend);
+                break;
+            default:
+                LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
+                break;
+        }
     }
 
 }
