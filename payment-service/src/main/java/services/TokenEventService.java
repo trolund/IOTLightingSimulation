@@ -37,10 +37,7 @@ public class TokenEventService implements EventReceiver {
     }
 
     @Override
-    public void receiveEvent(Event event) throws Exception {
-        Event eventToSend;
-        Object[] arguments;
-
+    public void receiveEvent(Event event) {
         switch (event.getEventType()) {
             case "TokenValidationSuccessful":
                     String tokenId = (String) event.getArguments()[0];
