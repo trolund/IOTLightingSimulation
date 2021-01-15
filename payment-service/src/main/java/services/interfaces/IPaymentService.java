@@ -18,6 +18,6 @@ public interface IPaymentService {
     void processPayment(String customerId, String merchantId, int amount, String token) throws TransactionException, CustomerException, MerchantException, TokenNotValidException;
     List<TransactionDTO> getTransactions(String accountId) throws CustomerException, AccountException;
     Transaction getLatestTransaction(String accountId) throws CustomerException, AccountException;
-    void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException, TokenNotValidException;
+    void refund(String customerId, String merchantId, int amount, String token) throws CustomerException, MerchantException, TransactionException, TokenNotValidException;
 }
 

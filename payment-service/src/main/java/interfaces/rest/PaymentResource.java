@@ -62,15 +62,16 @@ public class PaymentResource {
     @Path("refund")
     public Response refund(@QueryParam("customerId") String customerId,
                            @QueryParam("merchantId") String merchantId,
-                           @QueryParam("amount") int amount) {
+                           @QueryParam("amount") int amount,
+                           @QueryParam("token") String token) {
         try {
-            ps.refund(customerId, merchantId, amount);
+            ps.refund(customerId, merchantId, amount, token);
             return Response
                     .ok()
                     .build();
         } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        } catch (TransactionException e) {
+        } catch (TransactionException | TokenNotValidException e) {
             throw new BadRequestException(e.getMessage());
         }
     }

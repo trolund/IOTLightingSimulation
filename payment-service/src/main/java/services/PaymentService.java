@@ -17,8 +17,6 @@ import services.interfaces.IPaymentService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
@@ -48,10 +46,12 @@ public class PaymentService implements IPaymentService {
         Account customer = null;
         Account merchant = null;
 
+        TransactionDTO dto = null;
+
         String desc = "Transaction between Customer (" + merchantId + ")" +
                 " and Merchant (" + customerId + ") for amount " + amount +
                 " with token " + token;
-        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBalance(), merchantId, customerId, desc, new Date());
+
         try {
             // Checks if the token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
@@ -63,21 +63,22 @@ public class PaymentService implements IPaymentService {
             merchant = bs.getAccount(customerId);
             customer = bs.getAccount(merchantId);
 
+            dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBalance(), merchantId, customerId, desc, new Date());
 
             bs.transferMoneyFromTo(
                     customer.getId(),
                     merchant.getId(),
                     BigDecimal.valueOf(amount),
                     desc);
-
             try {
                 eventService.sendTransactionDone(dto, true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (TokenNotValidException e) {
             throw new TokenNotValidException(e.getMessage());
         } catch (Exception e) {
+            dto = new TransactionDTO(BigDecimal.valueOf(amount), BigDecimal.valueOf(-1), merchantId, customerId, desc, new Date());
             try {
                 eventService.sendTransactionDone(dto, false);
             } catch (Exception exception) {
@@ -94,8 +95,9 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
-        processPayment(merchantId, customerId, amount, "");
+    public void refund(String customerId, String merchantId, int amount, String token)
+            throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
+        processPayment(merchantId, customerId, amount, token);
     }
 
     @Override
