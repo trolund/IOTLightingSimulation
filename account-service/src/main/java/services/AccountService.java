@@ -22,10 +22,10 @@ public class AccountService implements IAccountService {
     public void add(UserAccount ua) throws Exception {
         try {
             getAccountFromBank(ua);
-        } catch (Exception e1) {
+        } catch (RemoteAccountDoesNotExistException e1) {
             try {
                 createAccountAtBank(ua, ua.getBankAccount().getBalance());
-            } catch (Exception e2) {
+            } catch (RemoteAccountExistsException e2) {
                 throw e2;
             }
         }
