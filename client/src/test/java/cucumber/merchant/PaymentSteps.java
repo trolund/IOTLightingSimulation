@@ -4,7 +4,6 @@ import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
-import com.client.TokenServiceClient;
 import com.dto.BankAccount;
 import com.dto.Token;
 import com.dto.Transaction;
@@ -17,6 +16,8 @@ import org.junit.Assert;
 
 import java.math.BigDecimal;
 
+import static org.junit.Assert.*;
+
 public class PaymentSteps {
 
     private final CustomerApp customerApp = new CustomerApp();
@@ -27,6 +28,10 @@ public class PaymentSteps {
 
     private User customerUser, merchantUser;
     private User customerFromSystem, merchantFromSystem;
+    private String currentCustomerId, currentMerchantId;
+
+    boolean isUserCreated;
+    boolean successPayment;
 
     private Token customerToken;
     private Integer paymentAmount;
@@ -46,20 +51,25 @@ public class PaymentSteps {
 
     @When("the customer is created")
     public void when_the_customer_is_created() {
-        boolean isSuccess = accountService.registerUser(customerUser);
-        Assert.assertTrue(isSuccess);
+        isUserCreated = accountService.registerUser(customerUser);
     }
 
-    @Then("the new customer exists in the system")
+    @Then("the creation should be successful")
+    public void then_the_creation_should_be_successful() {
+        assertTrue(isUserCreated);
+    }
+
+    @And("the new customer should exist in the system")
     public void the_new_customer_exists_in_the_system() {
         customerFromSystem = accountService.getUserByCpr(customerUser.getCprNumber());
+        currentCustomerId = customerFromSystem.getId();
         Assert.assertNotNull(customerFromSystem);
     }
 
-    @And("the customer requests {int} tokens")
+    @Then("the customer requests {int} tokens")
     public void the_customer_requests_tokens(Integer tokenAmount) {
         boolean isSuccess = customerApp.requestTokens(customerFromSystem.getId(), tokenAmount);
-        Assert.assertTrue(isSuccess);
+        assertTrue(isSuccess);
     }
 
     @Given("a new merchant with cpr {string}, first name {string}, last name {string} and a balance of {int}")
@@ -75,13 +85,13 @@ public class PaymentSteps {
 
     @When("the merchant is created")
     public void when_the_merchant_is_created() {
-        boolean isSuccess = accountService.registerUser(merchantUser);
-        Assert.assertTrue(isSuccess);
+       isUserCreated = accountService.registerUser(merchantUser);
     }
 
     @Then("the new merchant exists in the system")
     public void the_new_merchant_exists_in_the_system() {
         merchantFromSystem = accountService.getUserByCpr(merchantUser.getCprNumber());
+        currentMerchantId = merchantFromSystem.getId();
         Assert.assertNotNull(customerFromSystem);
     }
 
@@ -90,16 +100,20 @@ public class PaymentSteps {
         this.paymentAmount = paymentAmount;
     }
 
-    @Then("the merchant asks for a token from the customer")
+    @And("the merchant asks for a token from the customer")
     public void the_merchant_asks_for_a_token_from_the_customer() {
-        customerToken = merchantApp.merchantRequestCustomerToken(customerFromSystem.getId());
+        customerToken = merchantApp.requestTokenFromCustomer(customerFromSystem.getId());
+    }
+
+    @Then("the merchant should receive a token")
+    public void the_merchant_should_receive_a_token() {
         Assert.assertNotNull(customerToken);
     }
 
     @And("the payment is successful")
     public void the_payment_is_successful() {
-        boolean isSuccess = merchantApp.processPayment(customerFromSystem.getId(), merchantFromSystem.getId(), paymentAmount);
-        Assert.assertTrue(isSuccess);
+        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount);
+        assertTrue(successPayment);
     }
 
     @Then("the customer should have a balance of {int} left")
@@ -118,36 +132,48 @@ public class PaymentSteps {
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getId());
-        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getId());
+        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getAccountId());
+        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getAccountId());
         Assert.assertNotNull(cusLatestTran);
         Assert.assertNotNull(mercLatestTran);
         Assert.assertEquals(BigDecimal.valueOf(transactionAmount), cusLatestTran.getAmount());
         Assert.assertEquals(BigDecimal.valueOf(transactionAmount), mercLatestTran.getAmount());
     }
 
-    @Then("the latest transaction related to the customer contain balance {int}")
+    @And("the latest transaction related to the customer contain balance {int}")
     public void the_latest_transaction_related_to_the_customer_contain_balance(Integer balance) {
         Assert.assertEquals(BigDecimal.valueOf(balance), cusLatestTran.getBalance());
     }
 
-    @Then("the latest transaction related to the merchant contain balance {int}")
+    @And("the latest transaction related to the merchant contain balance {int}")
     public void the_latest_transaction_related_to_the_merchant_contain_balance(Integer balance) {
         Assert.assertEquals(BigDecimal.valueOf(balance), mercLatestTran.getBalance());
     }
 
-    private String customerAccIdNonExist;
+    @Given("a customer with id {string} that does not exist in the system")
+    public void a_customer_with_id_that_does_not_exist_in_the_system(String id) {
+        this.currentCustomerId = id;
+    }
 
-    @Given("a customer with accountId {string} that does not exist in the system")
-    public void a_customer_with_cpr_that_does_not_exist_in_the_system(String accountId) {
-
+    @And("a merchant that exists in the system")
+    public void a_merchant_that_exists_in_the_system() {
+        currentMerchantId = merchantFromSystem.getId();
     }
 
     @Then("the payment is unsuccessful")
     public void the_payment_is_unsuccessful() {
-        boolean isUnsuccessful = merchantApp.processPayment(customerAccIdNonExist, merchantFromSystem.getId(), paymentAmount);
-        Assert.assertTrue(isUnsuccessful);
+        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount);
+        assertFalse(successPayment);
     }
 
+    @Given("a customer that exists in the system")
+    public void a_customer_that_exist_in_the_system(String id) {
+        this.currentCustomerId = id;
+    }
+
+    @Given("a merchant with id {string} that does not exist in the system")
+    public void a_merchant_with_id_that_does_not_exist_in_the_system(String id) {
+        this.currentMerchantId = id;
+    }
 
 }
