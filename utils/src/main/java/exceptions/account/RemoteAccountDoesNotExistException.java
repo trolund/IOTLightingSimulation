@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.account;
 
 // Custom exceptions for each resource.
 // For example, if you have a CustomerResource and PaymentResource,
@@ -7,8 +7,14 @@ package exceptions;
 // exception like CustomerNotFoundException extend CustomerException.
 //
 // If its an exception for web, perhaps extending the WebException is a better idea.
-public class EmptyNameException extends Exception {
-    public EmptyNameException(String errorMessage) {
+//
+public class RemoteAccountDoesNotExistException extends Exception {
+
+    public RemoteAccountDoesNotExistException() {
+        super();
+    }
+
+    public RemoteAccountDoesNotExistException(String errorMessage) {
         super(errorMessage);
     }
 }

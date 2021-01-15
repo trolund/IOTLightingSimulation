@@ -1,18 +1,15 @@
 package infrastructure.repositories;
 
 import dto.TransactionDTO;
-import exceptions.TransactionException;
+import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApplicationScoped
+@Singleton
 public class TransactionRepository implements ITransactionRepository {
-
-    // This class should probably be a singleton class (?)
-    // or maybe this does not matter because dependency injection?
 
     private final List<TransactionDTO> transactions;
 

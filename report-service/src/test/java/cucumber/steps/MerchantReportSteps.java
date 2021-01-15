@@ -18,6 +18,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -45,8 +46,7 @@ public class MerchantReportSteps {
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
             if(row.get("time") != null) {
-                XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-                transaction.setTime(calendar);
+                transaction.setTime(new Date());
             }
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
@@ -80,8 +80,7 @@ public class MerchantReportSteps {
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-            transaction.setTime(calendar);
+            transaction.setTime(new Date());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }

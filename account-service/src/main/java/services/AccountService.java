@@ -2,13 +2,18 @@ package services;
 
 import dto.BankAccount;
 import dto.UserAccount;
-import infrastructure.bank.*;
+import exceptions.account.AccountException;
+import exceptions.account.RemoteAccountDoesNotExistException;
+import exceptions.account.RemoteAccountExistsException;
+import infrastructure.bank.Account;
+import infrastructure.bank.BankService;
+import infrastructure.bank.BankServiceService;
+import infrastructure.bank.User;
 import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;
 
-import exceptions.*;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,7 +21,9 @@ import java.util.List;
 public class AccountService implements IAccountService {
 
     BankService bs = new BankServiceService().getBankServicePort();
-    AccountRepository repo = new AccountRepository();
+
+    @Inject
+    AccountRepository repo;
 
     @Override
     public void add(UserAccount ua) throws Exception {
@@ -34,12 +41,12 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public UserAccount getById(String id) {
+    public UserAccount getById(String id) throws AccountException {
         return repo.getById(id);
     }
 
     @Override
-    public UserAccount getByCpr(String cpr) {
+    public UserAccount getByCpr(String cpr) throws AccountException {
         return repo.getByCpr(cpr);
     }
 
@@ -59,7 +66,7 @@ public class AccountService implements IAccountService {
     }
 
     private void getAccountFromBank(UserAccount ua)
-        throws RemoteAccountDoesNotExistException {
+            throws RemoteAccountDoesNotExistException {
 
         User user = new User();
         user.setCprNumber(ua.getCprNumber());
@@ -75,7 +82,7 @@ public class AccountService implements IAccountService {
     }
 
     private void createAccountAtBank(UserAccount ua, BigDecimal initialBalance)
-        throws RemoteAccountExistsException {
+            throws RemoteAccountExistsException {
 
         User user = new User();
         user.setCprNumber(ua.getCprNumber());

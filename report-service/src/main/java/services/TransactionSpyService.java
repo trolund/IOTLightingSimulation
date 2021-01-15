@@ -1,7 +1,7 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.TransactionException;
+import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 import messaging.Event;
 import messaging.EventReceiver;
@@ -22,16 +22,20 @@ public class TransactionSpyService implements EventReceiver {
     @Override
     public void receiveEvent(Event event) throws Exception {
         System.out.println("handling event: "+event);
-        if(event.getEventType().equals("TransactionSuccessful")) {
-            TransactionDTO transaction = (TransactionDTO) event.getArguments()[0];
-            Event newEvent = new Event("TransactionRecordingSuccessful", new Object[] {transaction});
-            try {
-                rs.addToRepo(transaction);
-            } catch (TransactionException e) {
-                newEvent = new Event("TransactionRecordingFailed", new Object[] {transaction});
-            }
-            System.out.println("Transaction recording failed!");
-            eventSender.sendEvent(newEvent);
+        if(event.getEventType().equals("TransactionSuccessful") || event.getEventType().equals("TransactionFailed")) {
+            handleEvent(event);
         }
+    }
+
+    private void handleEvent(Event event) throws Exception {
+        TransactionDTO transaction = (TransactionDTO) event.getArguments()[0];
+        Event newEvent = new Event("TransactionRecordingSuccessful", new Object[] {transaction});
+        try {
+            rs.addToRepo(transaction);
+        } catch (TransactionException e) {
+            newEvent = new Event("TransactionRecordingFailed", new Object[] {transaction});
+        }
+        System.out.println("Transaction recording failed!");
+        eventSender.sendEvent(newEvent);
     }
 }

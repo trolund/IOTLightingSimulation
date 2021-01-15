@@ -16,6 +16,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -43,8 +44,7 @@ public class CustomerReportSteps {
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
             if (row.get("time") != null) {
-                XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-                transaction.setTime(calendar);
+                transaction.setTime(new Date());
             }
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
@@ -81,8 +81,7 @@ public class CustomerReportSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-            transaction.setTime(calendar);
+            transaction.setTime(new Date());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }
@@ -108,8 +107,7 @@ public class CustomerReportSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-            transaction.setTime(calendar);
+            transaction.setTime(new Date());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }

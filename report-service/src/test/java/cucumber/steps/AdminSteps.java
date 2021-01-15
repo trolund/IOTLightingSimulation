@@ -19,6 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -48,8 +49,7 @@ public class AdminSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
-            transaction.setTime(calendar);
+            transaction.setTime(new Date());
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
             rs.getRepo().add(transaction);
@@ -96,8 +96,7 @@ public class AdminSteps {
 
     @When("a new broken transaction is recorded")
     public void aNewBrokenTransactionIsRecorded() throws Exception {
-        XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-01-15");
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", date);
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
         transaction.setToken("1234");
         transaction.setAmount(null);
         try {
@@ -114,8 +113,7 @@ public class AdminSteps {
 
     @When("the transaction is recorded")
     public void theTransactionIsRecorded() throws Exception {
-        XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-01-15");
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", date);
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
         transaction.setToken("1234");
         tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
     }
