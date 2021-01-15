@@ -6,6 +6,7 @@ import services.AccountService;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -50,9 +51,9 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerUser(UserAccount user) {
+    public Response registerUser(UserAccount user, BigDecimal balance) {
         try {
-            service.add(user);
+            service.add(user, balance);
             return Response.ok().build();
         } catch (Exception e) {
             // TODO: add correct exception

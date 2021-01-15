@@ -9,7 +9,7 @@ public class MerchantApp {
     CustomerApp customerApp = new CustomerApp();
     private PaymentServiceClient paymentClient = new PaymentServiceClient();
 
-    public Token merchantRequestCustomerToken(String customerId) {
+    public Token requestTokenFromCustomer(String customerId) {
         return customerApp.getToken(customerId);
     }
 

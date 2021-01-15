@@ -1,24 +1,26 @@
 package com.dto;
 
-public class User {
+import java.io.Serializable;
 
-    private String id;
+public class User implements Serializable {
+
     private String firstName;
     private String lastName;
     private String cprNumber;
-    private boolean disabled;
+    private String id;
     private BankAccount bankAccount;
+    private boolean disabled;
 
     public User() {
-
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public User(String firstName, String lastName, String cprNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.id = "";
+        this.cprNumber = cprNumber;
+        this.bankAccount = bankAccount;
+        this.disabled = false;
     }
 
     public String getFirstName() {
@@ -37,6 +39,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getCprNumber() {
         return cprNumber;
     }
@@ -45,12 +55,12 @@ public class User {
         this.cprNumber = cprNumber;
     }
 
-    public boolean isDisabled() {
+    public boolean getDisabled() {
         return disabled;
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void setDisabled(boolean bool) {
+        this.disabled = bool;
     }
 
     public BankAccount getBankAccount() {
