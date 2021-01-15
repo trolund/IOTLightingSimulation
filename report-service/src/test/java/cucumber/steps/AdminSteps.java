@@ -1,11 +1,8 @@
 package cucumber.steps;
 
 import dto.TransactionDTO;
-import messaging.EventSender;
-import org.junit.Assert;
 import services.ReportReceiverService;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -16,7 +13,6 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -43,9 +39,10 @@ public class AdminSteps {
             transaction.setDescription((String) row.get("description"));
             XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
             transaction.setTime(calendar);
-            transaction.setTokenId((String) row.get("token"));
+            transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
         }
+        rr.receiveEvent();
     }
 
     @When("a request to see all transactions is made")

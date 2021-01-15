@@ -24,15 +24,4 @@ public class ExampleResource {
         return service.hello();
     }
 
-    @Tag(ref = "entity")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("read")
-    public Response get() {
-        return Response
-                .ok()
-                .entity(service.readExample())
-                .build();
-    }
-
 }

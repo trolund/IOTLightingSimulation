@@ -1,14 +1,16 @@
 package services;
 
-import domain.ExampleObj;
-import dto.ExampleObjDTO;
 import dto.TransactionDTO;
-import infrastructure.repositories.interfaces.IExampleRepository;
-import org.modelmapper.ModelMapper;
+import infrastructure.repositories.TransactionRepository;
+import infrastructure.repositories.interfaces.ITransactionRepository;
 import services.interfaces.IReportService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -21,17 +23,10 @@ import static java.math.RoundingMode.HALF_UP;
 @ApplicationScoped
 public class ReportService implements IReportService {
 
-    @Inject
-    IExampleRepository repo;
+    ITransactionRepository repo = new TransactionRepository();
 
     public String hello() {
         return "I am healthy and ready to work!";
-    }
-
-    public ExampleObjDTO readExample() {
-        ModelMapper mapper = new ModelMapper();
-        ExampleObj exampleDto = repo.readExample();
-        return mapper.map(exampleDto, ExampleObjDTO.class);
     }
 
     @Override
@@ -55,5 +50,24 @@ public class ReportService implements IReportService {
         summary.put("mean", mean);
         summary.put("sum", sum);
         return summary;
+    }
+
+    @Override
+    public List<TransactionDTO> requestAllCustomerTransactions(List<TransactionDTO> transactions, String customerId) {
+        transactions.removeIf(obj -> !obj.getCreditor().equals(customerId));
+        return transactions;
+    }
+
+    @Override
+    public List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws DatatypeConfigurationException {
+        XMLGregorianCalendar startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(beg);
+        XMLGregorianCalendar endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(end);
+        transactions.removeIf(obj -> !obj.getCreditor().equals(customerId) || obj.getTime().compare(startDate) == DatatypeConstants.LESSER || obj.getTime().compare(endDate) == DatatypeConstants.GREATER);
+        return transactions;
+    }
+
+    @Override
+    public List<TransactionDTO> getRepo() {
+        return repo.getAll();
     }
 }
