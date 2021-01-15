@@ -1,7 +1,7 @@
 # Author: Daniel (s151641)
 # Author: Troels (s161791)
 
-version: '3'
+version: '2.1'
 
 services:
   rabbitmq:
@@ -10,12 +10,23 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 30s
+        timeout: 10s
+        retries: 5
   payment:
     image: payment:0.1
     container_name: payment
     build:
       context: .
       dockerfile: ./docker/Dockerfile.payment
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links: 
+      - rabbitmq
     ports:
       - "8080:8080"
   token:
@@ -24,6 +35,12 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.token
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links: 
+      - rabbitmq
     ports:
       - "8081:8080"
   account:
@@ -32,6 +49,12 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.account
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links: 
+      - rabbitmq
     ports:
       - "8082:8080"
   report:
@@ -40,6 +63,12 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.report
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links: 
+      - rabbitmq
     ports:
       - "8083:8080"
   client:
@@ -48,3 +77,13 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.client
+    depends_on:
+      - token
+      - payment
+      - account
+      - report
+    links:
+     - token
+     - payment
+     - account
+     - report
