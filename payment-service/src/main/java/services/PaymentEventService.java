@@ -8,6 +8,7 @@ import messaging.EventReceiver;
 import messaging.EventSender;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class PaymentEventService implements EventReceiver {
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
     private final EventSender eventSender;
+
+    private CompletableFuture<String> result;
 
     public PaymentEventService(EventSender eventSender, PaymentService service) {
         this.eventSender = eventSender;
@@ -44,6 +47,16 @@ public class PaymentEventService implements EventReceiver {
                 LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
                 break;
         }
+    }
+
+    public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
+        Event event = null;
+        if(successful){
+            event = new Event("TransactionSuccessful", new Object[] {dto});
+        }else{
+            event = new Event("TransactionFailed", new Object[] {dto});
+        }
+        eventSender.sendEvent(event);
     }
 
     private void getLatestTransaction(Event event) {

@@ -11,13 +11,17 @@ import exceptions.merchant.MerchantNotFoundException;
 import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
+import interfaces.rabbitmq.payment.RabbitMQPaymentAdapterFactory;
 import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
 import services.interfaces.IPaymentService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,11 +43,16 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public void processPayment(String customerId, String merchantId, int amount, String token)
-            throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
+    public void processPayment(String customerId, String merchantId, int amount, String token) throws Exception {
+        PaymentEventService eventService = new RabbitMQPaymentAdapterFactory().getService();
+
         Account customer = null;
         Account merchant = null;
 
+        String desc = "Transaction between Customer (" + merchantId + ")" +
+                " and Merchant (" + customerId + ") for amount " + amount +
+                " with token " + token;
+        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBalance(), merchantId, customerId, desc, new Date());
         try {
             // Checks if the token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
@@ -55,17 +64,26 @@ public class PaymentService implements IPaymentService {
             merchant = bs.getAccount(customerId);
             customer = bs.getAccount(merchantId);
 
-            String desc = "Transaction between Customer (" + merchantId + ")" +
-                    " and Merchant (" + customerId + ") for amount " + amount +
-                    " with token " + token;
+
             bs.transferMoneyFromTo(
                     customer.getId(),
                     merchant.getId(),
                     BigDecimal.valueOf(amount),
                     desc);
+
+            try {
+                eventService.sendTransactionDone(dto, true);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         } catch (TokenNotValidException e) {
             throw new TokenNotValidException(e.getMessage());
         } catch (Exception e) {
+            try {
+                eventService.sendTransactionDone(dto, false);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
             if (customer == null) {
                 throw new CustomerNotFoundException("Customer (" + merchantId + ") is not found!");
             }
