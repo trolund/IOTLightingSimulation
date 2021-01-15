@@ -15,7 +15,7 @@ import java.util.List;
  * @co-author Daniel (s151641)
  */
 public interface IPaymentService {
-    void processPayment(String customerId, String merchantId, int amount, String token) throws TransactionException, CustomerException, MerchantException, TokenNotValidException;
+    void processPayment(String customerId, String merchantId, int amount, String token) throws TransactionException, CustomerException, MerchantException, TokenNotValidException, Exception;
     List<TransactionDTO> getTransactions(String accountId) throws CustomerException, AccountException;
     Transaction getLatestTransaction(String accountId) throws CustomerException, AccountException;
     void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException;
