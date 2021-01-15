@@ -40,7 +40,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public void processPayment(String customerId, String merchantId, int amount, String token)
-            throws CustomerException, MerchantException, TransactionException {
+            throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
         Account customer = null;
         Account merchant = null;
 
@@ -57,12 +57,14 @@ public class PaymentService implements IPaymentService {
 
             String desc = "Transaction between Customer (" + merchantId + ")" +
                     " and Merchant (" + customerId + ") for amount " + amount +
-                    " with token: " + token;
+                    " with token " + token;
             bs.transferMoneyFromTo(
                     customer.getId(),
                     merchant.getId(),
                     BigDecimal.valueOf(amount),
                     desc);
+        } catch (TokenNotValidException e) {
+            throw new TokenNotValidException(e.getMessage());
         } catch (Exception e) {
             if (customer == null) {
                 throw new CustomerNotFoundException("Customer (" + merchantId + ") is not found!");
@@ -77,6 +79,7 @@ public class PaymentService implements IPaymentService {
     @Override
     public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException {
         //processPayment(merchantId, customerId, amount, "");
+        throw new TransactionException("NOT IMPLEMENTED!");
     }
 
     @Override

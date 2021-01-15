@@ -1,5 +1,6 @@
 package interfaces.rest;
 
+import exceptions.TokenNotValidException;
 import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.merchant.MerchantException;
@@ -44,7 +45,7 @@ public class PaymentResource {
                     .build();
         } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        } catch (TransactionException e) {
+        } catch (TransactionException | TokenNotValidException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
