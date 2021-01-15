@@ -18,7 +18,6 @@ import java.util.logging.Logger;
                 title = "Group 11 - account-service API",
                 version = "3.0.3"
         ))
-
 @ApplicationPath("/api/v1")
 public class RootApplication extends Application {
 

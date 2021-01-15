@@ -2,21 +2,13 @@ package interfaces.rest;
 
 import dto.UserAccount;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import services.interfaces.IAccountService;
 import services.AccountService;
+import services.interfaces.IAccountService;
 
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Tag(ref = "AccountResource")
 @Path("/users")
@@ -32,11 +24,11 @@ public class AccountResource {
         try {
             UserAccount user = service.getById(id);
             return Response.ok().entity(user).build();
-        // TODO: add correct exception
+            // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -51,8 +43,8 @@ public class AccountResource {
         } catch (Exception e) {
             // TODO: add correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -67,8 +59,8 @@ public class AccountResource {
         } catch (Exception e) {
             // TODO: throw correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -80,11 +72,11 @@ public class AccountResource {
         try {
             service.retireAccount(service.getByCpr(cpr));
             return Response.ok().build();
-        // TODO: add correct exception
+            // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -98,8 +90,8 @@ public class AccountResource {
         } catch (Exception e) {
             // TODO correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
@@ -111,11 +103,12 @@ public class AccountResource {
         try {
             service.retireAccount(service.getById(id));
             return Response.ok().build();
-        // TODO: add correct exception
+            // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
+
 }

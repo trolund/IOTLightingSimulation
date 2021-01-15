@@ -15,8 +15,10 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public class RabbitMqReceiver {
+
     private final static Logger LOGGER = Logger.getLogger(RabbitMqReceiver.class.getName());
-	private static final String EXCHANGE_NAME = "message-hub";
+
+    private static final String EXCHANGE_NAME = "message-hub";
 	private static final String QUEUE_TYPE = "topic";
 	private static final String TOPIC = "account.*";
 
