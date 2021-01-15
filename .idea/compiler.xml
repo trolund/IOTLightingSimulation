@@ -6,11 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="report-service" />
+        <module name="utils" />
         <module name="token-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="report-service" target="11" />
       <module name="token-service" target="11" />
+      <module name="utils" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

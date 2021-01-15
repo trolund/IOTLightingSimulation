@@ -1,4 +1,4 @@
-package dto;
+/*package dto;
 
 import infrastructure.bank.*;
 
@@ -82,3 +82,4 @@ public class BankAccount implements Serializable {
         this.cprNumber = cprNumber;
     }
 }
+*/

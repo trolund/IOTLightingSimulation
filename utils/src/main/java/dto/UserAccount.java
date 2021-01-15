@@ -72,4 +72,6 @@ public class UserAccount implements Serializable {
         this.bankAccount = bankAccount;
     }
 
+    private class BankAccount {
+    }
 }
