@@ -1,4 +1,4 @@
-package cucumber.merchant;
+package cucumber;
 
 import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
@@ -8,6 +8,7 @@ import com.dto.BankAccount;
 import com.dto.Token;
 import com.dto.Transaction;
 import com.dto.User;
+import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -30,13 +31,19 @@ public class PaymentSteps {
     private User customerFromSystem, merchantFromSystem;
     private String currentCustomerId, currentMerchantId;
 
-    boolean isUserCreated;
+    boolean isUserRegistered;
     boolean successPayment;
 
     private Token customerToken;
     private Integer paymentAmount;
 
     private Transaction cusLatestTran, mercLatestTran;
+
+    @After
+    public void cleanup(){
+        //accountService.retireUser(currentCustomerId);
+        //accountService.retireUser(currentMerchantId);
+    }
 
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_customer_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
@@ -49,14 +56,14 @@ public class PaymentSteps {
         customerUser.getBankAccount().setBalance(BigDecimal.valueOf(balance));
     }
 
-    @When("the customer is created")
-    public void when_the_customer_is_created() {
-        isUserCreated = accountService.registerUser(customerUser);
+    @When("the customer is registered")
+    public void when_the_customer_is_registered() {
+        isUserRegistered = accountService.registerUser(customerUser);
     }
 
-    @Then("the creation should be successful")
-    public void then_the_creation_should_be_successful() {
-        assertTrue(isUserCreated);
+    @Then("the registration should be successful")
+    public void then_the_registration_should_be_successful() {
+        assertTrue(isUserRegistered);
     }
 
     @And("the new customer should exist in the system")
@@ -83,9 +90,9 @@ public class PaymentSteps {
         merchantUser.getBankAccount().setBalance(BigDecimal.valueOf(balance));
     }
 
-    @When("the merchant is created")
-    public void when_the_merchant_is_created() {
-       isUserCreated = accountService.registerUser(merchantUser);
+    @When("the merchant is registered")
+    public void when_the_merchant_is_registered() {
+       isUserRegistered = accountService.registerUser(merchantUser);
     }
 
     @Then("the new merchant exists in the system")
@@ -132,8 +139,8 @@ public class PaymentSteps {
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getAccountId());
-        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getAccountId());
+        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getId());
+        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getId());
         Assert.assertNotNull(cusLatestTran);
         Assert.assertNotNull(mercLatestTran);
         Assert.assertEquals(BigDecimal.valueOf(transactionAmount), cusLatestTran.getAmount());
