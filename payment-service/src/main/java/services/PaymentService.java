@@ -43,7 +43,8 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public void processPayment(String customerId, String merchantId, int amount, String token) throws Exception {
+    public void processPayment(String customerId, String merchantId, int amount, String token)
+            throws TokenNotValidException, CustomerNotFoundException, MerchantNotFoundException, TransactionException {
         PaymentEventService eventService = new RabbitMQPaymentAdapterFactory().getService();
 
         Account customer = null;
