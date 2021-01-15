@@ -51,9 +51,9 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerUser(UserAccount user, BigDecimal balance) {
+    public Response registerUser(UserAccount user) {
         try {
-            service.add(user, balance);
+            service.add(user);
             return Response.ok().build();
         } catch (Exception e) {
             // TODO: add correct exception

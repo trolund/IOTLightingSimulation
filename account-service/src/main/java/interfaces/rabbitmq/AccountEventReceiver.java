@@ -60,7 +60,7 @@ public class AccountEventReceiver implements EventReceiver {
                 try {
                     UserAccount userAccount = (UserAccount) in.getArguments()[0];
                     BigDecimal balance = (BigDecimal) in.getArguments()[1];
-                    accountService.add(userAccount, balance);
+                    accountService.add(userAccount);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("RegisterUserFailed", new Object[]{e.getMessage()}));
