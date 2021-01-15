@@ -20,6 +20,11 @@ public class BankAccount implements Serializable {
         this.balance = account.getBalance();
     }
 
+    public BankAccount(String bankId, BigDecimal initialBalance) {
+        this.bankId = bankId;
+        this.balance = initialBalance;
+    }
+
  /*   public void createAtBank(String firstName, String lastName,
                              String cprNumber, int initialBalance) {
         // create a user object
@@ -65,7 +70,7 @@ public class BankAccount implements Serializable {
         return this.balance;
     }
 
-    private void setBankId(BigDecimal balance) {
+    private void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 /*

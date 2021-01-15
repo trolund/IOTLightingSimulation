@@ -21,8 +21,9 @@ public class AccountRepository implements IAccountRepository {
     }
 
     @Override
-    public void add(String firstName, String lastName, String cprNumber) {
-        accounts.add(new UserAccount(firstName, lastName, cprNumber));
+    public void add(String id, String firstName, String lastName,
+            String cprNumber) {
+        accounts.add(new UserAccount(id, firstName, lastName, cprNumber));
     }
 
     @Override

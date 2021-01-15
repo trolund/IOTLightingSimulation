@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -29,7 +30,6 @@ public class AccountResource {
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
     IAccountService service = new AccountService();
-
 
     @Tag(ref = "getUserById")
     @GET
@@ -88,6 +88,22 @@ public class AccountResource {
             return Response.ok().entity(accounts).build();
         } catch (Exception e) {
             // TODO correct exception
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
+        }
+    }
+
+    @Tag(ref = "retireUser")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}")
+    public Response retireUser(@PathParam("id") String id) {
+        try {
+            service.retireAccount(service.getById(id));
+            return Response.ok().build();
+        // TODO: add correct exception
+        } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                            .entity(e.getMessage())
                            .build();
