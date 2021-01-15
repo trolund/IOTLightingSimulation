@@ -79,6 +79,22 @@ public class AccountResource {
         }
     }
 
+    @Tag(ref = "retireUserByCpr")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/by-cpr/{cprNumber}")
+    public Response retireUserByCpr(@PathParam("cprNumber") String cpr) {
+        try {
+            service.retireAccount(service.getByCpr(cpr));
+            return Response.ok().build();
+        // TODO: add correct exception
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
+        }
+    }
+
     @Tag(ref = "getAllUsers")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
