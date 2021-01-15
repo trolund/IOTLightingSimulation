@@ -2,6 +2,8 @@ package services;
 
 import dto.BankAccount;
 import dto.UserAccount;
+import exceptions.account.RemoteAccountDoesNotExistException;
+import exceptions.account.RemoteAccountExistsException;
 import infrastructure.bank.*;
 import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;

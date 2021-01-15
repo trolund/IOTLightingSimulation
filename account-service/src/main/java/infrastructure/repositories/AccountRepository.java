@@ -9,6 +9,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class AccountRepository implements IAccountRepository {
+
     private final List<UserAccount> accounts;
 
     public AccountRepository() {
