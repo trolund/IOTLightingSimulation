@@ -1,17 +1,14 @@
 package services.interfaces;
 
 import domain.UserAccount;
-import exceptions.DuplicateException;
-import exceptions.EmptyCprException;
-import exceptions.EmptyNameException;
-import exceptions.MissingIdException;
-
 import java.util.List;
-import java.math.BigDecimal;
+
+import exceptions.*;
 
 public interface IAccountService {
-    void add(UserAccount account, BigDecimal balance);
+    void add(UserAccount account) throws Exception;
     UserAccount getById(String id);
     UserAccount getByCpr(String cpr);
     List<UserAccount> getAll();
+    void retireAccount(UserAccount ua) throws RemoteAccountDoesNotExistException;
 }

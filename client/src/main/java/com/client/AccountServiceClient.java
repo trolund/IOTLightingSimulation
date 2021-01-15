@@ -54,4 +54,12 @@ public class AccountServiceClient {
                 });
     }
 
+    public boolean retireUser(String userId) {
+        Response r = baseUrl.path("users/" + userId)
+                .request()
+                .delete(new GenericType<>() {
+                });
+        return r.getStatus() == Response.Status.OK.getStatusCode();
+    }
+
 }

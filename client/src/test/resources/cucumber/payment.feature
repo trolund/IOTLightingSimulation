@@ -2,16 +2,16 @@ Feature: Payment
 
   Background:
     Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
-    When the customer is created
-    Then the creation should be successful
+    When the customer is registered
+    Then the registration should be successful
     And the new customer should exist in the system
     Then the customer requests 5 tokens
     Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
-    When the merchant is created
-    Then the creation should be successful
+    When the merchant is registered
+    Then the registration should be successful
     Then the new merchant exists in the system
 
-  Scenario Outline: Successful Payment
+  Scenario Outline: Successful Payment in DTUPay
     When the merchant initiates a payment for <amount> by the customer
     And the merchant asks for a token from the customer
     Then the merchant should receive a token
@@ -29,25 +29,25 @@ Feature: Payment
       | 0      | 1000      | 1000      |
       | 500    | 500       | 1500      |
 
-  Scenario: Unsuccessful payment: Customer not found
+  Scenario: Unsuccessful payment in DTUPay: Customer not found
    Given a customer with id "does-not-exist" that does not exist in the system
    And a merchant that exists in the system
    When the merchant initiates a payment for 10 by the customer
    Then the payment is unsuccessful
 
-  Scenario: Unsuccessful payment: Merchant not found
+  Scenario: Unsuccessful payment in DTUPay: Merchant not found
     Given a customer that exists in the system
     And a merchant with id "does-not-exist" that does not exist in the system
     When the merchant initiates a payment for 10 by the customer
     Then the payment is unsuccessful
 
-  Scenario: Unsuccessful payment: Customer does not have adequate balance
+  Scenario: Unsuccessful payment in DTUPay: Customer does not have adequate balance
     Given a customer that exists in the system
     And a merchant that exists in the system
     When the merchant initiates a payment for 2000 by the customer
     Then the payment is unsuccessful
 
-  Scenario: Unsuccessful payment: Merchant initiates negative payment
+  Scenario: Unsuccessful payment in DTUPay: Merchant initiates negative payment
     Given a customer that exists in the system
     And a merchant that exists in the system
     When the merchant initiates a payment for -2000 by the customer

@@ -1,31 +1,36 @@
 package services;
 
-import domain.UserAccount;
 import domain.BankAccount;
-import infrastructure.repositories.interfaces.IAccountRepository;
-import infrastructure.repositories.AccountRepository;
+import domain.UserAccount;
 import infrastructure.bank.*;
+import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;
 
-import org.modelmapper.ModelMapper;
+import exceptions.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.List;
 
 @ApplicationScoped
 public class AccountService implements IAccountService {
 
-
     BankService bs = new BankServiceService().getBankServicePort();
     AccountRepository repo = new AccountRepository();
-    
+
     @Override
-    public void add(UserAccount userAccount, BigDecimal balance) {
-        createAtBank(userAccount, balance);
-        repo.add(userAccount);
+    public void add(UserAccount ua) throws Exception {
+        try {
+            getAccountFromBank(ua);
+        } catch (Exception e1) {
+            try {
+                createAccountAtBank(ua, ua.getBankAccount().getBalance());
+            } catch (Exception e2) {
+                throw e2;
+            }
+        }
+
+        repo.add(ua);
     }
 
     @Override
@@ -43,21 +48,46 @@ public class AccountService implements IAccountService {
         return repo.getAll();
     }
 
-    public void createAtBank(UserAccount userAccount, BigDecimal balance) {
-        // create a Bank User object from the userAccount
-        User user = new User();
-        user.setCprNumber(userAccount.getCprNumber());
-        user.setFirstName(userAccount.getFirstName());
-        user.setLastName(userAccount.getLastName());
+    public void retireAccount(UserAccount ua)
+        throws RemoteAccountDoesNotExistException {
         
+        try {
+            bs.retireAccount(ua.getBankAccount().getBankId());
+        } catch (Exception e) {
+            throw new RemoteAccountDoesNotExistException();
+        }
+    }
+
+    private void getAccountFromBank(UserAccount ua)
+        throws RemoteAccountDoesNotExistException {
+
+        User user = new User();
+        user.setCprNumber(ua.getCprNumber());
+        user.setFirstName(ua.getFirstName());
+        user.setLastName(ua.getLastName());
+
+        try {
+            Account account = bs.getAccountByCprNumber(user.getCprNumber());
+            ua.setBankAccount(new BankAccount(account));
+        } catch (Exception e) {
+            throw new RemoteAccountDoesNotExistException();
+        }
+    }
+
+    private void createAccountAtBank(UserAccount ua, BigDecimal initialBalance)
+        throws RemoteAccountExistsException {
+
+        User user = new User();
+        user.setCprNumber(ua.getCprNumber());
+        user.setFirstName(ua.getFirstName());
+        user.setLastName(ua.getLastName());
+
         // try to create a new account
         try {
-            bs.createAccountWithBalance(user, balance);
-            Account account = bs.getAccountByCprNumber(user.getCprNumber());
-            BankAccount bankAccount = new BankAccount(account);
-            userAccount.setBankAccount(bankAccount);
+            String bankId = bs.createAccountWithBalance(user, initialBalance);
+            ua.setBankAccount(new BankAccount(bankId, initialBalance));
         } catch (Exception e) {
-            e.getMessage();
+            throw new RemoteAccountExistsException();
         }
     }
 }
