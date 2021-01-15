@@ -12,8 +12,8 @@ import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
 import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
-import messaging.Event;
 import services.interfaces.IPaymentService;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -22,8 +22,8 @@ import java.util.List;
 
 /**
  * @primary-author Troels (s161791)
- * @co-author Daniel (s15641)
- *
+ * @co-author Daniel (s151641)
+ * <p>
  * Payment microservice REST resource.
  */
 @ApplicationScoped
@@ -38,59 +38,66 @@ public class PaymentService implements IPaymentService {
         this.mapper = mapper;
     }
 
-    public void createTransaction(String mId, String cId, int amount, String token) throws CustomerException, MerchantException, TransactionException {
-        Account merchant = null;
+    @Override
+    public void processPayment(String customerId, String merchantId, int amount, String token)
+            throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
         Account customer = null;
-
-
+        Account merchant = null;
 
         try {
-
-            // checks if token i valid
+            // Checks if the token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
-            if (!service.validateToken(token)){
-                throw new TokenNotValidException("The token: " + token + " is not valid" );
+            if (!service.validateToken(token).equals(token)) {
+                throw new TokenNotValidException("The token: " + token + " is not valid");
             }
 
-            // TODO get with aacount service
-            merchant = bs.getAccount(mId);
-            customer = bs.getAccount(cId);
+            // TODO get with account service
+            merchant = bs.getAccount(customerId);
+            customer = bs.getAccount(merchantId);
 
+            String desc = "Transaction between Customer (" + merchantId + ")" +
+                    " and Merchant (" + customerId + ") for amount " + amount +
+                    " with token " + token;
             bs.transferMoneyFromTo(
-                    merchant.getId(),
                     customer.getId(),
+                    merchant.getId(),
                     BigDecimal.valueOf(amount),
-                    "Transaction between Customer (" + cId + ") and Merchant (" + mId + ") for amount " + amount);
-
+                    desc);
+        } catch (TokenNotValidException e) {
+            throw new TokenNotValidException(e.getMessage());
         } catch (Exception e) {
-            if (merchant == null) {
-                throw new MerchantNotFoundException("Merchant (" + mId + ") is not found!");
-            }
             if (customer == null) {
-                throw new CustomerNotFoundException("Customer (" + cId + ") is not found!");
+                throw new CustomerNotFoundException("Customer (" + merchantId + ") is not found!");
+            }
+            if (merchant == null) {
+                throw new MerchantNotFoundException("Merchant (" + customerId + ") is not found!");
             }
             throw new TransactionException(e.getMessage());
         }
     }
 
-    public void refund(String mid, String cid, int amount) throws CustomerException, MerchantException, TransactionException {
-        createTransaction(cid, mid, amount, "");
+    @Override
+    public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException {
+        //processPayment(merchantId, customerId, amount, "");
+        throw new TransactionException("NOT IMPLEMENTED!");
     }
 
+    @Override
     public List<TransactionDTO> getTransactions(String accountId) throws AccountException {
         try {
             return mapper.mapList(bs.getAccount(accountId).getTransactions(), TransactionDTO.class);
         } catch (Exception e) {
-            throw new AccountException("User (" + accountId + ") is not found!");
+            throw new AccountException("Account (" + accountId + ") is not found!");
         }
     }
 
-    public Transaction getLatestTransaction(String id) throws AccountException {
+    @Override
+    public Transaction getLatestTransaction(String accountId) throws AccountException {
         try {
             Comparator<Transaction> comparator = (p1, p2) -> p1.getTime().compare(p2.getTime());
-            return bs.getAccount(id).getTransactions().stream().max(comparator).get();
+            return bs.getAccount(accountId).getTransactions().stream().max(comparator).get();
         } catch (Exception e) {
-            throw new AccountException("User (" + id + ") is not found!");
+            throw new AccountException("Account (" + accountId + ") is not found!");
         }
     }
 

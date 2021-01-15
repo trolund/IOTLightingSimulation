@@ -11,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
+ */
 public class RabbitMQTokenSender implements EventSender {
 
     private final static Logger LOGGER = Logger.getLogger(RabbitMQTokenSender.class.getName());

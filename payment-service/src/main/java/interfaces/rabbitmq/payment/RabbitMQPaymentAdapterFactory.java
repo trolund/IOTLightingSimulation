@@ -1,13 +1,21 @@
 package interfaces.rabbitmq.payment;
 
 import messaging.EventSender;
+import services.Bank;
+import services.MapperService;
 import services.PaymentEventService;
+import services.PaymentService;
 
+import javax.inject.Inject;
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ */
 public class RabbitMQPaymentAdapterFactory {
 
     static PaymentEventService paymentEventService = null;
 
-    public PaymentEventService getAdapter() {
+    public PaymentEventService getService() {
         // The singleton pattern.
         // Ensure that there is at most
         // one instance of a PaymentService
@@ -24,7 +32,7 @@ public class RabbitMQPaymentAdapterFactory {
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
         EventSender b = new RabbitMQPaymentSender();
-        paymentEventService = new PaymentEventService(b);
+        paymentEventService = new PaymentEventService(b, new PaymentService(new Bank(), new MapperService()));
         RabbitMQPaymentListener r = new RabbitMQPaymentListener(paymentEventService);
         try {
             r.listen();

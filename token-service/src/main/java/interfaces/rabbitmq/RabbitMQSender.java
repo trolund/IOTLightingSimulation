@@ -13,14 +13,14 @@ public class RabbitMQSender implements EventSender {
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "report.service";
+    private static final String TOPIC = "token.service";
 
     private EventReceiver service;
     private Channel channel;
 
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbitMq");
+        factory.setHost("localhost");
         Connection connection = factory.newConnection();
         channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);

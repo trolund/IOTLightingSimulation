@@ -57,13 +57,13 @@ public class TokenResource {
     @Tag(ref = "validateToken")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response invalidateToken(@QueryParam("tokenId") String tokenId) {
+    public Response validateToken(@QueryParam("tokenId") String tokenId) {
         try {
-            service.invalidateToken(tokenId);
+            service.validateToken(tokenId);
             return Response
                     .status(Response.Status.OK)
                     .build();
-        } catch (CustomerNotFoundException | TokenNotFoundException e) {
+        } catch (CustomerNotFoundException | TokenNotFoundException | InvalidTokenException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

@@ -1,6 +1,6 @@
 package interfaces.rest;
 
-import services.PaymentEventService;
+import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
 import interfaces.rabbitmq.payment.RabbitMQPaymentAdapterFactory;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 /**
  * @author Troels (s161791)
- * UserNotFoundException to use when a user cannot be found.
  */
 
 @OpenAPIDefinition(
@@ -36,7 +35,9 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            PaymentEventService adapter = new RabbitMQPaymentAdapterFactory().getAdapter();
+            // starting the RabbitMQ listeners
+            new RabbitMQPaymentAdapterFactory().getService();
+            new RabbitMQTokenAdapterFactory().getService();
             LOGGER.log(Level.INFO, "RabbitMQ listening...");
         } catch (Exception e) {
             e.printStackTrace();

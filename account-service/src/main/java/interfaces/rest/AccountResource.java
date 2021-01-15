@@ -2,8 +2,10 @@ package interfaces.rest;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IAccountService;
+import services.AccountService;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -22,10 +24,13 @@ import exceptions.*;
 @Tag(ref = "AccountResource")
 @Path("/users")
 public class AccountResource {
-    @Inject
-    IAccountService service;
 
-    @Tag(ref = "getUser")
+    private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
+
+    IAccountService service = new AccountService();
+
+
+    @Tag(ref = "getUserById")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
