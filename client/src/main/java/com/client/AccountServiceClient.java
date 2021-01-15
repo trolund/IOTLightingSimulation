@@ -1,7 +1,5 @@
 package com.client;
 
-import com.dto.User;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -16,38 +14,38 @@ public class AccountServiceClient {
 
     public AccountServiceClient() {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
-        baseUrl = client.target("http://localhost:8082/api/v1/");
+        baseUrl = client.target("http://localhost:8080/api/v1/");
     }
 
-    public boolean registerUser(User userAccount) {
+    public boolean registerUser(UserAccount userAccount) {
         Response r = baseUrl.path("users")
                 .request()
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
-    public User getUserById(String userId) {
+    public UserAccount getUserById(String userId) {
         return baseUrl.path("users/" + userId)
                 .request()
                 .get(new GenericType<>() {
                 });
     }
 
-    public User getUserByCpr(String cpr) {
+    public UserAccount getUserByCpr(String cpr) {
         return baseUrl.path("users/by-cpr/" + cpr)
                 .request()
                 .get(new GenericType<>() {
                 });
     }
 
-    public boolean updateUser(User userAccount) {
+    public boolean updateUser(UserAccount userAccount) {
         Response r = baseUrl.path("users/" + userAccount.getCprNumber())
                 .request()
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
-    public List<User> getAllUsers() {
+    public List<UserAccount> getAllUsers() {
         return baseUrl.path("users")
                 .request()
                 .get(new GenericType<>() {

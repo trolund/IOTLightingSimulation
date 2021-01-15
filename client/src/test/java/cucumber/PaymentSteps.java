@@ -4,10 +4,8 @@ import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
-import com.dto.BankAccount;
 import com.dto.Token;
 import com.dto.Transaction;
-import com.dto.User;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -27,8 +25,8 @@ public class PaymentSteps {
     private final AccountServiceClient accountService = new AccountServiceClient();
     private final PaymentServiceClient paymentService = new PaymentServiceClient();
 
-    private User customerUser, merchantUser;
-    private User customerFromSystem, merchantFromSystem;
+    private UserAccount customerUser, merchantUser;
+    private UserAccount customerFromSystem, merchantFromSystem;
     private String currentCustomerId, currentMerchantId;
 
     boolean isUserRegistered;
@@ -47,7 +45,7 @@ public class PaymentSteps {
 
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_customer_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        customerUser = new User();
+        customerUser = new UserAccount();
         customerUser.setBankAccount(new BankAccount());
 
         customerUser.setCprNumber(cpr);
@@ -81,7 +79,7 @@ public class PaymentSteps {
 
     @Given("a new merchant with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_merchant_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        merchantUser = new User();
+        merchantUser = new UserAccount();
         merchantUser.setBankAccount(new BankAccount());
 
         merchantUser.setCprNumber(cpr);
@@ -139,8 +137,8 @@ public class PaymentSteps {
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getId());
-        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getId());
+        cusLatestTran = paymentService.getLatestTransaction(customerFromSystem.getBankAccount().getBankId());
+        mercLatestTran = paymentService.getLatestTransaction(merchantFromSystem.getBankAccount().getBankId());
         Assert.assertNotNull(cusLatestTran);
         Assert.assertNotNull(mercLatestTran);
         Assert.assertEquals(BigDecimal.valueOf(transactionAmount), cusLatestTran.getAmount());
