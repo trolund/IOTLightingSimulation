@@ -9,7 +9,7 @@ try {
                     checkout scm
                     sh './mvn_package_all.sh'
                 } catch(error) {
-                    echo err.getMessage()
+                    echo error.getMessage()
                 }
             }
         }
@@ -21,7 +21,7 @@ try {
                     sh 'docker-compose build'
                     sh 'docker-compose up -d'
                 } catch(error) {
-                    echo err.getMessage()
+                    echo error.getMessage()
                 }
             }
         }
