@@ -6,6 +6,8 @@ import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
 import com.dto.Token;
 import com.dto.Transaction;
+import dto.BankAccount;
+import dto.UserAccount;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;

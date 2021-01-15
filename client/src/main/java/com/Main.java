@@ -17,7 +17,6 @@ public class Main {
     private final static AccountServiceClient accountService = new AccountServiceClient();
     private final static PaymentServiceClient paymentService = new PaymentServiceClient();
 
-
     public static void main(String[] args) {
         UserAccount customerUserAccount = new UserAccount();
         customerUserAccount.setBankAccount(new BankAccount());

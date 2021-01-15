@@ -45,6 +45,7 @@ public class AccountResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerUser(UserAccount user) {
         try {
+            System.out.println("sdfgs");
             service.add(user);
             return Response.ok().build();
         } catch (Exception e) {
