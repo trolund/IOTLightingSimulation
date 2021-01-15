@@ -2,6 +2,7 @@ package interfaces.rest;
 
 import domain.Token;
 import exceptions.*;
+import exceptions.token.InvalidTokenException;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.ITokenService;
 
@@ -86,7 +87,6 @@ public class TokenResource {
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-
         }
     }
 
