@@ -7,24 +7,27 @@ import java.math.BigDecimal;
 
 public class BankAccount implements Serializable {
     private String bankId;
-    private String firstName;
-    private String lastName;
-    private String cprNumber;
+    private BigDecimal balance;
 
-    private static BankService bs;
+//    private static BankService bs;
 
     public BankAccount() {
-        this.bs = new BankServiceService().getBankServicePort();
+//        this.bs = new BankServiceService().getBankServicePort();
     }
 
-    public void createAtBank(String firstName, String lastName,
+    public BankAccount(Account account) {
+        this.bankId = account.getId();
+        this.balance = account.getBalance();
+    }
+
+ /*   public void createAtBank(String firstName, String lastName,
                              String cprNumber, int initialBalance) {
         // create a user object
         User user = new User();
         user.setCprNumber(cprNumber);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        
+       
         // try to create a new account
         try {
             bs.createAccountWithBalance(user, new BigDecimal(initialBalance));
@@ -49,7 +52,7 @@ public class BankAccount implements Serializable {
 
         return false;
     }
-
+*/
     public String getBankId() {
         return this.bankId;
     }
@@ -58,6 +61,14 @@ public class BankAccount implements Serializable {
         this.bankId = id;
     }
 
+    public BigDecimal getBalance() {
+        return this.balance;
+    }
+
+    private void setBankId(BigDecimal balance) {
+        this.balance = balance;
+    }
+/*
     public String getFirstName() {
         return this.firstName;
     }
@@ -81,4 +92,5 @@ public class BankAccount implements Serializable {
     private void setCprNumber(String cprNumber) {
         this.cprNumber = cprNumber;
     }
+    */
 }

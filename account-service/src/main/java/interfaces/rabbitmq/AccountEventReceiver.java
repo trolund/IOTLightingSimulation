@@ -9,6 +9,7 @@ import services.interfaces.IAccountService;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.math.BigDecimal;
 
 // authors: help from group
 public class AccountEventReceiver implements EventReceiver {
@@ -58,7 +59,8 @@ public class AccountEventReceiver implements EventReceiver {
             case "registerUser":
                 try {
                     UserAccount userAccount = (UserAccount) in.getArguments()[0];
-                    accountService.add(userAccount);
+                    BigDecimal balance = (BigDecimal) in.getArguments()[1];
+                    accountService.add(userAccount, balance);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("RegisterUserFailed", new Object[]{e.getMessage()}));
