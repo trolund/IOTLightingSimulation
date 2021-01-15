@@ -23,12 +23,6 @@ public class AccountRepository implements IAccountRepository {
     }
 
     @Override
-    public void add(String id, String firstName, String lastName,
-                    String cprNumber) {
-        accounts.add(new UserAccount(id, firstName, lastName, cprNumber));
-    }
-
-    @Override
     public UserAccount getById(String id) throws AccountException {
         UserAccount account = accounts.stream()
                 .filter(a -> a.getId().equals(id))
@@ -54,6 +48,11 @@ public class AccountRepository implements IAccountRepository {
         }
 
         return account;
+    }
+
+    @Override
+    public void remove(String id) throws AccountException {
+        accounts.remove(getById(id));
     }
 
     @Override

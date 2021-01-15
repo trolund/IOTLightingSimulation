@@ -35,11 +35,11 @@ public class AccountResource {
     @Tag(ref = "registerUser")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response registerUser(UserAccount user) {
         try {
-            System.out.println("sdfgs");
-            service.add(user);
-            return Response.ok().build();
+            String userId = service.add(user);
+            return Response.ok().entity(userId).build();
         } catch (Exception e) {
             // TODO: add correct exception
             return Response.status(Response.Status.BAD_REQUEST)
@@ -66,7 +66,6 @@ public class AccountResource {
 
     @Tag(ref = "retireUserByCpr")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/by-cpr/{cprNumber}")
     public Response retireUserByCpr(@PathParam("cprNumber") String cpr) {
         try {
@@ -97,7 +96,6 @@ public class AccountResource {
 
     @Tag(ref = "retireUser")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public Response retireUser(@PathParam("id") String id) {
         try {
