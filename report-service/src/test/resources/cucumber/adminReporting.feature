@@ -18,3 +18,14 @@ Feature: Manager of DTU Pay
     Then a summary is made based on the transactions
       | max | min | mean | sum |
       | 60  | 10  | 33   | 100 |
+
+  Scenario: Transaction recorded from payment
+    When the transaction is recorded
+    Then a "TransactionRecordingSuccessful" is sent
+    And the transaction can be found in the repository
+
+
+  Scenario: Transaction with missing details
+    When a new broken transaction is recorded
+    Then a "TransactionRecordingFailed" is sent
+

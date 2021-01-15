@@ -1,17 +1,18 @@
 package interfaces.rabbitmq;
 
 import messaging.EventSender;
-import services.ReportReceiverService;
+import services.ReportService;
+import services.TransactionSpyService;
 
-public class RabbitMQFactory {
-    static ReportReceiverService reportReceiverService = null;
+public class TransactionFactory {
+    static TransactionSpyService transactionSpyService = null;
 
-    public ReportReceiverService getService() {
+    public TransactionSpyService getService(ReportService reportService) {
         // The singleton pattern.
         // Ensure that there is at most
         // one instance of a PaymentService
-        if (reportReceiverService != null) {
-            return reportReceiverService;
+        if (transactionSpyService != null) {
+            return transactionSpyService;
         }
 
         // Hookup the classes to send and receive
@@ -23,15 +24,15 @@ public class RabbitMQFactory {
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
         EventSender b = new RabbitMQSender();
-        reportReceiverService = new ReportReceiverService(b);
-        RabbitMQReceiver r = new RabbitMQReceiver(reportReceiverService);
+        transactionSpyService = new TransactionSpyService(b, reportService);
+        RabbitMQReceiver r = new RabbitMQReceiver(transactionSpyService);
 
         try {
-            r.initConnection();
+            r.initConnection("payments.*");
         } catch (Exception e) {
             throw new Error(e);
         }
 
-        return reportReceiverService;
+        return transactionSpyService;
     }
 }

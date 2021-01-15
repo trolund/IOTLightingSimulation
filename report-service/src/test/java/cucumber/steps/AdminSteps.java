@@ -1,6 +1,9 @@
 package cucumber.steps;
 
 import dto.TransactionDTO;
+import io.cucumber.java.PendingException;
+import io.cucumber.java.en.And;
+import io.restassured.internal.common.assertion.Assertion;
 import services.ReportReceiverService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -8,7 +11,10 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
 import org.junit.jupiter.api.Assertions;
+import services.ReportService;
+import services.TransactionSpyService;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -19,13 +25,18 @@ import java.util.concurrent.CompletableFuture;
 
 public class AdminSteps {
     ReportReceiverService rr;
+    TransactionSpyService tss;
+    ReportService rs = new ReportService();
     Event event;
     List<TransactionDTO> inputTransactions = new ArrayList<>();
     private final CompletableFuture<List<TransactionDTO>> result = new CompletableFuture<>();
     private final CompletableFuture<Map<String, BigDecimal>> summary = new CompletableFuture<>();
+    TransactionDTO transaction;
+    private Exception e;
 
     public AdminSteps() {
-        rr = new ReportReceiverService(ev -> event = ev);
+        rr = new ReportReceiverService(ev -> event = ev, rs);
+        tss = new TransactionSpyService(ev -> event = ev, rs);
     }
 
     @Given("a list of transactions")
@@ -41,12 +52,12 @@ public class AdminSteps {
             transaction.setTime(calendar);
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
+            rs.getRepo().add(transaction);
         }
-        rr.receiveEvent();
     }
 
     @When("a request to see all transactions is made")
-    public void aRequestToSeeAllTransactionsIsMade() throws Exception {
+    public void aRequestToSeeAllTransactionsIsMade() {
         new Thread(() -> {try {
             result.complete(rr.requestAllTransactions());
         } catch (Exception e) {
@@ -81,5 +92,41 @@ public class AdminSteps {
     @When("an event {string} has been sent back")
     public void anEventHasBeenSentBack(String eventType) throws Exception {
         rr.receiveEvent(new Event(eventType, new Object[] {inputTransactions}));
+    }
+
+    @When("a new broken transaction is recorded")
+    public void aNewBrokenTransactionIsRecorded() throws Exception {
+        XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-01-15");
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", date);
+        transaction.setToken("1234");
+        transaction.setAmount(null);
+        try {
+            tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+        } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
+    @Then("an exception is returned: {string}")
+    public void anExceptionIsReturned(String error) {
+        Assertions.assertEquals(error, e.getMessage());
+    }
+
+    @When("the transaction is recorded")
+    public void theTransactionIsRecorded() throws Exception {
+        XMLGregorianCalendar date = DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-01-15");
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", date);
+        transaction.setToken("1234");
+        tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+    }
+
+    @Then("a {string} is sent")
+    public void aIsSent(String eventType) {
+        Assertions.assertEquals(eventType, event.getEventType());
+    }
+
+    @And("the transaction can be found in the repository")
+    public void theTransactionCanBeFoundInTheRepository() {
+        Assertions.assertEquals(transaction.toString(), rs.getRepo().getAll().get(0).toString());
     }
 }

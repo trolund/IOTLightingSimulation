@@ -13,16 +13,17 @@ import java.util.concurrent.CompletableFuture;
 
 public class ReportReceiverService implements EventReceiver {
 
-    IReportService rs = new ReportService();
+    IReportService rs;
 
     EventSender eventSender;
 
-    public ReportReceiverService(EventSender eventSender) {
+    public ReportReceiverService(EventSender eventSender, ReportService reportService) {
         this.eventSender = eventSender;
+        this.rs = reportService;
     }
 
-    public List<TransactionDTO> requestAllTransactions() throws Exception {
-        return rs.getRepo();
+    public List<TransactionDTO> requestAllTransactions() {
+        return rs.getRepo().getAll();
     }
 
     public Map<String, BigDecimal> requestSummary() throws Exception {
@@ -30,7 +31,7 @@ public class ReportReceiverService implements EventReceiver {
         return rs.requestSummary(transactions);
     }
 
-    public List<TransactionDTO> requestAllCustomerTransactions(String customerId) throws Exception {
+    public List<TransactionDTO> requestAllCustomerTransactions(String customerId) {
         List<TransactionDTO> transactions = requestAllTransactions();
         return rs.requestAllCustomerTransactions(transactions, customerId);
     }
@@ -38,6 +39,16 @@ public class ReportReceiverService implements EventReceiver {
     public List<TransactionDTO> requestAllCustomerTransactionsBetween(String customerId, String beg, String end) throws Exception {
         List<TransactionDTO> transactions = requestAllTransactions();
         return rs.requestAllCustomerTransactionsBetween(transactions, customerId, beg, end);
+    }
+
+    public List<TransactionDTO> requestAllMerchantTransactions(String merchantId) {
+        List<TransactionDTO> transactions = requestAllTransactions();
+        return rs.requestAllMerchantTransactions(transactions, merchantId);
+    }
+
+    public List<TransactionDTO> requestAllMerchantTransactionsBetween(String merchantId, String beg, String end) throws Exception {
+        List<TransactionDTO> transactions = requestAllTransactions();
+        return rs.requestAllMerchantTransactionsBetween(transactions, merchantId, beg, end);
     }
 
     @Override

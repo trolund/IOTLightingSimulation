@@ -16,7 +16,6 @@ public class RabbitMQReceiver {
 
 	private static final String EXCHANGE_NAME = "eventsExchange";
 	private static final String QUEUE_TYPE = "topic";
-	private static final String TOPIC = "report.*";
 
 	EventReceiver service;
 
@@ -24,14 +23,14 @@ public class RabbitMQReceiver {
 		this.service = service;
 	}
 
-	public void initConnection() throws Exception {
+	public void initConnection(String topic) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("rabbitMq");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
 		String queueName = channel.queueDeclare().getQueue();
-		channel.queueBind(queueName, EXCHANGE_NAME, TOPIC);
+		channel.queueBind(queueName, EXCHANGE_NAME, topic);
 
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			String message = new String(delivery.getBody(), "UTF-8");
