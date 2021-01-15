@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.transaction;
 
 /**
  * @author Troels (s161791)

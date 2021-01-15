@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.token;
 
 /**
  * @author Troels (s161791), Daniel (s151641)
