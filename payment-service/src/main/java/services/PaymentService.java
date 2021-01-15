@@ -1,13 +1,13 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.AccountException;
-import exceptions.TokenNotValidException;
-import exceptions.TransactionException;
+import exceptions.account.AccountException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
 import exceptions.merchant.MerchantException;
 import exceptions.merchant.MerchantNotFoundException;
+import exceptions.token.TokenNotValidException;
+import exceptions.transaction.TransactionException;
 import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
@@ -94,9 +94,8 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException {
-        //processPayment(merchantId, customerId, amount, "");
-        throw new TransactionException("NOT IMPLEMENTED!");
+    public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException, TokenNotValidException {
+        processPayment(merchantId, customerId, amount, "");
     }
 
     @Override

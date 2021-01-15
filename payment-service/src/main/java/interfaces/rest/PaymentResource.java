@@ -1,9 +1,9 @@
 package interfaces.rest;
 
-import exceptions.TokenNotValidException;
-import exceptions.TransactionException;
 import exceptions.customer.CustomerException;
 import exceptions.merchant.MerchantException;
+import exceptions.token.TokenNotValidException;
+import exceptions.transaction.TransactionException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;

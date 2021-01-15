@@ -1,7 +1,7 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.AccountException;
+import exceptions.account.AccountException;
 import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
