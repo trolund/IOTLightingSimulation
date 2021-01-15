@@ -1,36 +1,35 @@
 package cucumber.steps;
 
 import dto.TransactionDTO;
-import interfaces.ReportReceiver;
+import messaging.EventSender;
+import org.junit.Assert;
+import services.ReportReceiverService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
-import messaging.EventSender;
 import org.junit.jupiter.api.Assertions;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class AdminSteps {
-    ReportReceiver rr;
+    ReportReceiverService rr;
     Event event;
     List<TransactionDTO> inputTransactions = new ArrayList<>();
-    List<TransactionDTO> outputTransactions = new ArrayList<>();
+    private final CompletableFuture<List<TransactionDTO>> result = new CompletableFuture<>();
+    private final CompletableFuture<Map<String, BigDecimal>> summary = new CompletableFuture<>();
 
     public AdminSteps() {
-        rr = new ReportReceiver(new EventSender() {
-            @Override
-            public void sendEvent(Event ev) throws Exception {
-                event = ev;
-            }
-        });
+        rr = new ReportReceiverService(ev -> event = ev);
     }
 
     @Given("a list of transactions")
@@ -51,24 +50,39 @@ public class AdminSteps {
 
     @When("a request to see all transactions is made")
     public void aRequestToSeeAllTransactionsIsMade() throws Exception {
-        Object[] output = new Object[1];
-        output[0] = inputTransactions;
-        rr.receiveEvent(new Event("requestAllTransactions", output));
-
+        new Thread(() -> {try {
+            result.complete(rr.requestAllTransactions());
+        } catch (Exception e) {
+            throw new Error(e);
+        }}).start();
     }
 
     @Then("the list of transactions is shown")
     public void theListOfTransactionsIsShown() {
-        Assertions.assertEquals(inputTransactions, event.getArguments()[0]);
+        Assertions.assertEquals(inputTransactions, result.join());
     }
 
     @When("a request for summary is made")
     public void aRequestForSummaryIsMade() {
-        throw new PendingException();
+        new Thread(() -> {try {
+            summary.complete(rr.requestSummary());
+        } catch (Exception e) {
+            throw new Error(e);
+        }}).start();
     }
 
     @Then("a summary is made based on the transactions")
-    public void aSummaryIsMadeBasedOnTheTransactions() {
-        throw new PendingException();
+    public void aSummaryIsMadeBasedOnTheTransactions(DataTable table) {
+        Assertions.assertEquals(table.asMaps(String.class, BigDecimal.class).get(0), summary.join());
+    }
+
+    @Then("an event {string} has been sent")
+    public void anEventHasBeenSent(String eventType) {
+        Assertions.assertEquals(eventType,event.getEventType());
+    }
+
+    @When("an event {string} has been sent back")
+    public void anEventHasBeenSentBack(String eventType) throws Exception {
+        rr.receiveEvent(new Event(eventType, new Object[] {inputTransactions}));
     }
 }
