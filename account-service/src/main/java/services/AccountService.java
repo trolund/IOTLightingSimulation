@@ -1,7 +1,7 @@
 package services;
 
-import domain.BankAccount;
-import domain.UserAccount;
+import dto.BankAccount;
+import dto.UserAccount;
 import infrastructure.bank.*;
 import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;

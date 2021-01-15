@@ -1,6 +1,6 @@
 package infrastructure.repositories.interfaces;
 
-import domain.UserAccount;
+import dto.UserAccount;
 
 import java.util.List;
 

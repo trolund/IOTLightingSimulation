@@ -4,6 +4,8 @@ import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
+import dto.BankAccount;
+import dto.UserAccount;
 
 import java.math.BigDecimal;
 
@@ -26,7 +28,6 @@ public class Main {
         customerUserAccount.getBankAccount().setBalance(BigDecimal.valueOf(20));
 
         System.out.println(accountService.registerUser(customerUserAccount));
-
     }
 
 }

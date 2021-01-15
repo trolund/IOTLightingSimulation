@@ -1,10 +1,10 @@
 package cucumber.steps;
 
+import dto.UserAccount;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Given;
 import services.AccountService;
-import domain.UserAccount;
 
 import static org.junit.jupiter.api.Assertions.*;
 

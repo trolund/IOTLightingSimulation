@@ -1,9 +1,9 @@
 package services.interfaces;
 
-import domain.UserAccount;
-import java.util.List;
-
+import dto.UserAccount;
 import exceptions.*;
+
+import java.util.List;
 
 public interface IAccountService {
     void add(UserAccount account) throws Exception;

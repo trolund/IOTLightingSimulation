@@ -1,6 +1,6 @@
 package infrastructure.repositories;
 
-import domain.UserAccount;
+import dto.UserAccount;
 import infrastructure.repositories.interfaces.IAccountRepository;
 
 import javax.enterprise.context.ApplicationScoped;

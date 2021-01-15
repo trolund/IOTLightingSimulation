@@ -70,7 +70,7 @@ public class BankAccount implements Serializable {
         return this.balance;
     }
 
-    private void setBalance(BigDecimal balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 /*

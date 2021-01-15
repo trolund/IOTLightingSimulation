@@ -3,8 +3,6 @@ package cucumber.steps;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import domain.UserAccount;
-import domain.BankAccount;
 import exceptions.EmptyNameException;
 import exceptions.EmptyCprException;
 import services.AccountService;
