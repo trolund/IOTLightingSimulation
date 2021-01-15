@@ -48,7 +48,7 @@ public class PaymentService implements IPaymentService {
             // Checks if the token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
             if (!service.validateToken(token).equals(token)) {
-                throw new TokenNotValidException("The token: " + token + " is not valid");
+                throw new TokenNotValidException("The token (" + token + ") is not valid");
             }
 
             // TODO get with account service
