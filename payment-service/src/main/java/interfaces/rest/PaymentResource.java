@@ -2,7 +2,7 @@ package interfaces.rest;
 
 import exceptions.customer.CustomerException;
 import exceptions.merchant.MerchantException;
-import exceptions.token.TokenNotValidException;
+import exceptions.token.InvalidTokenException;
 import exceptions.transaction.TransactionException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -45,7 +45,7 @@ public class PaymentResource {
                     .build();
         } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        } catch (TransactionException | TokenNotValidException e) {
+        } catch (TransactionException | InvalidTokenException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -71,7 +71,7 @@ public class PaymentResource {
                     .build();
         } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        } catch (TransactionException | TokenNotValidException e) {
+        } catch (TransactionException | InvalidTokenException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
