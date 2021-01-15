@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
  */
 public class PaymentEventService implements EventReceiver {
 
-    PaymentService ps;
+    PaymentService service;
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
 
     private final EventSender eventSender;
 
-    public PaymentEventService(EventSender eventSender, PaymentService ps) {
+    public PaymentEventService(EventSender eventSender, PaymentService service) {
         this.eventSender = eventSender;
-        this.ps = ps;
+        this.service = service;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class PaymentEventService implements EventReceiver {
         String accountId = (String) event.getArguments()[0];
 
         try {
-            arguments = new Object[]{ps.getLatestTransaction(accountId)};
+            arguments = new Object[]{service.getLatestTransaction(accountId)};
             eventToSend = new Event("getLatestTransactionSuccessful", arguments);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class PaymentEventService implements EventReceiver {
         String accountId = (String) event.getArguments()[0];
 
         try {
-            List<TransactionDTO> dtos = ps.getTransactions(accountId);
+            List<TransactionDTO> dtos = service.getTransactions(accountId);
 
             List<TransactionDTO> dtosMapped = dtos.stream().peek(t -> {
 

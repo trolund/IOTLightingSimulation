@@ -6,6 +6,7 @@ import exceptions.merchant.MerchantException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,52 +25,51 @@ public class PaymentResource {
 
     /**
      * Pay x amount to a merchant
-     * @param cid - Customer id.
-     * @param mid - Merchant id.
+     *
+     * @param customerId - Customer id.
+     * @param merchantId - Merchant id.
      * @Param amount - amount of money to be payed.
      */
-
     @Operation(summary = "Pay x amount to a merchant")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response pay(@QueryParam("cid") String cid,
-                        @QueryParam("mid") String mid,
-                        @QueryParam("amount") int amount,
-                        @QueryParam("token") String token) {
-        try{
-            ps.createTransaction(cid, mid, amount, token);
+    public Response processPayment(@QueryParam("customerId") String customerId,
+                                   @QueryParam("merchantId") String merchantId,
+                                   @QueryParam("amount") int amount,
+                                   @QueryParam("token") String token) {
+        try {
+            ps.processPayment(merchantId, customerId, amount, token);
             return Response
                     .ok()
                     .build();
-        }catch (CustomerException | MerchantException e){
+        } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        }catch (TransactionException e){
+        } catch (TransactionException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
     /**
      * Refund amount to customer
-     * @param cid - Customer id.
-     * @param mid - Merchant id.
+     *
+     * @param customerId - Customer id.
+     * @param merchantId - Merchant id.
      * @Param amount - amount of money to be refunded.
      */
-
     @Operation(summary = "Refund amount to customer")
     @POST
     @Path("refund")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response refund(@QueryParam("cid") String cid,
-                        @QueryParam("mid") String mid,
-                        @QueryParam("amount") int amount) {
-        try{
-            ps.refund(cid, mid, amount);
+    public Response refund(@QueryParam("customerId") String customerId,
+                           @QueryParam("merchantId") String merchantId,
+                           @QueryParam("amount") int amount) {
+        try {
+            ps.refund(customerId, merchantId, amount);
             return Response
                     .ok()
                     .build();
-        }catch (CustomerException | MerchantException e){
+        } catch (CustomerException | MerchantException e) {
             throw new NotFoundException(e.getMessage());
-        }catch (TransactionException e){
+        } catch (TransactionException e) {
             throw new BadRequestException(e.getMessage());
         }
     }

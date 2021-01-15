@@ -2,8 +2,6 @@ package cucumber.steps;
 
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
-import exceptions.CustomerHasNoTokensException;
-import exceptions.CustomerNotFoundException;
 
 import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
@@ -38,7 +36,7 @@ public class validatingTokensSteps {
     public void aTokenIsSentToTheServer() {
         try {
             foundCustomerId = ts.getCustomerFromToken(token.getId()).getCustomerId();
-            ts.invalidateToken(token.getId());
+            ts.validateToken(token.getId());
         } catch (Exception e) {
             this.e = e;
         }
@@ -46,7 +44,7 @@ public class validatingTokensSteps {
 
     @Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
-        Assertions.assertThrows(TokenNotFoundException.class, () -> ts.invalidateToken(token.getId()));
+        Assertions.assertThrows(TokenNotFoundException.class, () -> ts.validateToken(token.getId()));
         Assertions.assertNull(e);
     }
 
@@ -63,7 +61,7 @@ public class validatingTokensSteps {
     @And("the token is deleted")
     public void theTokenIsDeleted() {
         try {
-            ts.invalidateToken(token.getId());
+            ts.validateToken(token.getId());
         } catch (Exception e) {
             Assertions.fail(e.getMessage());
         }

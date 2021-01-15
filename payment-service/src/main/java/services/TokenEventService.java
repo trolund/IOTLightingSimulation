@@ -43,8 +43,8 @@ public class TokenEventService implements EventReceiver {
 
         switch (event.getEventType()) {
             case "TokenValidationSuccessful":
-                    // String id = (String) event.getArguments()[0];
-                    result.complete("42");
+                    String tokenId = (String) event.getArguments()[0];
+                    result.complete(tokenId);
                 break;
             case "TokenValidationFailed":
                     result.complete("");

@@ -1,19 +1,16 @@
 package interfaces.rabbitmq;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-import io.cucumber.java.an.E;
 import messaging.Event;
 import messaging.EventReceiver;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+
 
 public class RabbitMQReceiver {
 
@@ -37,8 +34,8 @@ public class RabbitMQReceiver {
         channel.queueBind(queueName, EXCHANGE_NAME, TOPIC);
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
-            System.out.println("[x] receiving "+message);
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println("[x] receiving " + message);
 
             Event event = new Gson().fromJson(message, Event.class);
             try {

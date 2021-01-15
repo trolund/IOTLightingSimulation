@@ -1,7 +1,9 @@
 package domain;
 
+import exceptions.InvalidTokenException;
 import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
+import io.cucumber.java.sl.In;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,7 +58,16 @@ public class CustomerToken implements Serializable {
         return newTokens;
     }
 
-    public void invalidateToken(String tokenId) {
-        tokens.removeIf(obj -> obj.getId().equals(tokenId));
+    public Token validateToken(String tokenId) throws InvalidTokenException {
+        //tokens.removeIf(obj -> obj.getId().equals(tokenId));
+
+        Token token = tokens.stream().filter(obj -> obj.getId().equals(tokenId))
+                .findAny().orElse(null);
+
+        if (token == null) {
+            throw new InvalidTokenException(tokenId);
+        }
+
+        return token;
     }
 }

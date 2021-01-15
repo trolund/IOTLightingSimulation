@@ -35,7 +35,7 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            // starting the RabbitMQ listener
+            // starting the RabbitMQ listeners
             new RabbitMQPaymentAdapterFactory().getService();
             new RabbitMQTokenAdapterFactory().getService();
             LOGGER.log(Level.INFO, "RabbitMQ listening...");
