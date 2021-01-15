@@ -10,10 +10,13 @@ import messaging.EventSender;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
- *
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
  */
 public class RabbitMQPaymentSender implements EventSender {
 

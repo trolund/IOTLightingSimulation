@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 /**
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
- *
- * Payment microservice REST resource.
  */
 public class PaymentEventService implements EventReceiver {
 

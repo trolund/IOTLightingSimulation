@@ -14,9 +14,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
-
 @Tag(ref = "Payment")
 @Path("/payment")
 public class PaymentResource {

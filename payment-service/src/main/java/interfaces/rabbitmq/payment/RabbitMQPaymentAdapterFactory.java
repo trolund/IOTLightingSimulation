@@ -6,10 +6,12 @@ import services.MapperService;
 import services.PaymentEventService;
 import services.PaymentService;
 
-import javax.inject.Inject;
 /**
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
  */
 public class RabbitMQPaymentAdapterFactory {
 

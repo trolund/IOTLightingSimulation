@@ -6,7 +6,7 @@
 4. [Account-service](#account-service)
 5. [Report-service](#report-service)
 6. [OpenAPI](#OpenAPI)  
-7. [Docker](#Docker)
+7. [Installation](#Installation)
 8. [Contributors](#Contributors)
 
 
@@ -53,10 +53,13 @@ curl -o openapi-spec.yml g-11.compute.dtu.dk:8082/openapi
 
 
 
-## Docker
+## Installation
 
+To build and run the system, execute the following script. Docker and docker-compose is required.
 
-
+```
+build_and_run.sh
+```
 
 
 ## Contributors

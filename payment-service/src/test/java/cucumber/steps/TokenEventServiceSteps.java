@@ -9,6 +9,10 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ */
 public class TokenEventServiceSteps {
 
     TokenEventService s;

@@ -3,6 +3,7 @@ package interfaces.rest;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,6 +25,7 @@ public class TransactionResource {
 
     /**
      * Get all transactions for a account
+     *
      * @param accountId - account GUID
      */
     @Operation(summary = "Get all transactions for a account")
@@ -36,7 +38,7 @@ public class TransactionResource {
                     .ok()
                     .entity(service.getTransactions(accountId))
                     .build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .build();
@@ -45,6 +47,7 @@ public class TransactionResource {
 
     /**
      * Get the latest transaction for a account
+     *
      * @param accountId - account GUID
      */
     @Operation(summary = "Get the latest transaction for a account")
@@ -57,7 +60,7 @@ public class TransactionResource {
                     .status(Response.Status.OK)
                     .entity(service.getLatestTransaction(accountId))
                     .build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .build();

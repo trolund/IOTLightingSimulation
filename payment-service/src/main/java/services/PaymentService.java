@@ -27,8 +27,6 @@ import java.util.List;
 /**
  * @primary-author Troels (s161791)
  * @co-author Daniel (s151641)
- * <p>
- * Payment microservice REST resource.
  */
 @ApplicationScoped
 public class PaymentService implements IPaymentService {

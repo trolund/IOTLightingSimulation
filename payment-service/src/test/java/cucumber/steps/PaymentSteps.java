@@ -14,6 +14,10 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
+/**
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
+ */
 @QuarkusTest
 public class PaymentSteps {
 
