@@ -20,7 +20,7 @@ public class RabbitMqSender implements EventSender {
 	@Override
 	public void sendEvent(Event event) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		factory.setHost("rabbitmq");
 		try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
 			channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
 			String message = new Gson().toJson(event);

@@ -18,8 +18,8 @@ public class PaymentServiceClient {
 
     public boolean processPayment(String customerId, String merchantId, Integer amount) {
         Response r = baseUrl.path("payment")
-                .queryParam("cid", customerId)
-                .queryParam("mid", merchantId)
+                .queryParam("customerId", customerId)
+                .queryParam("merchantId", merchantId)
                 .queryParam("amount", amount)
                 .request()
                 .post(null);

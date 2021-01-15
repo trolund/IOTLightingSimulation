@@ -3,16 +3,18 @@ Feature: Payment
   Background:
     Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
     When the customer is created
-    Then the new customer exists in the system
-    And the customer requests 5 tokens
+    Then the creation should be successful
+    And the new customer should exist in the system
+    Then the customer requests 5 tokens
     Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
     When the merchant is created
+    Then the creation should be successful
     Then the new merchant exists in the system
-
 
   Scenario Outline: Successful Payment
     When the merchant initiates a payment for <amount> by the customer
-    Then the merchant asks for a token from the customer
+    And the merchant asks for a token from the customer
+    Then the merchant should receive a token
     And the payment is successful
     Then the customer should have a balance of <c_end_bal> left
     And the merchant should have a balance of <m_end_bal> left
@@ -27,14 +29,26 @@ Feature: Payment
       | 0      | 1000      | 1000      |
       | 500    | 500       | 1500      |
 
-
-  Scenario: Customer accountId not found
-   Given a customer with accountId "does-not-exist" that does not exist in the system
+  Scenario: Unsuccessful payment: Customer not found
+   Given a customer with id "does-not-exist" that does not exist in the system
+   And a merchant that exists in the system
    When the merchant initiates a payment for 10 by the customer
    Then the payment is unsuccessful
 
+  Scenario: Unsuccessful payment: Merchant not found
+    Given a customer that exists in the system
+    And a merchant with id "does-not-exist" that does not exist in the system
+    When the merchant initiates a payment for 10 by the customer
+    Then the payment is unsuccessful
 
-#  Scenario: Merchant accountID not found
-#    Given a merchant with accountId "does-not-exist" that does not exist in the system
-#    When the merchant initiates a payment for 10 by the customer
-#    Then the payment is unsuccessful
+  Scenario: Unsuccessful payment: Customer does not have adequate balance
+    Given a customer that exists in the system
+    And a merchant that exists in the system
+    When the merchant initiates a payment for 2000 by the customer
+    Then the payment is unsuccessful
+
+  Scenario: Unsuccessful payment: Merchant initiates negative payment
+    Given a customer that exists in the system
+    And a merchant that exists in the system
+    When the merchant initiates a payment for -2000 by the customer
+    Then the payment is unsuccessful
