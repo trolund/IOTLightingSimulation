@@ -1,13 +1,12 @@
 package infrastructure.repositories.interfaces;
 
-import domain.ExampleObj;
 import dto.TransactionDTO;
 import exceptions.TransactionException;
 
 // Specific to "Example" entity.
 // These methods should be specific to the given entity. For example,
 // getByCpr, whatever specific methods.
-public interface ITransactionRepository extends IRepository<ExampleObj> {
+public interface ITransactionRepository extends IRepository<TransactionDTO> {
     void add(TransactionDTO obj);
 
     TransactionDTO get(String tokenId) throws TransactionException;

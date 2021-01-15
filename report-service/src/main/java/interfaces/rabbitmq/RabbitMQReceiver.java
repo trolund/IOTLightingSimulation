@@ -14,7 +14,7 @@ import messaging.EventReceiver;
 
 public class RabbitMQReceiver {
 
-	private static final String EXCHANGE_NAME = "eventsExchange";
+	private static final String EXCHANGE_NAME = "message-hub";
 	private static final String QUEUE_TYPE = "topic";
 
 	EventReceiver service;
@@ -25,7 +25,7 @@ public class RabbitMQReceiver {
 
 	public void initConnection(String topic) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("rabbitMq");
+		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
