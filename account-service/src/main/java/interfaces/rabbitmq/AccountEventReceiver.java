@@ -1,15 +1,14 @@
 package interfaces.rabbitmq;
 
-import domain.UserAccount;
-import interfaces.rest.RootApplication;
+import dto.UserAccount;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 import services.interfaces.IAccountService;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.math.BigDecimal;
+import java.util.List;
 
 // authors: help from group
 public class AccountEventReceiver implements EventReceiver {

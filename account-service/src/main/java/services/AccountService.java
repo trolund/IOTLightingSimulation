@@ -1,7 +1,7 @@
 package services;
 
-import domain.BankAccount;
-import domain.UserAccount;
+import dto.BankAccount;
+import dto.UserAccount;
 import infrastructure.bank.*;
 import infrastructure.repositories.AccountRepository;
 import services.interfaces.IAccountService;
@@ -22,10 +22,10 @@ public class AccountService implements IAccountService {
     public void add(UserAccount ua) throws Exception {
         try {
             getAccountFromBank(ua);
-        } catch (Exception e1) {
+        } catch (RemoteAccountDoesNotExistException e1) {
             try {
                 createAccountAtBank(ua, ua.getBankAccount().getBalance());
-            } catch (Exception e2) {
+            } catch (RemoteAccountExistsException e2) {
                 throw e2;
             }
         }

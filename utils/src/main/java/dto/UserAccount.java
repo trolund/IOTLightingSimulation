@@ -1,7 +1,6 @@
 package dto;
 
 import java.io.Serializable;
-import exceptions.EmptyNameException;
 
 public class UserAccount implements Serializable {
 
@@ -10,18 +9,17 @@ public class UserAccount implements Serializable {
     private String cprNumber;
     private String id;
     private BankAccount bankAccount;
-    private boolean disabled;
 
     public UserAccount() {
+
     }
 
-    public UserAccount(String firstName, String lastName, String cprNumber) {
+    public UserAccount(String id, String firstName, String lastName,
+            String cprNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = "";
         this.cprNumber = cprNumber;
-        this.bankAccount = bankAccount;
-        this.disabled = false;
     }
 
     public String getFirstName() {
@@ -54,14 +52,6 @@ public class UserAccount implements Serializable {
 
     public void setCprNumber(String cprNumber) {
         this.cprNumber = cprNumber;
-    }
-
-    public boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(boolean bool) {
-        this.disabled = bool;
     }
 
     public BankAccount getBankAccount() {

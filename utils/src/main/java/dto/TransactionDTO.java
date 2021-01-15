@@ -4,6 +4,7 @@ package dto;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Troels (s161791)
@@ -17,7 +18,7 @@ public class TransactionDTO implements Serializable {
     private String creditor;
     private String debtor;
     private String description;
-    private XMLGregorianCalendar time;
+    private Date time;
     private String token;
 
     public TransactionDTO() {
@@ -30,7 +31,7 @@ public class TransactionDTO implements Serializable {
         this.debtor = debtor;
     }
 
-    public TransactionDTO(BigDecimal amount, BigDecimal balance, String creditor, String debtor, String description, XMLGregorianCalendar time) {
+    public TransactionDTO(BigDecimal amount, BigDecimal balance, String creditor, String debtor, String description, Date time) {
         this.amount = amount;
         this.balance = balance;
         this.creditor = creditor;
@@ -87,11 +88,11 @@ public class TransactionDTO implements Serializable {
         this.description = description;
     }
 
-    public XMLGregorianCalendar getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(XMLGregorianCalendar time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
