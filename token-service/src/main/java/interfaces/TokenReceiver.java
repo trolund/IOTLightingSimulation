@@ -19,7 +19,7 @@ public class TokenReceiver implements EventReceiver {
 
     @Override
     public void receiveEvent(Event event) throws Exception {
-        System.out.println("handling event: "+event);
+        System.out.println("handling event: " + event);
         if (event.getEventType().equals("requestTokens")) {
             try {
                 String customerId = rs.requestTokens((String) event.getArguments()[0], (Integer) event.getArguments()[1]);
@@ -53,4 +53,5 @@ public class TokenReceiver implements EventReceiver {
             }
         }
     }
+
 }

@@ -5,9 +5,8 @@ import org.jboss.resteasy.spi.NotImplementedYetException;
 
 /**
  * @author Troels (s161791)
- * serivce for communicating with TokenService.
+ * service for communicating with TokenService.
  */
-
 public class TokenService implements ITokenService {
 
     private String baseUrl;
@@ -29,4 +28,5 @@ public class TokenService implements ITokenService {
     public boolean validateToken() {
         throw new NotImplementedYetException();
     }
+
 }

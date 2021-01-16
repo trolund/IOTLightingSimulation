@@ -6,7 +6,6 @@ import infrastructure.token.interfaces.ITokenService;
  * @author Troels (s161791)
  * Mock TokenService for testing.
  */
-
 public class MockTokenService implements ITokenService {
 
     public String getToken(){

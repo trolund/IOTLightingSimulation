@@ -3,16 +3,12 @@ package cucumber.steps;
 import domain.Token;
 import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
-
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.After;
 import org.junit.jupiter.api.Assertions;
 import services.TokenService;
-
-import java.util.List;
 
 public class requestTokensSteps {
     String customerId;

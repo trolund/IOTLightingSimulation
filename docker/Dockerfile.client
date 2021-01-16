@@ -9,5 +9,5 @@ COPY ./client/target/client-1.0.0.jar /usr/src
 
 #COPY ./client/target/lib /usr/src/lib
 
-CMD java -Xmx64m \
-      -jar client-1.0.0.jar > client-log.txt
+# CMD java -Xmx64m \
+#      -jar client-1.0.0.jar > client-log.txt

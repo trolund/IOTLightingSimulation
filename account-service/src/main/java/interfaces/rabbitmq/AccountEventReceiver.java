@@ -7,7 +7,6 @@ import messaging.EventSender;
 import services.interfaces.IAccountService;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.List;
 
 // authors: help from group
@@ -17,7 +16,7 @@ public class AccountEventReceiver implements EventReceiver {
 
     @Inject
     IAccountService accountService;
-    
+
     public AccountEventReceiver(EventSender eventSender) {
         this.eventSender = eventSender;
     }
@@ -58,7 +57,6 @@ public class AccountEventReceiver implements EventReceiver {
             case "registerUser":
                 try {
                     UserAccount userAccount = (UserAccount) in.getArguments()[0];
-                    BigDecimal balance = (BigDecimal) in.getArguments()[1];
                     accountService.add(userAccount);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
@@ -67,7 +65,7 @@ public class AccountEventReceiver implements EventReceiver {
                 break;
 
             default:
-                    eventSender.sendEvent(new Event("Event ignored. Type: " + in.getEventType() + " and Event: " + in.toString()));
+                eventSender.sendEvent(new Event("Event ignored. Type: " + in.getEventType() + " and Event: " + in.toString()));
                 break;
         }
     }

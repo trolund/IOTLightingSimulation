@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 /**
  * @primary-author Troels (s161791)
  * @co-author Daniel (s151641)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
  */
 public class RabbitMQTokenSender implements EventSender {
 

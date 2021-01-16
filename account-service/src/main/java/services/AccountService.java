@@ -5,17 +5,17 @@ import dto.UserAccount;
 import exceptions.account.AccountException;
 import exceptions.account.RemoteAccountDoesNotExistException;
 import exceptions.account.RemoteAccountExistsException;
-import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.BankServiceService;
 import infrastructure.bank.User;
-import infrastructure.repositories.AccountRepository;
+import infrastructure.repositories.interfaces.IAccountRepository;
 import services.interfaces.IAccountService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class AccountService implements IAccountService {
@@ -23,21 +23,15 @@ public class AccountService implements IAccountService {
     BankService bs = new BankServiceService().getBankServicePort();
 
     @Inject
-    AccountRepository repo;
+    IAccountRepository repo;
 
     @Override
-    public void add(UserAccount ua) throws Exception {
+    public String add(UserAccount ua) throws Exception {
         try {
-            getAccountFromBank(ua);
+            return checkIfAccountExists(ua);
         } catch (RemoteAccountDoesNotExistException e1) {
-            try {
-                createAccountAtBank(ua, ua.getBankAccount().getBalance());
-            } catch (RemoteAccountExistsException e2) {
-                throw e2;
-            }
+            return createAccount(ua);
         }
-
-        repo.add(ua);
     }
 
     @Override
@@ -55,34 +49,30 @@ public class AccountService implements IAccountService {
         return repo.getAll();
     }
 
+    @Override
     public void retireAccount(UserAccount ua)
-        throws RemoteAccountDoesNotExistException {
-        
+            throws RemoteAccountDoesNotExistException {
         try {
             bs.retireAccount(ua.getBankAccount().getBankId());
+            repo.remove(ua.getId());
         } catch (Exception e) {
             throw new RemoteAccountDoesNotExistException();
         }
     }
 
-    private void getAccountFromBank(UserAccount ua)
+    private String checkIfAccountExists(UserAccount ua)
             throws RemoteAccountDoesNotExistException {
-
-        User user = new User();
-        user.setCprNumber(ua.getCprNumber());
-        user.setFirstName(ua.getFirstName());
-        user.setLastName(ua.getLastName());
-
         try {
-            Account account = bs.getAccountByCprNumber(user.getCprNumber());
-            ua.setBankAccount(new BankAccount(account));
+            bs.getAccountByCprNumber(ua.getCprNumber());
+            return repo.getByCpr(ua.getCprNumber()).getId();
         } catch (Exception e) {
             throw new RemoteAccountDoesNotExistException();
         }
     }
 
-    private void createAccountAtBank(UserAccount ua, BigDecimal initialBalance)
+    private String createAccount(UserAccount ua)
             throws RemoteAccountExistsException {
+        BigDecimal initialBalance = ua.getBankAccount().getBalance();
 
         User user = new User();
         user.setCprNumber(ua.getCprNumber());
@@ -93,8 +83,13 @@ public class AccountService implements IAccountService {
         try {
             String bankId = bs.createAccountWithBalance(user, initialBalance);
             ua.setBankAccount(new BankAccount(bankId, initialBalance));
+            String internalId = String.valueOf(UUID.randomUUID());
+            ua.setId(internalId);
+            repo.add(ua);
+            return internalId;
         } catch (Exception e) {
             throw new RemoteAccountExistsException();
         }
     }
+
 }

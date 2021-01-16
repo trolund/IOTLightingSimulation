@@ -1,9 +1,7 @@
 package domain;
 
-import exceptions.InvalidTokenException;
-import exceptions.TokenNotFoundException;
 import exceptions.TooManyTokensException;
-import io.cucumber.java.sl.In;
+import exceptions.token.InvalidTokenException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,7 +10,7 @@ import java.util.List;
 public class CustomerToken implements Serializable {
 
     private final List<Token> tokens;
-    private String customerId;
+    private final String customerId;
 
     public CustomerToken(String customerId) {
         this.customerId = customerId;
@@ -70,4 +68,5 @@ public class CustomerToken implements Serializable {
 
         return token;
     }
+
 }

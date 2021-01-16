@@ -1,7 +1,7 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.AccountException;
+import exceptions.account.AccountException;
 import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
@@ -16,17 +16,12 @@ import java.util.stream.Collectors;
 /**
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
- *
- * Payment microservice REST resource.
  */
 public class PaymentEventService implements EventReceiver {
 
-    PaymentService service;
-
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
-
     private final EventSender eventSender;
-
+    PaymentService service;
     private CompletableFuture<String> result;
 
     public PaymentEventService(EventSender eventSender, PaymentService service) {
@@ -51,10 +46,10 @@ public class PaymentEventService implements EventReceiver {
 
     public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
         Event event = null;
-        if(successful){
-            event = new Event("TransactionSuccessful", new Object[] {dto});
-        }else{
-            event = new Event("TransactionFailed", new Object[] {dto});
+        if (successful) {
+            event = new Event("TransactionSuccessful", new Object[]{dto});
+        } else {
+            event = new Event("TransactionFailed", new Object[]{dto});
         }
         eventSender.sendEvent(event);
     }

@@ -21,7 +21,7 @@ public class Main {
         UserAccount customerUserAccount = new UserAccount();
         customerUserAccount.setBankAccount(new BankAccount());
 
-        customerUserAccount.setCprNumber("000000-1234");
+        customerUserAccount.setCprNumber("000000-9876");
         customerUserAccount.setFirstName("Michael");
         customerUserAccount.setLastName("Hardy");
         customerUserAccount.getBankAccount().setBalance(BigDecimal.valueOf(20));

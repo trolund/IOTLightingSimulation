@@ -3,6 +3,7 @@ package services.interfaces;
 import domain.CustomerToken;
 import domain.Token;
 import exceptions.*;
+import exceptions.token.InvalidTokenException;
 
 public interface ITokenService {
     void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException;

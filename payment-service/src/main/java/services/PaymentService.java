@@ -1,13 +1,13 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.AccountException;
-import exceptions.TokenNotValidException;
-import exceptions.TransactionException;
+import exceptions.account.AccountException;
 import exceptions.customer.CustomerException;
 import exceptions.customer.CustomerNotFoundException;
 import exceptions.merchant.MerchantException;
 import exceptions.merchant.MerchantNotFoundException;
+import exceptions.token.InvalidTokenException;
+import exceptions.transaction.TransactionException;
 import infrastructure.bank.Account;
 import infrastructure.bank.BankService;
 import infrastructure.bank.Transaction;
@@ -17,8 +17,6 @@ import services.interfaces.IPaymentService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,8 +25,6 @@ import java.util.List;
 /**
  * @primary-author Troels (s161791)
  * @co-author Daniel (s151641)
- * <p>
- * Payment microservice REST resource.
  */
 @ApplicationScoped
 public class PaymentService implements IPaymentService {
@@ -44,42 +40,45 @@ public class PaymentService implements IPaymentService {
 
     @Override
     public void processPayment(String customerId, String merchantId, int amount, String token)
-            throws TokenNotValidException, CustomerNotFoundException, MerchantNotFoundException, TransactionException {
+            throws InvalidTokenException, CustomerNotFoundException, MerchantNotFoundException, TransactionException {
         PaymentEventService eventService = new RabbitMQPaymentAdapterFactory().getService();
 
         Account customer = null;
         Account merchant = null;
 
+        TransactionDTO dto = null;
+
         String desc = "Transaction between Customer (" + merchantId + ")" +
                 " and Merchant (" + customerId + ") for amount " + amount +
                 " with token " + token;
-        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBalance(), merchantId, customerId, desc, new Date());
+
         try {
             // Checks if the token is valid
             TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
             if (!service.validateToken(token).equals(token)) {
-                throw new TokenNotValidException("The token (" + token + ") is not valid");
+                throw new InvalidTokenException(token);
             }
 
             // TODO get with account service
             merchant = bs.getAccount(customerId);
             customer = bs.getAccount(merchantId);
 
+            dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBalance(), merchantId, customerId, desc, new Date());
 
             bs.transferMoneyFromTo(
                     customer.getId(),
                     merchant.getId(),
                     BigDecimal.valueOf(amount),
                     desc);
-
             try {
                 eventService.sendTransactionDone(dto, true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (TokenNotValidException e) {
-            throw new TokenNotValidException(e.getMessage());
+        } catch (InvalidTokenException e) {
+            throw new InvalidTokenException(e.getMessage());
         } catch (Exception e) {
+            dto = new TransactionDTO(BigDecimal.valueOf(amount), BigDecimal.valueOf(-1), merchantId, customerId, desc, new Date());
             try {
                 eventService.sendTransactionDone(dto, false);
             } catch (Exception exception) {
@@ -96,9 +95,9 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException {
-        //processPayment(merchantId, customerId, amount, "");
-        throw new TransactionException("NOT IMPLEMENTED!");
+    public void refund(String customerId, String merchantId, int amount, String token)
+            throws CustomerException, MerchantException, TransactionException, InvalidTokenException {
+        processPayment(merchantId, customerId, amount, token);
     }
 
     @Override

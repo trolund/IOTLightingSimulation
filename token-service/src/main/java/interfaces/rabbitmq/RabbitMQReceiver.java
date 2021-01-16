@@ -5,12 +5,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-
 import messaging.Event;
 import messaging.EventReceiver;
 
 import java.nio.charset.StandardCharsets;
-
 
 public class RabbitMQReceiver {
 
@@ -47,4 +45,5 @@ public class RabbitMQReceiver {
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
     }
+
 }
