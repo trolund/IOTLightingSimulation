@@ -1,4 +1,7 @@
-Feature: Merchant functionality
+# primary-author: Troels (s161791)
+# co-author: Daniel (s151641)
+
+Feature: Account
 
   # Register user in dtupay
   # Register user that already exists
@@ -8,6 +11,7 @@ Feature: Merchant functionality
   # Get user by cpr that exists
   # Get user by id that does not exist
   # Get user by cpr that does not exist
+
 
   Scenario Outline: Successful registration in DTUPay: Register user
     Given a new user with cpr <cpr>, first name <first_name>, last name <last_name> and a balance of <initial_balance>

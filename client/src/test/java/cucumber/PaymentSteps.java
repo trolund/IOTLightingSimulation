@@ -159,9 +159,15 @@ public class PaymentSteps {
         Assert.assertEquals(BigDecimal.valueOf(balance), mercLatestTran.getBalance());
     }
 
-    @Given("a customer with id {string} that does not exist in the system")
-    public void a_customer_with_id_that_does_not_exist_in_the_system(String id) {
+    @And("an invalid token {string}")
+    public void an_invalid_token(String token) {
+        customerToken.setId(token);
+    }
+
+    @Given("a customer with id {string} and a token {string} where neither exist")
+    public void a_customer_with_id_and_a_token_where_neither_exist(String id, String token) {
         this.currentCustomerId = id;
+        this.customerToken.setId(token);
     }
 
     @And("a merchant that exists in the system")

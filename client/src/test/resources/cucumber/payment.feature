@@ -1,3 +1,6 @@
+# primary-author: Daniel (s151641)
+# co-author: Troels (s161791)
+
 Feature: Payment
 
   Background:
@@ -29,15 +32,20 @@ Feature: Payment
       | 0      | 1000      | 1000      |
       | 500    | 500       | 1500      |
 
+  Scenario: Unsuccessful payment in DTUPay: Invalid token
+    Given a customer that exists in the system
+    And an invalid token "1234.4321"
+    And a merchant that exists in the system
+    When the merchant initiates a payment for 10 by the customer
+    Then the payment is unsuccessful
 
-    # these tests have to be rethought. where does the token come in to play?
-  Scenario: Unsuccessful payment in DTUPay: Customer not found
-   Given a customer with id "does-not-exist" that does not exist in the system
+  Scenario: Unsuccessful payment in DTUPay: Non-existent customer and invalid token
+   Given a customer with id "aaaa-bbb-ccc" and a token "1234.4321" where neither exist
    And a merchant that exists in the system
    When the merchant initiates a payment for 10 by the customer
    Then the payment is unsuccessful
 
-  Scenario: Unsuccessful payment in DTUPay: Merchant not found
+  Scenario: Unsuccessful payment in DTUPay: Non-existent merchant
     Given a customer that exists in the system
     And a merchant with id "does-not-exist" that does not exist in the system
     When the merchant initiates a payment for 10 by the customer
