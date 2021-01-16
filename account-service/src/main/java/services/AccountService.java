@@ -8,10 +8,11 @@ import exceptions.account.RemoteAccountExistsException;
 import infrastructure.bank.BankService;
 import infrastructure.bank.BankServiceService;
 import infrastructure.bank.User;
-import infrastructure.repositories.AccountRepository;
+import infrastructure.repositories.interfaces.IAccountRepository;
 import services.interfaces.IAccountService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +21,9 @@ import java.util.UUID;
 public class AccountService implements IAccountService {
 
     BankService bs = new BankServiceService().getBankServicePort();
-    AccountRepository repo = new AccountRepository();
+
+    @Inject
+    IAccountRepository repo;
 
     @Override
     public String add(UserAccount ua) throws Exception {

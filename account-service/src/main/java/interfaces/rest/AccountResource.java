@@ -5,6 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.AccountService;
 import services.interfaces.IAccountService;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -14,7 +15,8 @@ import java.util.List;
 @Path("/users")
 public class AccountResource {
 
-    IAccountService service = new AccountService();
+    @Inject
+    IAccountService service;
 
     @Tag(ref = "getUserById")
     @GET

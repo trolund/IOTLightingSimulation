@@ -3,7 +3,6 @@ package infrastructure.repositories;
 import dto.UserAccount;
 import exceptions.account.AccountException;
 import infrastructure.repositories.interfaces.IAccountRepository;
-
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
