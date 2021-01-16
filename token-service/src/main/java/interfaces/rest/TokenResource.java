@@ -1,6 +1,6 @@
 package interfaces.rest;
 
-import domain.Token;
+import dto.Token;
 import exceptions.*;
 import exceptions.token.InvalidTokenException;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -71,10 +71,10 @@ public class TokenResource {
         }
     }
 
-    @Tag(ref = "deleteCustomer")
+    @Tag(ref = "retireCustomerTokens")
     @DELETE
     @Path("{customerId}")
-    public Response deleteCustomer(@PathParam("customerId") String customerId) {
+    public Response retireCustomerTokens(@PathParam("customerId") String customerId) {
         try {
             service.deleteCustomer(customerId);
             return Response

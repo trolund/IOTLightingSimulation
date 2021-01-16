@@ -1,7 +1,7 @@
 package services;
 
-import domain.CustomerToken;
-import domain.Token;
+import dto.CustomerTokens;
+import dto.Token;
 import exceptions.*;
 import exceptions.token.InvalidTokenException;
 import infrastructure.repositories.CustomerTokensRepository;
@@ -16,7 +16,7 @@ public class TokenService implements ITokenService {
 
     @Override
     public void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException {
-        CustomerToken customerToken = new CustomerToken(customerId);
+        CustomerTokens customerToken = new CustomerTokens(customerId);
         repo.add(customerToken);
     }
 
@@ -35,7 +35,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public CustomerToken getCustomerFromToken(String tokenId) throws TokenNotFoundException {
+    public CustomerTokens getCustomerFromToken(String tokenId) throws TokenNotFoundException {
         return repo.getCustomerWithTokenId(tokenId);
     }
 
@@ -51,7 +51,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public CustomerToken getCustomer(String customerId) throws CustomerNotFoundException {
+    public CustomerTokens getCustomer(String customerId) throws CustomerNotFoundException {
         return repo.get(customerId);
     }
 

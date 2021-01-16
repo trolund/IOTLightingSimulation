@@ -1,6 +1,7 @@
 package com.client;
 
 import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -19,10 +20,10 @@ public class AccountServiceClient {
         baseUrl = client.target("http://localhost:8082/api/v1/");
     }
 
-    public String registerUser(UserAccountDTO userAccount) {
+    public String registerUser(UserRegistrationDTO registrationDTO) {
         Response r = baseUrl.path("users")
                 .request()
-                .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
+                .post(Entity.entity(registrationDTO, MediaType.APPLICATION_JSON_TYPE));
         return r.readEntity(String.class);
     }
 

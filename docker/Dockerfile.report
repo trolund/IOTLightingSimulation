@@ -30,4 +30,4 @@ COPY ./report-service/target/lib /usr/src/lib
 EXPOSE 8083
 
 CMD java -Xmx64m \
-      -jar report-service-1.0.0-runner.jar
+      -jar report-service-1.0.0-runner.jar > report-log.txt

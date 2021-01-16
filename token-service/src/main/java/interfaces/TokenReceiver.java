@@ -1,7 +1,6 @@
 package interfaces;
 
-import domain.CustomerToken;
-import domain.Token;
+import dto.Token;
 import exceptions.TokenNotFoundException;
 import messaging.Event;
 import messaging.EventReceiver;
@@ -16,7 +15,7 @@ public class TokenReceiver implements EventReceiver {
 
     EventSender eventSender;
 
-    Logger logger = Logger.getLogger(CustomerToken.class.getName());
+    Logger logger = Logger.getLogger(TokenReceiver.class.getName());
 
     public TokenReceiver(EventSender eventSender) {
         this.eventSender = eventSender;

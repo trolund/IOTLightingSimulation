@@ -1,6 +1,6 @@
 package cucumber.steps;
 
-import domain.Token;
+import dto.Token;
 import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import io.cucumber.java.en.And;
