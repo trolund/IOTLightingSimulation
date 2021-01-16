@@ -13,7 +13,11 @@ public class AccountServiceStub {
 
     public AccountServiceStub () {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
-        baseUrl = client.target("http://localhost:8082/api/v1/");
+        /*
+         * TODO what is the correct url here? how do we access another
+         * docker-container from within another?
+         */
+        baseUrl = client.target("account:8082/api/v1/");
     }
 
     public UserAccountDTO getAccount(String id) {
