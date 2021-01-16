@@ -6,13 +6,11 @@ import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerHasNoTokensException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
-import exceptions.token.InvalidTokenException;
 
 public interface ICustomerTokensRepository extends IRepository<CustomerTokens> {
-    void add(CustomerTokens obj) throws CustomerAlreadyRegisteredException;
-    CustomerTokens get(String id) throws CustomerNotFoundException;
+    void add(CustomerTokens customerTokens) throws CustomerAlreadyRegisteredException;
+    CustomerTokens get(String customerId) throws CustomerNotFoundException;
     CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException, CustomerNotFoundException;
-    void deleteCustomer(String id) throws CustomerNotFoundException;
-    Token validateTokenFromCustomer(String tokenId) throws TokenNotFoundException, CustomerNotFoundException, InvalidTokenException;
+    void deleteCustomer(String customerId) throws CustomerNotFoundException;
     Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException;
 }

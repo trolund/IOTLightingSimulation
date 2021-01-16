@@ -45,7 +45,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     @Override
     public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
         CustomerTokens customerToken = this.customerTokens.stream()
-                .filter(obj -> obj.findTokenInList(tokenId))
+                .filter(obj -> findTokenInList(tokenId, obj))
                 .findAny()
                 .orElse(null);
 
@@ -62,17 +62,21 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public Token validateTokenFromCustomer(String tokenId) throws TokenNotFoundException, InvalidTokenException {
-        return getCustomerWithTokenId(tokenId).validateToken(tokenId);
-    }
-
-    @Override
     public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException {
         if (!get(customerId).getTokens().isEmpty()) {
             return get(customerId).getTokens().get(0);
         } else {
             throw new CustomerHasNoTokensException(customerId);
         }
+    }
+
+    private boolean findTokenInList(String tokenId, CustomerTokens customerTokens) {
+        Token result = customerTokens.getTokens().stream()
+                .filter(obj -> obj.getId()
+                        .equals(tokenId))
+                .findAny()
+                .orElse(null);
+        return result != null;
     }
 
 }
