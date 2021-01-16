@@ -2,21 +2,19 @@ package dto;
 
 import java.io.Serializable;
 
-public class UserAccount implements Serializable {
+public class UserAccountDTO implements Serializable {
 
     private String firstName;
     private String lastName;
     private String cprNumber;
-    private String id;
-    private BankAccount bankAccount;
+    private BankAccountDTO bankAccount;
 
-    public UserAccount() {
+    public UserAccountDTO() {
 
     }
 
-    public UserAccount(String id, String firstName, String lastName,
-            String cprNumber) {
-        this.id = id;
+    public UserAccountDTO(String firstName, String lastName,
+                       String cprNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.cprNumber = cprNumber;
@@ -38,14 +36,6 @@ public class UserAccount implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getCprNumber() {
         return cprNumber;
     }
@@ -54,14 +44,11 @@ public class UserAccount implements Serializable {
         this.cprNumber = cprNumber;
     }
 
-    public BankAccount getBankAccount() {
+    public BankAccountDTO getBankAccount() {
         return bankAccount;
     }
 
-    public void setBankAccount(BankAccount bankAccount) {
+    public void setBankAccount(BankAccountDTO bankAccount) {
         this.bankAccount = bankAccount;
-    }
-
-    private class BankAccount {
     }
 }

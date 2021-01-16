@@ -1,6 +1,6 @@
 package interfaces.rest;
 
-import dto.UserAccount;
+import dto.UserAccountDTO;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.AccountService;
 import services.interfaces.IAccountService;
@@ -24,7 +24,7 @@ public class AccountResource {
     @Path("{id}")
     public Response getUser(@PathParam("id") String id) {
         try {
-            UserAccount user = service.getById(id);
+            UserAccountDTO user = service.getById(id);
             return Response.ok().entity(user).build();
             // TODO: add correct exception
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response registerUser(UserAccount user) {
+    public Response registerUser(UserAccountDTO user) {
         try {
             String userId = service.add(user);
             return Response.ok().entity(userId).build();
@@ -56,7 +56,7 @@ public class AccountResource {
     @Path("/by-cpr/{cprNumber}")
     public Response getUserByCpr(@PathParam("cprNumber") String cprNumber) {
         try {
-            UserAccount user = service.getByCpr(cprNumber);
+            UserAccountDTO user = service.getByCpr(cprNumber);
             return Response.ok().entity(user).build();
         } catch (Exception e) {
             // TODO: throw correct exception
@@ -71,7 +71,8 @@ public class AccountResource {
     @Path("/by-cpr/{cprNumber}")
     public Response retireUserByCpr(@PathParam("cprNumber") String cpr) {
         try {
-            service.retireAccount(service.getByCpr(cpr));
+
+            service.retireAccountByCpr(cpr);
             return Response.ok().build();
             // TODO: add correct exception
         } catch (Exception e) {
@@ -86,7 +87,7 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
         try {
-            List<UserAccount> accounts = service.getAll();
+            List<UserAccountDTO> accounts = service.getAll();
             return Response.ok().entity(accounts).build();
         } catch (Exception e) {
             // TODO correct exception
@@ -101,7 +102,7 @@ public class AccountResource {
     @Path("{id}")
     public Response retireUser(@PathParam("id") String id) {
         try {
-            service.retireAccount(service.getById(id));
+            service.retireAccount(id);
             return Response.ok().build();
             // TODO: add correct exception
         } catch (Exception e) {

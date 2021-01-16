@@ -1,7 +1,6 @@
 package services;
 
-import dto.BankAccount;
-import dto.UserAccount;
+import dto.UserAccountDTO;
 import exceptions.account.AccountException;
 import exceptions.account.RemoteAccountDoesNotExistException;
 import exceptions.account.RemoteAccountExistsException;
@@ -9,6 +8,8 @@ import infrastructure.bank.BankService;
 import infrastructure.bank.BankServiceService;
 import infrastructure.bank.User;
 import infrastructure.repositories.interfaces.IAccountRepository;
+import model.BankAccount;
+import model.UserAccount;
 import services.interfaces.IAccountService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,8 +26,11 @@ public class AccountService implements IAccountService {
     @Inject
     IAccountRepository repo;
 
+    @Inject
+    MapperService mapper;
+
     @Override
-    public String add(UserAccount ua) throws Exception {
+    public String add(UserAccountDTO ua) throws Exception {
         try {
             return checkIfAccountExists(ua);
         } catch (RemoteAccountDoesNotExistException e1) {
@@ -35,24 +39,25 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public UserAccount getById(String id) throws AccountException {
-        return repo.getById(id);
+    public UserAccountDTO getById(String id) throws AccountException {
+        return mapper.map(repo.getById(id), UserAccountDTO.class);
     }
 
     @Override
-    public UserAccount getByCpr(String cpr) throws AccountException {
-        return repo.getByCpr(cpr);
+    public UserAccountDTO getByCpr(String cpr) throws AccountException {
+        return mapper.map(repo.getByCpr(cpr), UserAccountDTO.class);
     }
 
     @Override
-    public List<UserAccount> getAll() {
-        return repo.getAll();
+    public List<UserAccountDTO> getAll() {
+        mapper.mapList(repo.getAll(), UserAccountDTO.class);
+        return mapper.mapList(repo.getAll(), UserAccountDTO.class);
     }
 
     @Override
-    public void retireAccount(UserAccount ua)
-            throws RemoteAccountDoesNotExistException {
+    public void retireAccountByCpr(String cpr) throws RemoteAccountDoesNotExistException {
         try {
+            UserAccount ua = repo.getByCpr(cpr);
             bs.retireAccount(ua.getBankAccount().getBankId());
             repo.remove(ua.getId());
         } catch (Exception e) {
@@ -60,7 +65,18 @@ public class AccountService implements IAccountService {
         }
     }
 
-    private String checkIfAccountExists(UserAccount ua)
+    @Override
+    public void retireAccount(String id) throws RemoteAccountDoesNotExistException {
+        try {
+            UserAccount ua = repo.getById(id);
+            bs.retireAccount(ua.getBankAccount().getBankId());
+            repo.remove(ua.getId());
+        } catch (Exception e) {
+            throw new RemoteAccountDoesNotExistException();
+        }
+    }
+
+    private String checkIfAccountExists(UserAccountDTO ua)
             throws RemoteAccountDoesNotExistException {
         try {
             bs.getAccountByCprNumber(ua.getCprNumber());
@@ -70,7 +86,7 @@ public class AccountService implements IAccountService {
         }
     }
 
-    private String createAccount(UserAccount ua)
+    private String createAccount(UserAccountDTO ua)
             throws RemoteAccountExistsException {
         BigDecimal initialBalance = ua.getBankAccount().getBalance();
 
@@ -81,11 +97,13 @@ public class AccountService implements IAccountService {
 
         // try to create a new account
         try {
+            UserAccount tempUa = mapper.map(ua, UserAccount.class);
             String bankId = bs.createAccountWithBalance(user, initialBalance);
-            ua.setBankAccount(new BankAccount(bankId, initialBalance));
+            tempUa.getBankAccount().setBankId(bankId);
+            tempUa.setBankAccount(new BankAccount(bankId, initialBalance));
             String internalId = String.valueOf(UUID.randomUUID());
-            ua.setId(internalId);
-            repo.add(ua);
+            tempUa.setId(internalId);
+            repo.add(tempUa);
             return internalId;
         } catch (Exception e) {
             throw new RemoteAccountExistsException();

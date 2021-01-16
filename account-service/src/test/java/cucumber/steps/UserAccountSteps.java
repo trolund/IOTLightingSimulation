@@ -1,12 +1,12 @@
 package cucumber.steps;
 
-import dto.BankAccount;
-import dto.UserAccount;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import exceptions.EmptyNameException;
 import exceptions.EmptyCprException;
+import model.BankAccount;
+import model.UserAccount;
 import services.AccountService;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,11 +1,10 @@
 package interfaces.rabbitmq;
 
-import dto.UserAccount;
+import dto.UserAccountDTO;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 import services.interfaces.IAccountService;
-
 import javax.inject.Inject;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class AccountEventReceiver implements EventReceiver {
         switch (in.getEventType()) {
             case "getAllUsers":
                 try {
-                    List<UserAccount> users = accountService.getAll();
+                    List<UserAccountDTO> users = accountService.getAll();
                     eventSender.sendEvent(new Event("GetAllUsersSuccessful", new Object[]{users}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("GetAllUsersFailed", new Object[]{e.getMessage()}));
@@ -38,7 +37,7 @@ public class AccountEventReceiver implements EventReceiver {
 
             case "getUserById":
                 try {
-                    UserAccount userAccount = accountService.getById((String) in.getArguments()[0]);
+                    UserAccountDTO userAccount = accountService.getById((String) in.getArguments()[0]);
                     eventSender.sendEvent(new Event("GetUserByIdSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("GetUserByIdFailed", new Object[]{e.getMessage()}));
@@ -47,7 +46,7 @@ public class AccountEventReceiver implements EventReceiver {
 
             case "getUserByCpr":
                 try {
-                    UserAccount userAccount = accountService.getByCpr((String) in.getArguments()[0]);
+                    UserAccountDTO userAccount = accountService.getByCpr((String) in.getArguments()[0]);
                     eventSender.sendEvent(new Event("GetUserByCprSuccesful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("GetUserByCprFailed", new Object[]{e.getMessage()}));
@@ -56,7 +55,7 @@ public class AccountEventReceiver implements EventReceiver {
 
             case "registerUser":
                 try {
-                    UserAccount userAccount = (UserAccount) in.getArguments()[0];
+                    UserAccountDTO userAccount = (UserAccountDTO) in.getArguments()[0];
                     accountService.add(userAccount);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {

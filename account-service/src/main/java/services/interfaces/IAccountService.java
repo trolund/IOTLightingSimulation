@@ -1,15 +1,17 @@
 package services.interfaces;
 
-import dto.UserAccount;
+import dto.UserAccountDTO;
 import exceptions.account.AccountException;
 import exceptions.account.RemoteAccountDoesNotExistException;
+import model.UserAccount;
 
 import java.util.List;
 
 public interface IAccountService {
-    String add(UserAccount account) throws Exception;
-    UserAccount getById(String id) throws AccountException;
-    UserAccount getByCpr(String cpr) throws AccountException;
-    List<UserAccount> getAll();
-    void retireAccount(UserAccount ua) throws RemoteAccountDoesNotExistException;
+    String add(UserAccountDTO account) throws Exception;
+    UserAccountDTO getById(String id) throws AccountException;
+    UserAccountDTO getByCpr(String cpr) throws AccountException;
+    List<UserAccountDTO> getAll();
+    void retireAccountByCpr(String cpr) throws RemoteAccountDoesNotExistException;
+    void retireAccount(String id) throws RemoteAccountDoesNotExistException;
 }

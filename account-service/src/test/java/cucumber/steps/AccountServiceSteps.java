@@ -1,10 +1,7 @@
 package cucumber.steps;
 
-import dto.UserAccount;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Given;
 import io.quarkus.test.junit.QuarkusTest;
+import model.UserAccount;
 import services.AccountService;
 
 import javax.inject.Inject;
