@@ -6,11 +6,14 @@ import exceptions.token.InvalidTokenException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CustomerToken implements Serializable {
 
     private final List<Token> tokens;
     private final String customerId;
+
+    Logger logger = Logger.getLogger(CustomerToken.class.getName());
 
     public CustomerToken(String customerId) {
         this.customerId = customerId;
@@ -57,14 +60,19 @@ public class CustomerToken implements Serializable {
     }
 
     public Token validateToken(String tokenId) throws InvalidTokenException {
-        //tokens.removeIf(obj -> obj.getId().equals(tokenId));
+        Token token = tokens.stream()
+                .filter(obj -> obj.getId().equals(tokenId))
+                .findAny()
+                .orElse(null);
 
-        Token token = tokens.stream().filter(obj -> obj.getId().equals(tokenId))
-                .findAny().orElse(null);
+        System.out.println(tokenId + " " + token + " " + tokens.toString() + " " + tokens.size());
+        logger.info(tokenId + " " + token + " " + tokens.toString() + " " + tokens.size());
 
         if (token == null) {
             throw new InvalidTokenException(tokenId);
         }
+
+        tokens.removeIf(obj -> obj.getId().equals(tokenId));
 
         return token;
     }

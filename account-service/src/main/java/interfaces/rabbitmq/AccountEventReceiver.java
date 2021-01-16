@@ -1,6 +1,7 @@
 package interfaces.rabbitmq;
 
 import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
@@ -55,7 +56,7 @@ public class AccountEventReceiver implements EventReceiver {
 
             case "registerUser":
                 try {
-                    UserAccountDTO userAccount = (UserAccountDTO) in.getArguments()[0];
+                    UserRegistrationDTO userAccount = (UserRegistrationDTO) in.getArguments()[0];
                     accountService.add(userAccount);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {

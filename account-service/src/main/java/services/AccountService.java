@@ -1,6 +1,7 @@
 package services;
 
 import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 import exceptions.account.AccountException;
 import exceptions.account.RemoteAccountDoesNotExistException;
 import exceptions.account.RemoteAccountExistsException;
@@ -30,7 +31,7 @@ public class AccountService implements IAccountService {
     MapperService mapper;
 
     @Override
-    public String add(UserAccountDTO ua) throws Exception {
+    public String add(UserRegistrationDTO ua) throws Exception {
         try {
             return checkIfAccountExists(ua);
         } catch (RemoteAccountDoesNotExistException e1) {
@@ -76,7 +77,7 @@ public class AccountService implements IAccountService {
         }
     }
 
-    private String checkIfAccountExists(UserAccountDTO ua)
+    private String checkIfAccountExists(UserRegistrationDTO ua)
             throws RemoteAccountDoesNotExistException {
         try {
             bs.getAccountByCprNumber(ua.getCprNumber());
@@ -86,7 +87,7 @@ public class AccountService implements IAccountService {
         }
     }
 
-    private String createAccount(UserAccountDTO ua)
+    private String createAccount(UserRegistrationDTO ua)
             throws RemoteAccountExistsException {
         BigDecimal initialBalance = ua.getBankAccount().getBalance();
 

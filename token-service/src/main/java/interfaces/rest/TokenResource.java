@@ -56,7 +56,8 @@ public class TokenResource {
 
     @Tag(ref = "validateToken")
     @POST
-    public Response validateToken(@QueryParam("tokenId") String tokenId) {
+    @Path("validate/{tokenId}")
+    public Response validateToken(@PathParam("tokenId") String tokenId) {
         try {
             service.validateToken(tokenId);
             return Response

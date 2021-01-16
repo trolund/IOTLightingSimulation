@@ -1,6 +1,6 @@
 package com.client;
 
-import com.dto.Token;
+import dto.Token;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -30,8 +30,7 @@ public class TokenServiceClient {
     }
 
     public boolean validateToken(String tokenId) {
-        Response r = baseUrl.path("token")
-                .queryParam("tokenId", tokenId)
+        Response r = baseUrl.path("token/validate/" + tokenId)
                 .request()
                 .post(null);
         return r.getStatus() == Response.Status.OK.getStatusCode();

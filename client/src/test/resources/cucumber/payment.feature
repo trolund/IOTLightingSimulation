@@ -3,12 +3,12 @@ Feature: Payment
   Background:
     Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
     When the customer is registered
-    Then the registration should be successful
+    Then the customer registration should be successful
     And the new customer should exist in the system
     Then the customer requests 5 tokens
     Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
     When the merchant is registered
-    Then the registration should be successful
+    Then the merchant registration should be successful
     Then the new merchant exists in the system
 
   Scenario Outline: Successful Payment in DTUPay

@@ -1,8 +1,11 @@
-package com.dto;
+package dto;
 
 import java.io.Serializable;
 
 public class Token implements Serializable {
+
+    public Token() {
+    }
 
     private String id;
 

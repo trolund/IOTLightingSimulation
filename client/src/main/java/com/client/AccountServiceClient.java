@@ -1,6 +1,6 @@
 package com.client;
 
-import dto.UserAccount;
+import dto.UserAccountDTO;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -16,38 +16,38 @@ public class AccountServiceClient {
 
     public AccountServiceClient() {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
-        baseUrl = client.target("http://localhost:8080/api/v1/");
+        baseUrl = client.target("http://localhost:8082/api/v1/");
     }
 
-    public boolean registerUser(UserAccount userAccount) {
+    public String registerUser(UserAccountDTO userAccount) {
         Response r = baseUrl.path("users")
                 .request()
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
-        return r.getStatus() == Response.Status.OK.getStatusCode();
+        return r.readEntity(String.class);
     }
 
-    public UserAccount getUserById(String userId) {
+    public UserAccountDTO getUserById(String userId) {
         return baseUrl.path("users/" + userId)
                 .request()
                 .get(new GenericType<>() {
                 });
     }
 
-    public UserAccount getUserByCpr(String cpr) {
+    public UserAccountDTO getUserByCpr(String cpr) {
         return baseUrl.path("users/by-cpr/" + cpr)
                 .request()
                 .get(new GenericType<>() {
                 });
     }
 
-    public boolean updateUser(UserAccount userAccount) {
+    public boolean updateUser(UserAccountDTO userAccount) {
         Response r = baseUrl.path("users/" + userAccount.getCprNumber())
                 .request()
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
-    public List<UserAccount> getAllUsers() {
+    public List<UserAccountDTO> getAllUsers() {
         return baseUrl.path("users")
                 .request()
                 .get(new GenericType<>() {

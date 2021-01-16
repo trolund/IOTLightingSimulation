@@ -1,7 +1,7 @@
 package com.CustomerApp;
 
 import com.client.TokenServiceClient;
-import com.dto.Token;
+import dto.Token;
 
 public class CustomerApp {
 

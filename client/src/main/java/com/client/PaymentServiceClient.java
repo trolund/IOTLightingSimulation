@@ -1,10 +1,12 @@
 package com.client;
 
-import com.dto.Token;
-import com.dto.Transaction;
+import dto.PaymentRequest;
+import dto.Transaction;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class PaymentServiceClient {
@@ -16,13 +18,11 @@ public class PaymentServiceClient {
         baseUrl = client.target("http://localhost:8080/api/v1/");
     }
 
-    public boolean processPayment(String customerId, String merchantId, Integer amount) {
+    public boolean processPayment(String customerId, String merchantId, Integer amount, String token) {
+        PaymentRequest pr = new PaymentRequest(customerId, merchantId, amount, token);
         Response r = baseUrl.path("payment")
-                .queryParam("customerId", customerId)
-                .queryParam("merchantId", merchantId)
-                .queryParam("amount", amount)
                 .request()
-                .post(null);
+                .post(Entity.entity(pr, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 

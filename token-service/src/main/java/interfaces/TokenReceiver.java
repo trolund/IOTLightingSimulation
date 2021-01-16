@@ -1,5 +1,6 @@
 package interfaces;
 
+import domain.CustomerToken;
 import domain.Token;
 import exceptions.TokenNotFoundException;
 import messaging.Event;
@@ -8,10 +9,14 @@ import messaging.EventSender;
 import services.TokenService;
 import services.interfaces.ITokenService;
 
+import java.util.logging.Logger;
+
 public class TokenReceiver implements EventReceiver {
     ITokenService rs = new TokenService();
 
     EventSender eventSender;
+
+    Logger logger = Logger.getLogger(CustomerToken.class.getName());
 
     public TokenReceiver(EventSender eventSender) {
         this.eventSender = eventSender;
@@ -41,6 +46,8 @@ public class TokenReceiver implements EventReceiver {
                 Token token = rs.validateToken((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("TokenValidationSuccessful", new Object[]{token.getId()}));
             } catch (Exception e) {
+                logger.warning(e.getMessage());
+                e.printStackTrace();
                 eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }

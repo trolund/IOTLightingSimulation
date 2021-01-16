@@ -1,5 +1,6 @@
 package interfaces.rest;
 
+import dto.PaymentRequest;
 import exceptions.customer.CustomerException;
 import exceptions.merchant.MerchantException;
 import exceptions.token.InvalidTokenException;
@@ -26,20 +27,13 @@ public class PaymentResource {
 
     /**
      * Pay x amount to a merchant
-     *
-     * @param customerId - Customer id.
-     * @param merchantId - Merchant id.
-     * @Param amount - amount of money to be payed.
      */
     @Operation(summary = "Pay x amount to a merchant")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response processPayment(@QueryParam("customerId") String customerId,
-                                   @QueryParam("merchantId") String merchantId,
-                                   @QueryParam("amount") int amount,
-                                   @QueryParam("token") String token) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response processPayment(PaymentRequest data) {
         try {
-            ps.processPayment(merchantId, customerId, amount, token);
+            ps.processPayment(data.getMerchantId(), data.getCustomerId(), data.getAmount(), data.getToken());
             return Response
                     .ok()
                     .build();

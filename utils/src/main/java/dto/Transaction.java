@@ -1,4 +1,4 @@
-package com.dto;
+package dto;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;

@@ -1,6 +1,7 @@
 package interfaces.rest;
 
 import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.AccountService;
 import services.interfaces.IAccountService;
@@ -38,7 +39,7 @@ public class AccountResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response registerUser(UserAccountDTO user) {
+    public Response registerUser(UserRegistrationDTO user) {
         try {
             String userId = service.add(user);
             return Response.ok().entity(userId).build();

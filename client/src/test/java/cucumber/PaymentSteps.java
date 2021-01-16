@@ -4,10 +4,10 @@ import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
-import com.dto.Token;
-import com.dto.Transaction;
-import dto.BankAccount;
-import dto.UserAccount;
+import dto.BankAccountDTO;
+import dto.Token;
+import dto.Transaction;
+import dto.UserAccountDTO;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -27,11 +27,10 @@ public class PaymentSteps {
     private final AccountServiceClient accountService = new AccountServiceClient();
     private final PaymentServiceClient paymentService = new PaymentServiceClient();
 
-    private UserAccount customerUser, merchantUser;
-    private UserAccount customerFromSystem, merchantFromSystem;
+    private UserAccountDTO customerUser, merchantUser;
+    private UserAccountDTO customerFromSystem, merchantFromSystem;
     private String currentCustomerId, currentMerchantId;
 
-    boolean isUserRegistered;
     boolean successPayment;
 
     private Token customerToken;
@@ -41,14 +40,14 @@ public class PaymentSteps {
 
     @After
     public void cleanup(){
-        //accountService.retireUser(currentCustomerId);
-        //accountService.retireUser(currentMerchantId);
+        accountService.retireUser(currentCustomerId);
+        accountService.retireUser(currentMerchantId);
     }
 
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_customer_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        customerUser = new UserAccount();
-        customerUser.setBankAccount(new BankAccount());
+        customerUser = new UserAccountDTO();
+        customerUser.setBankAccount(new BankAccountDTO());
 
         customerUser.setCprNumber(cpr);
         customerUser.setFirstName(firstName);
@@ -58,31 +57,35 @@ public class PaymentSteps {
 
     @When("the customer is registered")
     public void when_the_customer_is_registered() {
-        isUserRegistered = accountService.registerUser(customerUser);
+        currentCustomerId = accountService.registerUser(customerUser);
     }
 
-    @Then("the registration should be successful")
-    public void then_the_registration_should_be_successful() {
-        assertTrue(isUserRegistered);
+    @Then("the customer registration should be successful")
+    public void then_the_customer_registration_should_be_successful() {
+        assertNotNull(currentCustomerId);
+    }
+
+    @Then("the merchant registration should be successful")
+    public void then_the_merchant_registration_should_be_successful() {
+        assertNotNull(currentMerchantId);
     }
 
     @And("the new customer should exist in the system")
     public void the_new_customer_exists_in_the_system() {
         customerFromSystem = accountService.getUserByCpr(customerUser.getCprNumber());
-        currentCustomerId = customerFromSystem.getId();
         Assert.assertNotNull(customerFromSystem);
     }
 
     @Then("the customer requests {int} tokens")
     public void the_customer_requests_tokens(Integer tokenAmount) {
-        boolean isSuccess = customerApp.requestTokens(customerFromSystem.getId(), tokenAmount);
+        boolean isSuccess = customerApp.requestTokens(currentCustomerId, tokenAmount);
         assertTrue(isSuccess);
     }
 
     @Given("a new merchant with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_merchant_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        merchantUser = new UserAccount();
-        merchantUser.setBankAccount(new BankAccount());
+        merchantUser = new UserAccountDTO();
+        merchantUser.setBankAccount(new BankAccountDTO());
 
         merchantUser.setCprNumber(cpr);
         merchantUser.setFirstName(firstName);
@@ -92,13 +95,12 @@ public class PaymentSteps {
 
     @When("the merchant is registered")
     public void when_the_merchant_is_registered() {
-       isUserRegistered = accountService.registerUser(merchantUser);
+       currentMerchantId = accountService.registerUser(merchantUser);
     }
 
     @Then("the new merchant exists in the system")
     public void the_new_merchant_exists_in_the_system() {
         merchantFromSystem = accountService.getUserByCpr(merchantUser.getCprNumber());
-        currentMerchantId = merchantFromSystem.getId();
         Assert.assertNotNull(customerFromSystem);
     }
 
@@ -109,7 +111,7 @@ public class PaymentSteps {
 
     @And("the merchant asks for a token from the customer")
     public void the_merchant_asks_for_a_token_from_the_customer() {
-        customerToken = merchantApp.requestTokenFromCustomer(customerFromSystem.getId());
+        customerToken = merchantApp.requestTokenFromCustomer(currentCustomerId);
     }
 
     @Then("the merchant should receive a token")
@@ -119,7 +121,7 @@ public class PaymentSteps {
 
     @And("the payment is successful")
     public void the_payment_is_successful() {
-        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount);
+        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId());
         assertTrue(successPayment);
     }
 
@@ -169,7 +171,7 @@ public class PaymentSteps {
 
     @Then("the payment is unsuccessful")
     public void the_payment_is_unsuccessful() {
-        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount);
+        successPayment = merchantApp.processPayment(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId());
         assertFalse(successPayment);
     }
 

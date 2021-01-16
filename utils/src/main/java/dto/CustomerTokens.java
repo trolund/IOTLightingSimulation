@@ -1,4 +1,4 @@
-package com.dto;
+package dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +9,10 @@ public class CustomerTokens implements Serializable {
 
     private final List<Token> tokens;
     private String customerId;
+
+    public CustomerTokens() {
+        tokens = new ArrayList<>();
+    }
 
     public CustomerTokens(String customerId) {
         this.customerId = customerId;

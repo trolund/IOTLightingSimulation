@@ -4,8 +4,10 @@ import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
 import com.client.PaymentServiceClient;
-import dto.BankAccount;
-import dto.UserAccount;
+import dto.BankAccountDTO;
+import dto.UserAccountDTO;
+import model.UserAccount;
+
 
 import java.math.BigDecimal;
 
@@ -18,8 +20,8 @@ public class Main {
     private final static PaymentServiceClient paymentService = new PaymentServiceClient();
 
     public static void main(String[] args) {
-        UserAccount customerUserAccount = new UserAccount();
-        customerUserAccount.setBankAccount(new BankAccount());
+        UserAccountDTO customerUserAccount = new UserAccountDTO();
+        customerUserAccount.setBankAccount(new BankAccountDTO());
 
         customerUserAccount.setCprNumber("000000-9876");
         customerUserAccount.setFirstName("Michael");
