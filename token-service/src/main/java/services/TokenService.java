@@ -5,8 +5,6 @@ import dto.Token;
 import exceptions.*;
 import exceptions.token.InvalidTokenException;
 import infrastructure.repositories.CustomerTokensRepository;
-import interfaces.TokenReceiver;
-import io.cucumber.java.sl.In;
 import org.jboss.logmanager.Level;
 import services.interfaces.ITokenService;
 
@@ -95,7 +93,6 @@ public class TokenService implements ITokenService {
             sb.append(token.getId()).append("\n");
         }
         logger.log(Level.SEVERE, "TOKENS BEFORE addTokens: " + sb.toString());
-
 
 
         // Only allowed to request 1-5 tokens if you have one or less tokens

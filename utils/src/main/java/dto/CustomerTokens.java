@@ -1,8 +1,5 @@
 package dto;
 
-import exceptions.TooManyTokensException;
-import exceptions.token.InvalidTokenException;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,6 @@ public class CustomerTokens implements Serializable {
         this.tokens = new ArrayList<>();
     }
 
-
     public List<Token> getTokens() {
         return tokens;
     }
@@ -38,6 +34,16 @@ public class CustomerTokens implements Serializable {
         this.customerId = customerId;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Token t : tokens)
+            sb.append(t).append("\n");
 
+        return "CustomerTokens{" +
+                "tokens=" + sb.toString() +
+                ", customerId='" + customerId + '\'' +
+                '}';
+    }
 
 }

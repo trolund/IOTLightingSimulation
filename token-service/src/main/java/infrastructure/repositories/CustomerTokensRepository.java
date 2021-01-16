@@ -6,7 +6,6 @@ import exceptions.CustomerHasNoTokensException;
 import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
-import services.TokenService;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -17,8 +16,6 @@ import java.util.logging.Logger;
 public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     private final List<CustomerTokens> customerTokens;
-
-    Logger logger = Logger.getLogger(TokenService.class.getName());
 
     public CustomerTokensRepository() {
         customerTokens = new ArrayList<>();
@@ -64,6 +61,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
 
     @Override
     public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException {
+        Logger logger = Logger.getLogger(CustomerTokensRepository.class.getName());
         if (!get(customerId).getTokens().isEmpty()) {
             logger.severe("get token cus" + get(customerId));
             System.out.println("get token cus" + get(customerId));

@@ -32,17 +32,25 @@ public class AccountServiceClient {
                 .request()
                 .get();
 
-        if(r.getStatus() == 200){
-            return r.readEntity(new GenericType<>(){});
+        if (r.getStatus() == 200) {
+            return r.readEntity(new GenericType<>() {
+            });
         }
+
         return null;
     }
 
     public UserAccountDTO getUserByCpr(String cpr) {
-        return baseUrl.path("users/by-cpr/" + cpr)
+        Response r = baseUrl.path("users/by-cpr/" + cpr)
                 .request()
-                .get(new GenericType<>() {
-                });
+                .get();
+
+        if (r.getStatus() == 200) {
+            return r.readEntity(new GenericType<>() {
+            });
+        }
+
+        return null;
     }
 
     public boolean updateUser(UserAccountDTO userAccount) {
@@ -53,10 +61,16 @@ public class AccountServiceClient {
     }
 
     public List<UserAccountDTO> getAllUsers() {
-        return baseUrl.path("users")
+        Response r = baseUrl.path("users")
                 .request()
-                .get(new GenericType<>() {
-                });
+                .get();
+
+        if (r.getStatus() == 200) {
+            return r.readEntity(new GenericType<>() {
+            });
+        }
+
+        return null;
     }
 
     public boolean retireUser(String userId) {

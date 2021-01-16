@@ -11,14 +11,15 @@ import services.interfaces.ITokenService;
 import java.util.logging.Logger;
 
 public class TokenReceiver implements EventReceiver {
-    ITokenService rs = new TokenService();
 
+    ITokenService rs;
     EventSender eventSender;
 
     Logger logger = Logger.getLogger(TokenReceiver.class.getName());
 
     public TokenReceiver(EventSender eventSender) {
         this.eventSender = eventSender;
+        this.rs = new TokenService();
     }
 
     @Override
@@ -42,10 +43,18 @@ public class TokenReceiver implements EventReceiver {
         }
         if (event.getEventType().equals("validateToken")) {
             try {
+                if (rs == null) {
+                    logger.severe("token service rs is null!");
+                    System.out.println("token service rs is null!");
+                }
+                if (eventSender == null) {
+                    logger.severe("eventSender rs is null!");
+                    System.out.println("eventSender rs is null!");
+                }
                 Token token = rs.validateToken((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("TokenValidationSuccessful", new Object[]{token.getId()}));
             } catch (Exception e) {
-                logger.warning(e.getMessage());
+                logger.severe("validateToken threw an exception: " + e.getMessage());
                 e.printStackTrace();
                 eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }

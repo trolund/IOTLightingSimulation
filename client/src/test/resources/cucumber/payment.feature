@@ -25,9 +25,9 @@ Feature: Payment
     Examples:
       | amount | c_end_bal | m_end_bal |
       | 10     | 990       | 1010      |
-      | 25     | 975       | 1025      |
-      | 0      | 1000      | 1000      |
-      | 500    | 500       | 1500      |
+#      | 25     | 975       | 1025      |
+#      | 0      | 1000      | 1000      |
+#      | 500    | 500       | 1500      |
 
   Scenario: Unsuccessful payment in DTUPay: Customer not found
    Given a customer with id "does-not-exist" that does not exist in the system
