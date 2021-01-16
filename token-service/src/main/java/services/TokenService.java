@@ -22,7 +22,7 @@ public class TokenService implements ITokenService {
     Logger logger = Logger.getLogger(TokenService.class.getName());
 
     @Override
-    public void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException {
+    public void registerCustomer(String customerId) {
         CustomerTokens customerToken = new CustomerTokens(customerId);
         repo.add(customerToken);
     }
@@ -32,12 +32,24 @@ public class TokenService implements ITokenService {
         logger.log(Level.SEVERE, "REQUEST TOKENS: CustomerId: " + customerId + ", amount: " + amount);
 
         if (!customerExists(customerId)) {
-            logger.log(Level.SEVERE, "CUSTOMER DID NOT EXIST! REGISTRERING NEW!");
+            logger.log(Level.SEVERE, "CUSTOMER DID NOT EXIST! REGISTERING NOW!");
             registerCustomer(customerId);
         }
 
         logger.log(Level.SEVERE, "ADDING TOKENS TO CUSTOMER!");
         addTokens(repo.get(customerId), amount);
+
+
+
+        StringBuilder sb = new StringBuilder();
+        for (Token token : repo.get(customerId).getTokens()) {
+            sb.append(token.getId()).append("\n");
+        }
+        logger.log(Level.SEVERE, "TOKENS AFTER addTokens (outside method): " + sb.toString());
+
+
+
+
         return customerId;
     }
 
@@ -79,12 +91,28 @@ public class TokenService implements ITokenService {
 
     private void addTokens(CustomerTokens customerTokens, Integer amount)
             throws TooManyTokensException {
+
+        StringBuilder sb = new StringBuilder();
+        for (Token token : customerTokens.getTokens()) {
+            sb.append(token.getId()).append("\n");
+        }
+        logger.log(Level.SEVERE, "TOKENS BEFORE addTokens: " + sb.toString());
+
+
+
         // Only allowed to request 1-5 tokens if you have one or less tokens
         if (customerTokens.getTokens().size() < 2 && amount < 6 && amount > 0) {
             customerTokens.getTokens().addAll(generateTokens(amount));
         } else {
             throw new TooManyTokensException(customerTokens.getCustomerId(), amount);
         }
+
+
+        sb = new StringBuilder();
+        for (Token token : customerTokens.getTokens()) {
+            sb.append(token.getId()).append("\n");
+        }
+        logger.log(Level.SEVERE, "TOKENS AFTER addTokens (inside method): " + sb.toString());
     }
 
     private String generateTokenId() {
@@ -100,12 +128,21 @@ public class TokenService implements ITokenService {
     }
 
     private Token validateTokenLogic(String tokenId, CustomerTokens customerTokens) throws InvalidTokenException {
+
+        StringBuilder sb = new StringBuilder();
+        for (Token token : customerTokens.getTokens()) {
+            sb.append(token.getId()).append("\n");
+        }
+        logger.log(Level.SEVERE, "TOKENS inside validateTokenLogic: " + sb.toString());
+
+
         Token token = customerTokens.getTokens().stream()
                 .filter(obj -> obj.getId().equals(tokenId))
                 .findAny()
                 .orElse(null);
 
         if (token == null) {
+            logger.log(Level.SEVERE, "TOKEN IS NULL! throwing invalid-token-exception");
             throw new InvalidTokenException(tokenId);
         }
 

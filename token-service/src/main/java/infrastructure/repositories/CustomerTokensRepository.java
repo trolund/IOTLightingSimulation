@@ -2,8 +2,9 @@ package infrastructure.repositories;
 
 import dto.CustomerTokens;
 import dto.Token;
-import exceptions.*;
-import exceptions.token.InvalidTokenException;
+import exceptions.CustomerHasNoTokensException;
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,12 +21,8 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void add(CustomerTokens customerToken) throws CustomerAlreadyRegisteredException {
-        if (customerTokens.stream().noneMatch(obj -> obj.getCustomerId().equals(customerToken.getCustomerId()))) {
-            this.customerTokens.add(customerToken);
-        } else {
-            throw new CustomerAlreadyRegisteredException(customerToken.getCustomerId());
-        }
+    public void add(CustomerTokens customerToken) {
+        this.customerTokens.add(customerToken);
     }
 
     @Override
@@ -57,7 +54,7 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void deleteCustomer(String id) throws CustomerNotFoundException{
+    public void deleteCustomer(String id) throws CustomerNotFoundException {
         customerTokens.remove(get(id));
     }
 
