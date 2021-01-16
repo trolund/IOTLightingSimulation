@@ -2,6 +2,7 @@ package com.MerchantApp;
 
 import com.CustomerApp.CustomerApp;
 import com.client.PaymentServiceClient;
+import dto.PaymentRequest;
 import dto.Token;
 
 public class MerchantApp {
@@ -13,8 +14,8 @@ public class MerchantApp {
         return customerApp.getToken(customerId);
     }
 
-    public boolean processPayment(String customerId, String merchantId, Integer amount, String token) {
-        return paymentClient.processPayment(customerId, merchantId, amount, token);
+    public boolean processPayment(PaymentRequest paymentRequest) {
+        return paymentClient.processPayment(paymentRequest);
     }
 
 }

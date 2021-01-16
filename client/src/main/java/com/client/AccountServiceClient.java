@@ -9,7 +9,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 public class AccountServiceClient {
 
@@ -20,15 +19,15 @@ public class AccountServiceClient {
         baseUrl = client.target("http://localhost:8082/api/v1/");
     }
 
-    public String registerUser(UserRegistrationDTO registrationDTO) {
-        Response r = baseUrl.path("users")
+    public String registerAccount(UserRegistrationDTO registrationDTO) {
+        Response r = baseUrl.path("account")
                 .request()
                 .post(Entity.entity(registrationDTO, MediaType.APPLICATION_JSON_TYPE));
         return r.readEntity(String.class);
     }
 
-    public UserAccountDTO getUserById(String userId) {
-        Response r = baseUrl.path("users/" + userId)
+    public UserAccountDTO getAccount(String id) {
+        Response r = baseUrl.path("account/" + id)
                 .request()
                 .get();
 
@@ -40,8 +39,8 @@ public class AccountServiceClient {
         return null;
     }
 
-    public UserAccountDTO getUserByCpr(String cpr) {
-        Response r = baseUrl.path("users/by-cpr/" + cpr)
+    public UserAccountDTO getAccountByCpr(String cpr) {
+        Response r = baseUrl.path("account/by-cpr/" + cpr)
                 .request()
                 .get();
 
@@ -53,28 +52,8 @@ public class AccountServiceClient {
         return null;
     }
 
-    public boolean updateUser(UserAccountDTO userAccount) {
-        Response r = baseUrl.path("users/" + userAccount.getCprNumber())
-                .request()
-                .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
-        return r.getStatus() == Response.Status.OK.getStatusCode();
-    }
-
-    public List<UserAccountDTO> getAllUsers() {
-        Response r = baseUrl.path("users")
-                .request()
-                .get();
-
-        if (r.getStatus() == 200) {
-            return r.readEntity(new GenericType<>() {
-            });
-        }
-
-        return null;
-    }
-
-    public boolean retireUser(String userId) {
-        Response r = baseUrl.path("users/" + userId)
+    public boolean retireAccount(String id) {
+        Response r = baseUrl.path("account/" + id)
                 .request()
                 .delete(new GenericType<>() {
                 });

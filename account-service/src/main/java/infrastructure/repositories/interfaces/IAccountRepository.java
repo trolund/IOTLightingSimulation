@@ -1,10 +1,9 @@
 package infrastructure.repositories.interfaces;
 
-import exceptions.account.AccountException;
-import model.UserAccount;
+import dto.AccountInformation;
 
-public interface IAccountRepository extends IRepository<UserAccount> {
-    UserAccount getById(String id) throws AccountException;
-    UserAccount getByCpr(String cpr) throws AccountException;
-    void remove(String id) throws AccountException;
+public interface IAccountRepository extends IRepository<AccountInformation> {
+    AccountInformation getById(String id);
+    AccountInformation getByCpr(String cpr);
+    void remove(String id);
 }

@@ -4,21 +4,14 @@ import java.io.Serializable;
 
 public class UserAccountDTO implements Serializable {
 
+    private String id;
     private String firstName;
     private String lastName;
-    private String cprNumber;
-    private String id;
+    private String cpr;
     private BankAccountDTO bankAccount;
 
     public UserAccountDTO() {
 
-    }
-
-    public UserAccountDTO(String firstName, String lastName,
-                       String cprNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.cprNumber = cprNumber;
     }
 
     public String getId() {
@@ -45,12 +38,12 @@ public class UserAccountDTO implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getCprNumber() {
-        return cprNumber;
+    public String getCpr() {
+        return cpr;
     }
 
-    public void setCprNumber(String cprNumber) {
-        this.cprNumber = cprNumber;
+    public void setCpr(String cpr) {
+        this.cpr = cpr;
     }
 
     public BankAccountDTO getBankAccount() {
@@ -60,4 +53,5 @@ public class UserAccountDTO implements Serializable {
     public void setBankAccount(BankAccountDTO bankAccount) {
         this.bankAccount = bankAccount;
     }
+
 }

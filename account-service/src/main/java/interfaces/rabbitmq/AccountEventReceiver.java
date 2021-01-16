@@ -38,7 +38,7 @@ public class AccountEventReceiver implements EventReceiver {
 
             case "getUserById":
                 try {
-                    UserAccountDTO userAccount = accountService.getById((String) in.getArguments()[0]);
+                    UserAccountDTO userAccount = accountService.get((String) in.getArguments()[0]);
                     eventSender.sendEvent(new Event("GetUserByIdSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("GetUserByIdFailed", new Object[]{e.getMessage()}));
@@ -57,7 +57,7 @@ public class AccountEventReceiver implements EventReceiver {
             case "registerUser":
                 try {
                     UserRegistrationDTO userAccount = (UserRegistrationDTO) in.getArguments()[0];
-                    accountService.add(userAccount);
+                    accountService.register(userAccount);
                     eventSender.sendEvent(new Event("RegisterUserSuccessful", new Object[]{userAccount}));
                 } catch (Exception e) {
                     eventSender.sendEvent(new Event("RegisterUserFailed", new Object[]{e.getMessage()}));

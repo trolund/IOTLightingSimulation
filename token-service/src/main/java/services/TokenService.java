@@ -9,7 +9,6 @@ import org.jboss.logmanager.Level;
 import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,8 +16,7 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class TokenService implements ITokenService {
 
-    @Inject
-    CustomerTokensRepository repo;
+    private final CustomerTokensRepository repo = CustomerTokensRepository.getInstance();
 
     Logger logger = Logger.getLogger(TokenService.class.getName());
 

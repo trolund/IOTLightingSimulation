@@ -7,18 +7,24 @@ import exceptions.CustomerNotFoundException;
 import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-@Singleton
 public class CustomerTokensRepository implements ICustomerTokensRepository {
 
-    private final List<CustomerTokens> customerTokens;
+    private static CustomerTokensRepository instance;
+    private final List<CustomerTokens> customerTokens = new ArrayList<>();
 
-    public CustomerTokensRepository() {
-        customerTokens = new ArrayList<>();
+    private CustomerTokensRepository() {
+
+    }
+
+    public static CustomerTokensRepository getInstance() {
+        if (instance == null) {
+            instance = new CustomerTokensRepository();
+        }
+        return instance;
     }
 
     @Override

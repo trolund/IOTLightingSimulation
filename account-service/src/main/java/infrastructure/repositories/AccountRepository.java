@@ -1,8 +1,7 @@
 package infrastructure.repositories;
 
-import exceptions.account.AccountException;
+import dto.AccountInformation;
 import infrastructure.repositories.interfaces.IAccountRepository;
-import model.UserAccount;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
@@ -11,53 +10,44 @@ import java.util.List;
 @ApplicationScoped
 public class AccountRepository implements IAccountRepository {
 
-    private final List<UserAccount> accounts;
+    private final List<AccountInformation> accountInformations;
 
     public AccountRepository() {
-        accounts = new ArrayList<>();
+        accountInformations = new ArrayList<>();
     }
 
     @Override
-    public void add(UserAccount account) {
-        accounts.add(account);
+    public void add(AccountInformation accountInformation) {
+        accountInformations.add(accountInformation);
     }
 
     @Override
-    public UserAccount getById(String id) throws AccountException {
-        UserAccount account = accounts.stream()
+    public AccountInformation getById(String id) {
+        return accountInformations.stream()
                 .filter(a -> a.getId().equals(id))
                 .findAny()
                 .orElse(null);
-
-        if (account == null) {
-            throw new AccountException("Account with id (" + id + ") not found!");
-        }
-
-        return account;
     }
 
     @Override
-    public UserAccount getByCpr(String cpr) throws AccountException {
-        UserAccount account = accounts.stream()
-                .filter(a -> a.getCprNumber().equals(cpr))
+    public AccountInformation getByCpr(String cpr) {
+        return accountInformations.stream()
+                .filter(a -> a.getCpr().equals(cpr))
                 .findAny()
                 .orElse(null);
+    }
 
-        if (account == null) {
-            throw new AccountException("Account with cpr (" + cpr + ") not found!");
+    @Override
+    public void remove(String id) {
+        AccountInformation accountInformation = getById(id);
+        if (accountInformation != null) {
+            accountInformations.remove(accountInformation);
         }
-
-        return account;
     }
 
     @Override
-    public void remove(String id) throws AccountException {
-        accounts.remove(getById(id));
-    }
-
-    @Override
-    public List<UserAccount> getAll() {
-        return accounts;
+    public List<AccountInformation> getAll() {
+        return accountInformations;
     }
 
 }

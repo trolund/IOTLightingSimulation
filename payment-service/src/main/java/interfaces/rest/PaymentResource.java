@@ -1,8 +1,7 @@
 package interfaces.rest;
 
 import dto.PaymentRequest;
-import exceptions.customer.CustomerException;
-import exceptions.merchant.MerchantException;
+import exceptions.account.AccountNotFoundException;
 import exceptions.token.InvalidTokenException;
 import exceptions.transaction.TransactionException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -10,7 +9,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IPaymentService;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,7 +24,7 @@ import javax.ws.rs.core.Response;
 public class PaymentResource {
 
     @Inject
-    IPaymentService ps;
+    IPaymentService service;
 
     /**
      * Pay x amount to a merchant
@@ -31,42 +32,44 @@ public class PaymentResource {
     @Operation(summary = "Pay x amount to a merchant")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response processPayment(PaymentRequest data) {
+    public Response processPayment(PaymentRequest paymentRequest) {
         try {
-            ps.processPayment(data.getMerchantId(), data.getCustomerId(), data.getAmount(), data.getToken());
+            service.processPayment(paymentRequest);
             return Response
                     .ok()
                     .build();
-        } catch (CustomerException | MerchantException e) {
-            throw new NotFoundException(e.getMessage());
+        } catch (AccountNotFoundException e) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
         } catch (TransactionException | InvalidTokenException e) {
-            throw new BadRequestException(e.getMessage());
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
         }
     }
 
     /**
      * Refund amount to customer
-     *
-     * @param customerId - Customer id.
-     * @param merchantId - Merchant id.
-     * @Param amount - amount of money to be refunded.
      */
     @Operation(summary = "Refund amount to customer")
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("refund")
-    public Response refund(@QueryParam("customerId") String customerId,
-                           @QueryParam("merchantId") String merchantId,
-                           @QueryParam("amount") int amount,
-                           @QueryParam("token") String token) {
+    public Response refund(PaymentRequest paymentRequest) {
         try {
-            ps.refund(customerId, merchantId, amount, token);
+            service.refund(paymentRequest);
             return Response
                     .ok()
                     .build();
-        } catch (CustomerException | MerchantException e) {
-            throw new NotFoundException(e.getMessage());
+        } catch (AccountNotFoundException e) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
         } catch (TransactionException | InvalidTokenException e) {
-            throw new BadRequestException(e.getMessage());
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
         }
     }
 

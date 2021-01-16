@@ -1,20 +1,23 @@
 package dto;
 
-import infrastructure.bank.*;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class BankAccountDTO implements Serializable {
+
+    private String id;
     private BigDecimal balance;
-    private String bankId;
 
     public BankAccountDTO() {
+
     }
 
-    public BankAccountDTO(BigDecimal balance, String bankId) {
-        this.balance = balance;
-        this.bankId = bankId;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public BigDecimal getBalance() {
@@ -25,11 +28,4 @@ public class BankAccountDTO implements Serializable {
         this.balance = balance;
     }
 
-    public String getBankId() {
-        return bankId;
-    }
-
-    public void setBankId(String bankId) {
-        this.bankId = bankId;
-    }
 }
