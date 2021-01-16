@@ -19,12 +19,9 @@ import java.util.stream.Collectors;
  */
 public class PaymentEventService implements EventReceiver {
 
-    PaymentService service;
-
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
-
     private final EventSender eventSender;
-
+    PaymentService service;
     private CompletableFuture<String> result;
 
     public PaymentEventService(EventSender eventSender, PaymentService service) {
@@ -49,10 +46,10 @@ public class PaymentEventService implements EventReceiver {
 
     public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
         Event event = null;
-        if(successful){
-            event = new Event("TransactionSuccessful", new Object[] {dto});
-        }else{
-            event = new Event("TransactionFailed", new Object[] {dto});
+        if (successful) {
+            event = new Event("TransactionSuccessful", new Object[]{dto});
+        } else {
+            event = new Event("TransactionFailed", new Object[]{dto});
         }
         eventSender.sendEvent(event);
     }

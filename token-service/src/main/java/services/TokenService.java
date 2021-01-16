@@ -3,6 +3,7 @@ package services;
 import domain.CustomerToken;
 import domain.Token;
 import exceptions.*;
+import exceptions.token.InvalidTokenException;
 import infrastructure.repositories.CustomerTokensRepository;
 import services.interfaces.ITokenService;
 
@@ -63,4 +64,5 @@ public class TokenService implements ITokenService {
         }
         return true;
     }
+
 }

@@ -3,6 +3,7 @@ package infrastructure.repositories;
 import domain.CustomerToken;
 import domain.Token;
 import exceptions.*;
+import exceptions.token.InvalidTokenException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -85,4 +86,5 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
             throw new CustomerHasNoTokensException(customerId);
         }
     }
+
 }

@@ -19,12 +19,10 @@ import java.util.logging.Logger;
                 title = "Group 11 - token-service API",
                 version = "3.0.3"
         ))
-
 @ApplicationPath("/api/v1")
 public class RootApplication extends Application {
 
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
-    private RabbitMQReceiver receiver = new RabbitMQReceiver(new TokenReceiver(new RabbitMQSender()));
 
     public RootApplication() {
         super();

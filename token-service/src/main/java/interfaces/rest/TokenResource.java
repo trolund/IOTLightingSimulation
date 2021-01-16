@@ -2,6 +2,7 @@ package interfaces.rest;
 
 import domain.Token;
 import exceptions.*;
+import exceptions.token.InvalidTokenException;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.ITokenService;
 
@@ -19,7 +20,6 @@ public class TokenResource {
 
     @Tag(ref = "requestTokens")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     public Response requestTokens(@QueryParam("customerId") String customerId,
                                   @QueryParam("amount") int amount) {
         try {
@@ -56,7 +56,6 @@ public class TokenResource {
 
     @Tag(ref = "validateToken")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     public Response validateToken(@QueryParam("tokenId") String tokenId) {
         try {
             service.validateToken(tokenId);
@@ -73,7 +72,6 @@ public class TokenResource {
 
     @Tag(ref = "deleteCustomer")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("{customerId}")
     public Response deleteCustomer(@PathParam("customerId") String customerId) {
         try {
@@ -86,7 +84,6 @@ public class TokenResource {
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();
-
         }
     }
 
