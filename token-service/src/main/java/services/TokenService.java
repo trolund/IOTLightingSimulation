@@ -6,10 +6,12 @@ import exceptions.*;
 import exceptions.token.InvalidTokenException;
 import infrastructure.repositories.CustomerTokensRepository;
 import interfaces.TokenReceiver;
+import io.cucumber.java.sl.In;
 import org.jboss.logmanager.Level;
 import services.interfaces.ITokenService;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +19,8 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class TokenService implements ITokenService {
 
-    CustomerTokensRepository repo = new CustomerTokensRepository();
+    @Inject
+    CustomerTokensRepository repo;
 
     Logger logger = Logger.getLogger(TokenService.class.getName());
 
@@ -39,16 +42,11 @@ public class TokenService implements ITokenService {
         logger.log(Level.SEVERE, "ADDING TOKENS TO CUSTOMER!");
         addTokens(repo.get(customerId), amount);
 
-
-
         StringBuilder sb = new StringBuilder();
         for (Token token : repo.get(customerId).getTokens()) {
             sb.append(token.getId()).append("\n");
         }
         logger.log(Level.SEVERE, "TOKENS AFTER addTokens (outside method): " + sb.toString());
-
-
-
 
         return customerId;
     }

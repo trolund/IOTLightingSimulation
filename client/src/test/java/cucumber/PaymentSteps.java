@@ -55,6 +55,7 @@ public class PaymentSteps {
     @When("the customer is registered")
     public void when_the_customer_is_registered() {
         currentCustomerId = accountService.registerUser(cusRegDTO);
+        System.out.println("CusID " + currentCustomerId);
     }
 
     @Then("the customer registration should be successful")
@@ -88,6 +89,7 @@ public class PaymentSteps {
     @When("the merchant is registered")
     public void when_the_merchant_is_registered() {
         currentMerchantId = accountService.registerUser(mercRegDTO);
+        System.out.println("merID " + currentMerchantId);
     }
 
     @Then("the merchant registration should be successful")

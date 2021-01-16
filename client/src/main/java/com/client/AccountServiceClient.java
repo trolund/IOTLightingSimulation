@@ -28,10 +28,14 @@ public class AccountServiceClient {
     }
 
     public UserAccountDTO getUserById(String userId) {
-        return baseUrl.path("users/" + userId)
+        Response r = baseUrl.path("users/" + userId)
                 .request()
-                .get(new GenericType<>() {
-                });
+                .get();
+
+        if(r.getStatus() == 200){
+            return r.readEntity(new GenericType<>(){});
+        }
+        return null;
     }
 
     public UserAccountDTO getUserByCpr(String cpr) {
