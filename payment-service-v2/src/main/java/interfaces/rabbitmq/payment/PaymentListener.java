@@ -1,4 +1,4 @@
-package interfaces.rabbitmq;
+package interfaces.rabbitmq.payment;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -11,20 +11,31 @@ import messaging.Event;
 import messaging.EventReceiver;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class RabbitMQReceiver {
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
+ */
+public class PaymentListener {
+
+    private final static Logger LOGGER = Logger.getLogger(PaymentListener.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "token.*";
+    private static final String TOPIC = "dtupay.*";
 
-    EventReceiver service;
+    EventReceiver receiver;
 
-    public RabbitMQReceiver(EventReceiver service) {
-        this.service = service;
+    public PaymentListener(EventReceiver receiver) {
+        this.receiver = receiver;
     }
 
-    public void initConnection() throws Exception {
+    public void listen() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         IConfigService config = new ConfigService();
         factory.setHost(config.getProp("rabbitmq.host"));
@@ -36,15 +47,24 @@ public class RabbitMQReceiver {
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            System.out.println("[x] receiving " + message);
+            LOGGER.log(Level.INFO, "RABBITMQ: Received raw message: " + message);
 
-            Event event = new Gson().fromJson(message, Event.class);
+            Event event;
+
             try {
-                service.receiveEvent(event);
+                event = new Gson().fromJson(message, Event.class);
             } catch (Exception e) {
-                throw new Error(e);
+                LOGGER.log(Level.WARNING, "RABBITMQ: Failed to parse message to JSON: " + message);
+                return;
+            }
+
+            try {
+                receiver.receiveEvent(event);
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "RABBITMQ: Receive event error: " + e.getMessage());
             }
         };
+
         channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
         });
     }

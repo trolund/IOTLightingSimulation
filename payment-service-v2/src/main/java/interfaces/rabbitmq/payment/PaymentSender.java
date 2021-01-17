@@ -1,4 +1,4 @@
-package interfaces.rabbitmq;
+package interfaces.rabbitmq.payment;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -13,13 +13,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RabbitMqSender implements EventSender {
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
+ */
+public class PaymentSender implements EventSender {
 
-    private final static Logger LOGGER = Logger.getLogger(RabbitMqSender.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PaymentSender.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "accounts.*";
+    private static final String TOPIC = "dtupay.*";
 
     @Override
     public void sendEvent(Event event) throws Exception {

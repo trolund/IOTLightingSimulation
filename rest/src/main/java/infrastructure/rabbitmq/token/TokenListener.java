@@ -27,7 +27,7 @@ public class TokenListener {
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "payment.*";
+    private static final String TOPIC = "dtupay.*";
 
     EventReceiver receiver;
 

@@ -26,7 +26,7 @@ public class TokenSender implements EventSender {
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "payment.service";
+    private static final String TOPIC = "dtupay.*";
 
     @Override
     public void sendEvent(Event event) throws Exception {

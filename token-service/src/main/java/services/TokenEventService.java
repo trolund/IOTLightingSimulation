@@ -1,23 +1,19 @@
-package interfaces;
+package services;
 
+import dto.PaymentAccounts;
 import dto.Token;
 import exceptions.TokenNotFoundException;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
-import services.TokenService;
 import services.interfaces.ITokenService;
 
-import java.util.logging.Logger;
-
-public class TokenReceiver implements EventReceiver {
+public class TokenEventService implements EventReceiver {
 
     ITokenService rs;
     EventSender eventSender;
 
-    Logger logger = Logger.getLogger(TokenReceiver.class.getName());
-
-    public TokenReceiver(EventSender eventSender) {
+    public TokenEventService(EventSender eventSender) {
         this.eventSender = eventSender;
         this.rs = new TokenService();
     }
@@ -41,6 +37,7 @@ public class TokenReceiver implements EventReceiver {
                 eventSender.sendEvent(new Event("GetTokenFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
+        /*
         if (event.getEventType().equals("ValidateToken")) {
             try {
                 Token token = rs.validateToken((String) event.getArguments()[0]);
@@ -51,12 +48,29 @@ public class TokenReceiver implements EventReceiver {
                 eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
+         */
         if (event.getEventType().equals("RetireCustomerTokens")) {
             try {
                 String customerId = rs.deleteCustomer((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("CustomerRetirementSuccessful", new Object[]{customerId}));
             } catch (Exception e) {
                 eventSender.sendEvent(new Event("CustomerRetirementFailed", new Object[]{e.getMessage().split(" ")[1]}));
+            }
+        }
+        if (event.getEventType().equals("PaymentAccountsSuccessful")) {
+            PaymentAccounts paymentAccounts = (PaymentAccounts) event.getArguments()[0];
+            try {
+                Token token = rs.validateToken(paymentAccounts.getToken());
+
+                if (token == null) {
+                    eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{"Token is null"}));
+                    return;
+                }
+
+                Event eventOut = new Event("TokenValidationSuccessful", new Object[]{paymentAccounts});
+                eventSender.sendEvent(eventOut);
+            } catch (Exception e) {
+                eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
     }

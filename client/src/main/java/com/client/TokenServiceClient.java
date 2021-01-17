@@ -12,7 +12,7 @@ public class TokenServiceClient {
 
     public TokenServiceClient() {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
-        baseUrl = client.target("http://localhost:8081/api/v1/");
+        baseUrl = client.target("http://localhost:8080/api/v1/");
     }
 
     public boolean requestTokens(String customerId, int amount) {

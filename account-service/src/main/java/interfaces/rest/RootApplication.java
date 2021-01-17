@@ -1,8 +1,8 @@
 package interfaces.rest;
 
-import interfaces.rabbitmq.RabbitMqReceiver;
-import interfaces.rabbitmq.RabbitMqSender;
-import interfaces.rabbitmq.AccountEventReceiver;
+import interfaces.rabbitmq.AccountListener;
+import interfaces.rabbitmq.AccountSender;
+import services.AccountEventService;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -30,11 +30,11 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting..." + System.getenv("RABBITMQ_HOST"));
         try {
-            RabbitMqSender s = new RabbitMqSender();
+            AccountSender s = new AccountSender();
             LOGGER.info("RabbitMqSender up");
-            AccountEventReceiver service = new AccountEventReceiver(s);
+            AccountEventService service = new AccountEventService(s);
             LOGGER.info("AccountReceiver up");
-            new RabbitMqReceiver(service).listen();
+            new AccountListener(service).listen();
             LOGGER.info("RabbitMqReceiver up");
         } catch (Exception e) {
             e.printStackTrace();

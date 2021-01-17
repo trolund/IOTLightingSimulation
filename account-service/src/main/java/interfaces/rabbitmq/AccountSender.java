@@ -1,4 +1,4 @@
-package infrastructure.rabbitmq.account;
+package interfaces.rabbitmq;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -13,13 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
- * <p>
- * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
- * rabbitMQ implementation template.
- */
 public class AccountSender implements EventSender {
 
     private final static Logger LOGGER = Logger.getLogger(AccountSender.class.getName());

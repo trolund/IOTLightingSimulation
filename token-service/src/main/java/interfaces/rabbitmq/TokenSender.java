@@ -11,11 +11,11 @@ import messaging.EventSender;
 
 import java.nio.charset.StandardCharsets;
 
-public class RabbitMQSender implements EventSender {
+public class TokenSender implements EventSender {
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "token.service";
+    private static final String TOPIC = "dtupay.*";
 
     private Channel channel;
 

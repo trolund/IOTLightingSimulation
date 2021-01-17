@@ -16,7 +16,7 @@ public class AccountServiceClient {
 
     public AccountServiceClient() {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
-        baseUrl = client.target("http://localhost:8082/api/v1/");
+        baseUrl = client.target("http://localhost:8080/api/v1/");
     }
 
     public String registerAccount(UserRegistrationDTO registrationDTO) {

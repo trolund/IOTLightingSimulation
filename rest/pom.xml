@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>group11</groupId>
-  <artifactId>microservice-template</artifactId>
+  <artifactId>rest</artifactId>
   <version>1.0.0</version>
   <properties>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>

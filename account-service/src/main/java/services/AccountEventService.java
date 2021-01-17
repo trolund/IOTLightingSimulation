@@ -1,5 +1,7 @@
-package interfaces.rabbitmq;
+package services;
 
+import dto.PaymentAccounts;
+import dto.PaymentRequest;
 import dto.UserAccountDTO;
 import dto.UserRegistrationDTO;
 import messaging.Event;
@@ -13,21 +15,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // authors: help from group
-public class AccountEventReceiver implements EventReceiver {
+public class AccountEventService implements EventReceiver {
 
-    private final static Logger LOGGER = Logger.getLogger(AccountEventReceiver.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(AccountEventService.class.getName());
     private final EventSender eventSender;
 
     @Inject
     IAccountService service;
 
-    public AccountEventReceiver(EventSender eventSender) {
+    public AccountEventService(EventSender eventSender) {
         this.eventSender = eventSender;
     }
 
     @Override
     public void receiveEvent(Event eventIn) throws Exception {
-
         switch (eventIn.getEventType()) {
             case "Register":
                 try {
@@ -91,6 +92,26 @@ public class AccountEventReceiver implements EventReceiver {
                     eventSender.sendEvent(eventOut);
                 } catch (Exception e) {
                     Event eventOut = new Event("GetAllAccountsFailed", new Object[]{e.getMessage()});
+                    eventSender.sendEvent(eventOut);
+                }
+                break;
+            case "ProcessPayment":
+                try {
+                    PaymentRequest paymentRequest = (PaymentRequest) eventIn.getArguments()[0];
+
+                    UserAccountDTO customerAccount = service.get(paymentRequest.getCustomerId());
+                    UserAccountDTO merchantAccount = service.get(paymentRequest.getMerchantId());
+
+                    PaymentAccounts paymentAccounts = new PaymentAccounts();
+                    paymentAccounts.setCustomer(customerAccount);
+                    paymentAccounts.setMerchant(merchantAccount);
+                    paymentAccounts.setAmount(paymentRequest.getAmount());
+                    paymentAccounts.setToken(paymentRequest.getToken());
+
+                    Event eventOut = new Event("PaymentAccountsSuccessful", new Object[]{paymentAccounts});
+                    eventSender.sendEvent(eventOut);
+                } catch (Exception e) {
+                    Event eventOut = new Event("PaymentAccountsFailed", new Object[]{e.getMessage()});
                     eventSender.sendEvent(eventOut);
                 }
                 break;
