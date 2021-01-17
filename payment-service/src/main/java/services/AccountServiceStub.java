@@ -17,7 +17,7 @@ public class AccountServiceStub {
          * TODO what is the correct url here? how do we access another
          * docker-container from within another?
          */
-        baseUrl = client.target("account:8082/api/v1/");
+        baseUrl = client.target("http://account:8082/api/v1/");
     }
 
     public UserAccountDTO getAccount(String id) {
