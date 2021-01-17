@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
  * rabbitMQ implementation template.
  */
-public class RabbitMQPaymentListener {
+public class PaymentListener {
 
-    private final static Logger LOGGER = Logger.getLogger(RabbitMQPaymentListener.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PaymentListener.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
@@ -31,7 +31,7 @@ public class RabbitMQPaymentListener {
 
     EventReceiver receiver;
 
-    public RabbitMQPaymentListener(EventReceiver receiver) {
+    public PaymentListener(EventReceiver receiver) {
         this.receiver = receiver;
     }
 

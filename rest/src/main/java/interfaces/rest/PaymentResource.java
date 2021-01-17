@@ -1,17 +1,15 @@
 package interfaces.rest;
 
 import dto.PaymentRequest;
-import exceptions.account.AccountNotFoundException;
-import exceptions.token.InvalidTokenException;
-import exceptions.transaction.TransactionException;
+import dto.TransactionDTO;
+import exceptions.EventFailedException;
+import exceptions.SendEventFailedException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import services.interfaces.IPaymentService;
+import services.PaymentEventService;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -24,7 +22,7 @@ import javax.ws.rs.core.Response;
 public class PaymentResource {
 
     @Inject
-    IPaymentService service;
+    PaymentEventService service;
 
     /**
      * Pay x amount to a merchant
@@ -32,20 +30,21 @@ public class PaymentResource {
     @Operation(summary = "Pay x amount to a merchant")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response processPayment(PaymentRequest paymentRequest) {
         try {
-            service.processPayment(paymentRequest);
-            return Response
-                    .ok()
-                    .build();
-        } catch (AccountNotFoundException e) {
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .build();
-        } catch (TransactionException | InvalidTokenException e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .build();
+            TransactionDTO transactionDTO = service.sendProcessPaymentEvent(paymentRequest);
+            if (transactionDTO.isSuccessful()) {
+                return Response
+                        .ok().entity(transactionDTO)
+                        .build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(transactionDTO).build();
+            }
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -55,21 +54,20 @@ public class PaymentResource {
     @Operation(summary = "Refund amount to customer")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("refund")
-    public Response refund(PaymentRequest paymentRequest) {
+    public Response processRefund(PaymentRequest paymentRequest) {
         try {
-            service.refund(paymentRequest);
-            return Response
-                    .ok()
-                    .build();
-        } catch (AccountNotFoundException e) {
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .build();
-        } catch (TransactionException | InvalidTokenException e) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .build();
+            TransactionDTO transactionDTO = service.sendProcessRefundEvent(paymentRequest);
+            if (transactionDTO.isSuccessful()) {
+                return Response.ok().entity(transactionDTO).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(transactionDTO).build();
+            }
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 

@@ -25,15 +25,15 @@ public class TokenReceiver implements EventReceiver {
     @Override
     public void receiveEvent(Event event) throws Exception {
         System.out.println("handling event: " + event);
-        if (event.getEventType().equals("requestTokens")) {
+        if (event.getEventType().equals("RequestTokens")) {
             try {
                 String customerId = rs.requestTokens((String) event.getArguments()[0], (Integer) event.getArguments()[1]);
-                eventSender.sendEvent(new Event("TokenRequestSuccessful", new Object[]{customerId}));
+                eventSender.sendEvent(new Event("RequestTokensSuccessful", new Object[]{customerId}));
             } catch (TokenNotFoundException e) {
-                eventSender.sendEvent(new Event("TokenRequestFailed", new Object[]{e.getMessage().split(" ")[1]})); // TODO: Extract this
+                eventSender.sendEvent(new Event("RequestTokensFailed", new Object[]{e.getMessage().split(" ")[1]})); // TODO: Extract this
             }
         }
-        if (event.getEventType().equals("getToken")) {
+        if (event.getEventType().equals("GetToken")) {
             try {
                 Token token = rs.getToken((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("GetTokenSuccessful", new Object[]{token.getId(), event.getArguments()[0]}));
@@ -41,7 +41,7 @@ public class TokenReceiver implements EventReceiver {
                 eventSender.sendEvent(new Event("GetTokenFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
-        if (event.getEventType().equals("validateToken")) {
+        if (event.getEventType().equals("ValidateToken")) {
             try {
                 if (rs == null) {
                     logger.severe("token service rs is null!");
@@ -59,12 +59,12 @@ public class TokenReceiver implements EventReceiver {
                 eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
-        if (event.getEventType().equals("deleteCustomer")) {
+        if (event.getEventType().equals("RetireCustomerTokens")) {
             try {
                 String customerId = rs.deleteCustomer((String) event.getArguments()[0]);
-                eventSender.sendEvent(new Event("CustomerDeletionSuccessful", new Object[]{customerId}));
+                eventSender.sendEvent(new Event("CustomerRetirementSuccessful", new Object[]{customerId}));
             } catch (Exception e) {
-                eventSender.sendEvent(new Event("CustomerDeletionFailed", new Object[]{e.getMessage().split(" ")[1]}));
+                eventSender.sendEvent(new Event("CustomerRetirementFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
     }

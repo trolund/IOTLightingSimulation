@@ -1,7 +1,5 @@
 package dto;
 
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,6 +18,7 @@ public class TransactionDTO implements Serializable {
     private String description;
     private Date time;
     private String token;
+    private boolean isSuccessful;
 
     public TransactionDTO() {
 
@@ -31,13 +30,15 @@ public class TransactionDTO implements Serializable {
         this.debtor = debtor;
     }
 
-    public TransactionDTO(BigDecimal amount, BigDecimal balance, String creditor, String debtor, String description, Date time) {
+    public TransactionDTO(BigDecimal amount, BigDecimal balance, String
+            creditor, String debtor, String description, Date time, boolean isSuccessful) {
         this.amount = amount;
         this.balance = balance;
         this.creditor = creditor;
         this.debtor = debtor;
         this.description = description;
         this.time = time;
+        this.isSuccessful = isSuccessful;
     }
 
     public String getToken() {
@@ -96,6 +97,14 @@ public class TransactionDTO implements Serializable {
         this.time = time;
     }
 
+    public boolean isSuccessful() {
+        return isSuccessful;
+    }
+
+    public void setSuccessful(boolean successful) {
+        isSuccessful = successful;
+    }
+
     @Override
     public String toString() {
         return "TransactionDTO{" +
@@ -105,6 +114,8 @@ public class TransactionDTO implements Serializable {
                 ", debtor='" + debtor + '\'' +
                 ", description='" + description + '\'' +
                 ", time=" + time +
+                ", token='" + token + '\'' +
+                ", isSuccessful=" + isSuccessful +
                 '}';
     }
 

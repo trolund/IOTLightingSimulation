@@ -2,8 +2,10 @@ package interfaces.rest;
 
 import dto.UserAccountDTO;
 import dto.UserRegistrationDTO;
+import exceptions.EventFailedException;
+import exceptions.SendEventFailedException;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import services.interfaces.IAccountService;
+import services.AccountEventService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,35 +18,35 @@ import java.util.List;
 public class AccountResource {
 
     @Inject
-    IAccountService service;
-
-    @Tag(ref = "getAccountById")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public Response getAccount(@PathParam("id") String id) {
-        try {
-            UserAccountDTO user = service.get(id);
-            return Response.ok().entity(user).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
-        }
-    }
+    AccountEventService service;
 
     @Tag(ref = "register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response register(UserRegistrationDTO user) {
+    public Response register(UserRegistrationDTO userRegistrationDTO) {
         try {
-            String userId = service.register(user);
-            return Response.ok().entity(userId).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            String internalId = service.sendRegisterEvent(userRegistrationDTO);
+            return Response.ok().entity(internalId).build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Tag(ref = "getAccount")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}")
+    public Response getAccount(@PathParam("id") String id) {
+        try {
+            UserAccountDTO userAccountDTO = service.sendGetAccountEvent(id);
+            return Response.ok().entity(userAccountDTO).build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -54,12 +56,26 @@ public class AccountResource {
     @Path("/by-cpr/{cpr}")
     public Response getAccountByCpr(@PathParam("cpr") String cpr) {
         try {
-            UserAccountDTO user = service.getByCpr(cpr);
-            return Response.ok().entity(user).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            UserAccountDTO userAccountDTO = service.sendGetAccountByCprEvent(cpr);
+            return Response.ok().entity(userAccountDTO).build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Tag(ref = "retireAccount")
+    @DELETE
+    @Path("{id}")
+    public Response retireAccount(@PathParam("id") String id) {
+        try {
+            service.sendRetireAccountEvent(id);
+            return Response.ok().build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -68,12 +84,12 @@ public class AccountResource {
     @Path("/by-cpr/{cpr}")
     public Response retireAccountByCpr(@PathParam("cpr") String cpr) {
         try {
-            service.retireAccountByCpr(cpr);
+            service.sendRetireAccountByCprEvent(cpr);
             return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -82,26 +98,12 @@ public class AccountResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllAccounts() {
         try {
-            List<UserAccountDTO> accounts = service.getAll();
-            return Response.ok().entity(accounts).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
-        }
-    }
-
-    @Tag(ref = "retireAccount")
-    @DELETE
-    @Path("{id}")
-    public Response retireUser(@PathParam("id") String id) {
-        try {
-            service.retireAccount(id);
-            return Response.ok().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+            List<UserAccountDTO> userAccountDTOs = service.sendGetAllAccountsEvent();
+            return Response.ok().entity(userAccountDTOs).build();
+        } catch (SendEventFailedException e) {
+            throw new InternalServerErrorException(e.getMessage());
+        } catch (EventFailedException e) {
+            throw new BadRequestException(e.getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
 package infrastructure.rabbitmq.payment;
 
 import messaging.EventSender;
-import services.interfaces.PaymentEventService;
+import services.PaymentEventService;
 
 /**
  * @primary-author Daniel (s151641)
@@ -10,7 +10,7 @@ import services.interfaces.PaymentEventService;
  * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
  * rabbitMQ implementation template.
  */
-public class RabbitMQPaymentAdapterFactory {
+public class PaymentFactory {
 
     static PaymentEventService paymentEventService = null;
 
@@ -30,9 +30,9 @@ public class RabbitMQPaymentAdapterFactory {
         // is called dependency injection.
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
-        EventSender b = new RabbitMQPaymentSender();
+        EventSender b = new PaymentSender();
         paymentEventService = new PaymentEventService(b);
-        RabbitMQPaymentListener r = new RabbitMQPaymentListener(paymentEventService);
+        PaymentListener r = new PaymentListener(paymentEventService);
         try {
             r.listen();
         } catch (Exception e) {

@@ -20,4 +20,12 @@ public class BankRegistrationDTO implements Serializable {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    @Override
+    public String toString() {
+        return "BankRegistrationDTO{" +
+                "balance=" + balance +
+                '}';
+    }
+
 }

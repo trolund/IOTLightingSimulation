@@ -1,4 +1,4 @@
-package infrastructure.rabbitmq.payment;
+package infrastructure.rabbitmq.account;
 
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
@@ -20,9 +20,9 @@ import java.util.logging.Logger;
  * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
  * rabbitMQ implementation template.
  */
-public class RabbitMQPaymentSender implements EventSender {
+public class AccountSender implements EventSender {
 
-    private final static Logger LOGGER = Logger.getLogger(RabbitMQPaymentSender.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(AccountSender.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
