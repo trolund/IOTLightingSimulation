@@ -1,9 +1,9 @@
 package services.interfaces;
 
+import dto.MoneySummery;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IReportService {
+    List<TransactionDTO> merchantReport(String merchantId, String start, String end) throws DatatypeConfigurationException, ParseException;
+    List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException;
+    MoneySummery getSummary();
     Map<String, BigDecimal> requestSummary(List<TransactionDTO> transactions) throws Exception;
     List<TransactionDTO> requestAllCustomerTransactions(List<TransactionDTO> transactions, String customerId);
     List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws DatatypeConfigurationException, ParseException;

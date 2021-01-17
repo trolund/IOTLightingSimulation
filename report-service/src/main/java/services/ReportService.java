@@ -1,5 +1,6 @@
 package services;
 
+import dto.MoneySummery;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.TransactionRepository;
@@ -22,6 +23,21 @@ import static java.math.RoundingMode.HALF_UP;
 public class ReportService implements IReportService {
 
     ITransactionRepository repo = new TransactionRepository();
+
+    public MoneySummery getSummary(){
+        List<TransactionDTO> list = repo.getAll();
+        return new MoneySummery(requestSummary(list), list);
+    }
+
+    public List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException {
+        List<TransactionDTO> list = repo.getAll();
+        return requestAllCustomerTransactionsBetween(list, customerId, start, end);
+    }
+
+    public List<TransactionDTO> merchantReport(String merchantId, String start, String end) throws DatatypeConfigurationException, ParseException {
+        List<TransactionDTO> list = repo.getAll();
+        return requestAllMerchantTransactionsBetween(list, merchantId, start, end);
+    }
 
     @Override
     public Map<String, BigDecimal> requestSummary(List<TransactionDTO> transactions) {

@@ -1,5 +1,7 @@
 package services;
 
-public class MapperService {
+import org.modelmapper.ModelMapper;
+
+public class MapperService extends ModelMapper {
 
 }
