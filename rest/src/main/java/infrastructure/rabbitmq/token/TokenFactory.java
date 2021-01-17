@@ -14,7 +14,7 @@ public class TokenFactory {
 
     static TokenEventService tokenEventService = null;
 
-    public TokenEventService getService() {
+    public static TokenEventService getService() {
         // The singleton pattern.
         // Ensure that there is at most
         // one instance of a PaymentService

@@ -9,12 +9,10 @@ import services.interfaces.IReportService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class ReportReceiverService implements EventReceiver {
 
     IReportService rs;
-
     EventSender eventSender;
 
     public ReportReceiverService(EventSender eventSender, ReportService reportService) {

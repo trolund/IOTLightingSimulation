@@ -1,6 +1,8 @@
 package services;
 
+import com.google.gson.Gson;
 import dto.PaymentAccounts;
+import dto.PaymentRequest;
 import dto.Token;
 import exceptions.TokenNotFoundException;
 import messaging.Event;
@@ -12,6 +14,7 @@ public class TokenEventService implements EventReceiver {
 
     ITokenService rs;
     EventSender eventSender;
+    private final Gson gson = new Gson();
 
     public TokenEventService(EventSender eventSender) {
         this.eventSender = eventSender;
@@ -23,7 +26,9 @@ public class TokenEventService implements EventReceiver {
         System.out.println("handling event: " + event);
         if (event.getEventType().equals("RequestTokens")) {
             try {
-                String customerId = rs.requestTokens((String) event.getArguments()[0], (Integer) event.getArguments()[1]);
+                String id = (String) event.getArguments()[0];
+                int amount = Double.valueOf(String.valueOf(event.getArguments()[1])).intValue();
+                String customerId = rs.requestTokens(id, amount);
                 eventSender.sendEvent(new Event("RequestTokensSuccessful", new Object[]{customerId}));
             } catch (TokenNotFoundException e) {
                 eventSender.sendEvent(new Event("RequestTokensFailed", new Object[]{e.getMessage().split(" ")[1]})); // TODO: Extract this
@@ -58,7 +63,7 @@ public class TokenEventService implements EventReceiver {
             }
         }
         if (event.getEventType().equals("PaymentAccountsSuccessful")) {
-            PaymentAccounts paymentAccounts = (PaymentAccounts) event.getArguments()[0];
+            PaymentAccounts paymentAccounts = gson.fromJson(gson.toJson(event.getArguments()[0]), PaymentAccounts.class);
             try {
                 Token token = rs.validateToken(paymentAccounts.getToken());
 
@@ -70,7 +75,7 @@ public class TokenEventService implements EventReceiver {
                 Event eventOut = new Event("TokenValidationSuccessful", new Object[]{paymentAccounts});
                 eventSender.sendEvent(eventOut);
             } catch (Exception e) {
-                eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
+                eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{paymentAccounts}));
             }
         }
     }

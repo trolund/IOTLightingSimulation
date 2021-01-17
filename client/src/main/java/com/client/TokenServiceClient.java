@@ -15,9 +15,9 @@ public class TokenServiceClient {
         baseUrl = client.target("http://localhost:8080/api/v1/");
     }
 
-    public boolean requestTokens(String customerId, int amount) {
+    public boolean requestTokens(String id, int amount) {
         Response r = baseUrl.path("token")
-                .queryParam("customerId", customerId)
+                .queryParam("id", id)
                 .queryParam("amount", amount)
                 .request()
                 .post(null);

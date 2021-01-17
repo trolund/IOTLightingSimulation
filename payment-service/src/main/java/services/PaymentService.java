@@ -1,3 +1,4 @@
+/*
 package services;
 
 import dto.PaymentRequest;
@@ -20,10 +21,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+*/
 /**
  * @primary-author Troels (s161791)
  * @co-author Daniel (s151641)
- */
+ *//*
+
 @ApplicationScoped
 public class PaymentService implements IPaymentService {
 
@@ -60,12 +63,14 @@ public class PaymentService implements IPaymentService {
                 throw new InvalidTokenException(token);
             }
 
-            /*
+            */
+/*
              * This is incorrect. This should be done through
              * rabbitMQ. However, as we're soon going to
              * re-implement the way we use rabbitMQ,
              * we will just use rest for now.
-             */
+             *//*
+
             // TODO get with account service through rabbitMQ
             AccountServiceStub accountService = new AccountServiceStub();
             customer = accountService.getAccount(customerId);
@@ -117,4 +122,4 @@ public class PaymentService implements IPaymentService {
         processPayment(paymentRequest);
     }
 
-}
+}*/

@@ -96,7 +96,7 @@ public class AdminSteps {
 
     @When("a new broken transaction is recorded")
     public void aNewBrokenTransactionIsRecorded() throws Exception {
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
         transaction.setAmount(null);
         try {
@@ -113,7 +113,7 @@ public class AdminSteps {
 
     @When("the transaction is recorded")
     public void theTransactionIsRecorded() throws Exception {
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
         tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
     }

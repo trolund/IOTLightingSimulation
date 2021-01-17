@@ -15,7 +15,13 @@ public class ConfigService implements IConfigService {
     FileReader reader= null;
 
     public ConfigService() throws ConfigException {
-
+        try {
+            Properties p=new Properties();
+            p.setProperty("rabbitmq.host","localhost");
+            p.store(new FileWriter("global.properties"),"global config"); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getProp(String s) throws ConfigException {

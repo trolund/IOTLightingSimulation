@@ -4,8 +4,11 @@ import dto.PaymentRequest;
 import dto.TransactionDTO;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
+import infrastructure.rabbitmq.account.AccountFactory;
+import infrastructure.rabbitmq.payment.PaymentFactory;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import services.AccountEventService;
 import services.PaymentEventService;
 
 import javax.inject.Inject;
@@ -21,8 +24,7 @@ import javax.ws.rs.core.Response;
 @Path("/payment")
 public class PaymentResource {
 
-    @Inject
-    PaymentEventService service;
+    private final PaymentEventService service = PaymentFactory.getService();
 
     /**
      * Pay x amount to a merchant

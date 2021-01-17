@@ -3,6 +3,7 @@ package interfaces.rest;
 import dto.Token;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
+import infrastructure.rabbitmq.token.TokenFactory;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.TokenEventService;
 
@@ -15,8 +16,7 @@ import javax.ws.rs.core.Response;
 @Path("/token")
 public class TokenResource {
 
-    @Inject
-    TokenEventService service;
+    private final TokenEventService service = TokenFactory.getService();
 
     @Tag(ref = "requestTokens")
     @POST

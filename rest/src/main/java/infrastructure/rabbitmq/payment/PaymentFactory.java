@@ -14,7 +14,7 @@ public class PaymentFactory {
 
     static PaymentEventService paymentEventService = null;
 
-    public PaymentEventService getService() {
+    public static PaymentEventService getService() {
         // The singleton pattern.
         // Ensure that there is at most
         // one instance of a PaymentService

@@ -1,5 +1,6 @@
 package services;
 
+import com.google.gson.Gson;
 import dto.PaymentRequest;
 import dto.TransactionDTO;
 import exceptions.EventFailedException;
@@ -18,7 +19,6 @@ import java.util.logging.Logger;
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
  */
-@ApplicationScoped
 public class PaymentEventService implements EventReceiver {
 
     private final static Logger LOGGER = Logger.getLogger(PaymentEventService.class.getName());
@@ -26,6 +26,7 @@ public class PaymentEventService implements EventReceiver {
 
     private CompletableFuture<TransactionDTO> processPaymentResult;
     private CompletableFuture<TransactionDTO> processRefundResult;
+    private final Gson gson = new Gson();
 
     public PaymentEventService(EventSender eventSender) {
         this.eventSender = eventSender;
@@ -36,22 +37,22 @@ public class PaymentEventService implements EventReceiver {
         LOGGER.info("Received event: " + event);
         switch (event.getEventType()) {
             case "PaymentSuccessful":
-                TransactionDTO transactionDTO = (TransactionDTO) event.getArguments()[0];
+                TransactionDTO transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(true);
                 processPaymentResult.complete(transactionDTO);
                 break;
             case "PaymentFailed":
-                transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(false);
                 processPaymentResult.complete(transactionDTO);
                 break;
             case "RefundSuccessful":
-                transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(true);
                 processRefundResult.complete(transactionDTO);
                 break;
             case "RefundFailed":
-                transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(false);
                 processRefundResult.complete(transactionDTO);
                 break;

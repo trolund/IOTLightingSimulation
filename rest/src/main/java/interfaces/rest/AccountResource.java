@@ -4,6 +4,7 @@ import dto.UserAccountDTO;
 import dto.UserRegistrationDTO;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
+import infrastructure.rabbitmq.account.AccountFactory;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.AccountEventService;
 
@@ -17,8 +18,7 @@ import java.util.List;
 @Path("/account")
 public class AccountResource {
 
-    @Inject
-    AccountEventService service;
+    private final AccountEventService service = AccountFactory.getService();
 
     @Tag(ref = "register")
     @POST

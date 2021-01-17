@@ -1,5 +1,7 @@
 package services;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dto.UserAccountDTO;
 import dto.UserRegistrationDTO;
 import exceptions.EventFailedException;
@@ -8,6 +10,9 @@ import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 
+import javax.enterprise.context.ApplicationScoped;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -28,6 +33,7 @@ public class AccountEventService implements EventReceiver {
     private CompletableFuture<Boolean> retireAccountResult;
     private CompletableFuture<Boolean> retireAccountByCprResult;
     private CompletableFuture<List<UserAccountDTO>> getAllAccountsResult;
+    private final Gson gson = new Gson();
 
     public AccountEventService(EventSender eventSender) {
         this.eventSender = eventSender;
@@ -46,7 +52,7 @@ public class AccountEventService implements EventReceiver {
                 registerResult.complete(null);
                 break;
             case "GetAccountSuccessful":
-                UserAccountDTO userAccountDTO = (UserAccountDTO) event.getArguments()[0];
+                UserAccountDTO userAccountDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), UserAccountDTO.class);
                 getAccountResult.complete(userAccountDTO);
                 break;
             case "GetAccountFailed":
@@ -54,7 +60,7 @@ public class AccountEventService implements EventReceiver {
                 getAccountResult.complete(null);
                 break;
             case "GetAccountByCprSuccessful":
-                userAccountDTO = (UserAccountDTO) event.getArguments()[0];
+                userAccountDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), UserAccountDTO.class);
                 getAccountByCprResult.complete(userAccountDTO);
                 break;
             case "GetAccountByCprFailed":
@@ -76,7 +82,8 @@ public class AccountEventService implements EventReceiver {
                 retireAccountByCprResult.complete(false);
                 break;
             case "GetAllAccountsSuccessful":
-                List<UserAccountDTO> userAccountDTOs = (List<UserAccountDTO>) event.getArguments()[0];
+                Type listType = new TypeToken<ArrayList<UserAccountDTO>>(){}.getType();
+                List<UserAccountDTO> userAccountDTOs = gson.fromJson(gson.toJson(event.getArguments()[0]), listType);
                 getAllAccountsResult.complete(userAccountDTOs);
                 break;
             case "GetAllAccountsFailed":

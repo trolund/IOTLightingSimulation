@@ -1,13 +1,12 @@
 package services;
 
-import dto.MoneySummery;
+import dto.MoneySummary;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.TransactionRepository;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 import services.interfaces.IReportService;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -19,15 +18,14 @@ import java.util.Map;
 
 import static java.math.RoundingMode.HALF_UP;
 
-@ApplicationScoped
 public class ReportService implements IReportService {
 
-    ITransactionRepository repo = new TransactionRepository();
+    private static final ITransactionRepository repo = TransactionRepository.getInstance();
 
-    public MoneySummery getSummary(){
+    public MoneySummary getSummary(){
         List<TransactionDTO> list = repo.getAll();
         System.out.println(list);
-        return new MoneySummery(requestSummary(list), list);
+        return new MoneySummary(requestSummary(list), list);
     }
 
     public List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException {

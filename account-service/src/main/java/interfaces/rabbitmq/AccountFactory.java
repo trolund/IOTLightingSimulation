@@ -2,6 +2,7 @@ package interfaces.rabbitmq;
 
 import messaging.EventSender;
 import services.AccountEventService;
+import services.AccountService;
 
 /**
  * @primary-author Daniel (s151641)
@@ -31,7 +32,7 @@ public class AccountFactory {
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
         EventSender b = new AccountSender();
-        accountEventService = new AccountEventService(b);
+        accountEventService = new AccountEventService(b, new AccountService());
         AccountListener r = new AccountListener(accountEventService);
         try {
             r.listen();

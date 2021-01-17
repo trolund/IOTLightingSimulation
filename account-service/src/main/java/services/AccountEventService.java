@@ -1,5 +1,6 @@
 package services;
 
+import com.google.gson.Gson;
 import dto.PaymentAccounts;
 import dto.PaymentRequest;
 import dto.UserAccountDTO;
@@ -9,7 +10,6 @@ import messaging.EventReceiver;
 import messaging.EventSender;
 import services.interfaces.IAccountService;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +20,12 @@ public class AccountEventService implements EventReceiver {
     private final static Logger LOGGER = Logger.getLogger(AccountEventService.class.getName());
     private final EventSender eventSender;
 
-    @Inject
-    IAccountService service;
+    private final IAccountService service;
+    private final Gson gson = new Gson();
 
-    public AccountEventService(EventSender eventSender) {
+    public AccountEventService(EventSender eventSender, AccountService service) {
         this.eventSender = eventSender;
+        this.service = service;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class AccountEventService implements EventReceiver {
         switch (eventIn.getEventType()) {
             case "Register":
                 try {
-                    UserRegistrationDTO userRegistrationDTO = (UserRegistrationDTO) eventIn.getArguments()[0];
+                    UserRegistrationDTO userRegistrationDTO = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), UserRegistrationDTO.class);
                     String internalId = service.register(userRegistrationDTO);
                     Event eventOut = new Event("RegisterSuccessful", new Object[]{internalId});
                     eventSender.sendEvent(eventOut);
@@ -97,7 +98,7 @@ public class AccountEventService implements EventReceiver {
                 break;
             case "ProcessPayment":
                 try {
-                    PaymentRequest paymentRequest = (PaymentRequest) eventIn.getArguments()[0];
+                    PaymentRequest paymentRequest = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), PaymentRequest.class);
 
                     UserAccountDTO customerAccount = service.get(paymentRequest.getCustomerId());
                     UserAccountDTO merchantAccount = service.get(paymentRequest.getMerchantId());
@@ -111,7 +112,8 @@ public class AccountEventService implements EventReceiver {
                     Event eventOut = new Event("PaymentAccountsSuccessful", new Object[]{paymentAccounts});
                     eventSender.sendEvent(eventOut);
                 } catch (Exception e) {
-                    Event eventOut = new Event("PaymentAccountsFailed", new Object[]{e.getMessage()});
+                    PaymentRequest paymentRequest = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), PaymentRequest.class);
+                    Event eventOut = new Event("PaymentAccountsFailed", new Object[]{paymentRequest});
                     eventSender.sendEvent(eventOut);
                 }
                 break;

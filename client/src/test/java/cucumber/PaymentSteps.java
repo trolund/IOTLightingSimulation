@@ -3,7 +3,7 @@ package cucumber;
 import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
 import com.client.AccountServiceClient;
-import com.client.PaymentServiceClient;
+import com.client.ReportServiceClient;
 import dto.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -13,6 +13,11 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +27,7 @@ public class PaymentSteps {
     private final MerchantApp merchantApp = new MerchantApp();
 
     private final AccountServiceClient accountService = new AccountServiceClient();
-    private final PaymentServiceClient paymentService = new PaymentServiceClient();
+    private final ReportServiceClient reportService = new ReportServiceClient();
     boolean successPayment;
 
     private UserRegistrationDTO cusRegDTO, mercRegDTO;
@@ -33,7 +38,7 @@ public class PaymentSteps {
     private Token customerToken;
     private Integer paymentAmount;
 
-    private TransactionDTO cusLatestTran, mercLatestTran;
+    private TransactionDTO latestTransaction;
 
     @After
     public void cleanup() {
@@ -120,7 +125,7 @@ public class PaymentSteps {
 
     @And("the payment is successful")
     public void the_payment_is_successful() {
-        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId());
+        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId(), false);
         successPayment = merchantApp.processPayment(paymentRequest);
         assertTrue(successPayment);
     }
@@ -129,34 +134,53 @@ public class PaymentSteps {
     public void the_customer_should_have_a_balance_of_left(Integer balanceLeft) {
         customerDTO = accountService.getAccount(currentCustomerId);
         Assert.assertNotNull(customerDTO);
-        Assert.assertEquals(BigDecimal.valueOf(balanceLeft), customerDTO.getBankAccount().getBalance());
+        Assert.assertEquals(BigDecimal.valueOf(balanceLeft).intValue(), customerDTO.getBankAccount().getBalance().intValue());
     }
 
     @Then("the merchant should have a balance of {int} left")
     public void the_merchant_should_have_a_balance_of_left(Integer balanceLeft) {
         merchantDTO = accountService.getAccount(currentMerchantId);
-        Assert.assertNotNull(customerDTO);
-        Assert.assertEquals(BigDecimal.valueOf(balanceLeft), merchantDTO.getBankAccount().getBalance());
+        Assert.assertNotNull(merchantDTO);
+        Assert.assertEquals(BigDecimal.valueOf(balanceLeft).intValue(), merchantDTO.getBankAccount().getBalance().intValue());
     }
+
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        cusLatestTran = paymentService.getLatestTransaction(customerDTO.getId());
-        mercLatestTran = paymentService.getLatestTransaction(merchantDTO.getId());
-        Assert.assertNotNull(cusLatestTran);
-        Assert.assertNotNull(mercLatestTran);
-        Assert.assertEquals(BigDecimal.valueOf(transactionAmount), cusLatestTran.getAmount());
-        Assert.assertEquals(BigDecimal.valueOf(transactionAmount), mercLatestTran.getAmount());
+        MoneySummary moneySummary = reportService.getAllTransactions();
+        Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
+
+        latestTransaction = moneySummary.getTransactions().stream().max(comparator).get();
+        Assert.assertNotNull(latestTransaction);
+        Assert.assertEquals(BigDecimal.valueOf(transactionAmount).intValue(), latestTransaction.getAmount().intValue());
     }
 
     @And("the latest transaction related to the customer contain balance {int}")
     public void the_latest_transaction_related_to_the_customer_contain_balance(Integer balance) {
-        Assert.assertEquals(BigDecimal.valueOf(balance), cusLatestTran.getBalance());
+        Date endDate = Date.from(LocalDate.now().plusDays(7).atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+
+        List<TransactionDTO> transactions = reportService.getCustomerReport(currentCustomerId, new Date(), endDate);
+        Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
+
+        latestTransaction = transactions.stream().max(comparator).get();
+        Assert.assertNotNull(latestTransaction);
+        Assert.assertEquals(BigDecimal.valueOf(balance).intValue(), latestTransaction.getBalance().intValue());
     }
 
     @And("the latest transaction related to the merchant contain balance {int}")
     public void the_latest_transaction_related_to_the_merchant_contain_balance(Integer balance) {
-        Assert.assertEquals(BigDecimal.valueOf(balance), mercLatestTran.getBalance());
+        Date endDate = Date.from(LocalDate.now().plusDays(7).atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+
+        List<TransactionDTO> transactions = reportService.getMerchantReport(currentMerchantId, new Date(), endDate);
+        Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
+
+        latestTransaction = transactions.stream().max(comparator).get();
+        Assert.assertNotNull(latestTransaction);
+        Assert.assertEquals(BigDecimal.valueOf(balance).intValue(), latestTransaction.getBalance().intValue());
     }
 
     @And("an invalid token {string}")
@@ -175,9 +199,10 @@ public class PaymentSteps {
         currentMerchantId = merchantDTO.getId();
     }
 
+
     @Then("the payment is unsuccessful")
     public void the_payment_is_unsuccessful() {
-        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId());
+        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId(), false);
         successPayment = merchantApp.processPayment(paymentRequest);
         assertFalse(successPayment);
     }

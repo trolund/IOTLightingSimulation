@@ -11,9 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 public class AccountServiceSteps {
 
-    @Inject
-    AccountService as;
-    UserAccount ua;
     
 //
 //    @Given("there exists {int} users in the system")

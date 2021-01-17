@@ -1,7 +1,6 @@
 package infrastructure.token;
 
 import infrastructure.token.interfaces.ITokenService;
-import org.jboss.resteasy.spi.NotImplementedYetException;
 
 /**
  * @author Troels (s161791)
@@ -21,12 +20,12 @@ public class TokenService implements ITokenService {
 
     @Override
     public String getToken() {
-        throw new NotImplementedYetException();
+       return null;
     }
 
     @Override
     public boolean validateToken() {
-        throw new NotImplementedYetException();
+        return true;
     }
 
 }

@@ -1,27 +1,28 @@
 package infrastructure.repositories;
 
+import dto.AccountInformation;
+import dto.Transaction;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Singleton;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-@Singleton
 public class TransactionRepository implements ITransactionRepository {
 
     private final List<TransactionDTO> transactions;
 
-    public TransactionRepository() {
-        transactions = new ArrayList<>();
+    private static TransactionRepository instance = null;
 
-        // test data
-        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(100), BigDecimal.valueOf(1000), "1234", "2345", "test", new Date(), true);
-        add(dto);
+    private TransactionRepository() {
+        transactions = new ArrayList<>();
+    }
+
+    public static TransactionRepository getInstance() {
+        if (instance == null)
+            instance = new TransactionRepository();
+        return instance;
     }
 
     @Override
@@ -58,5 +59,7 @@ public class TransactionRepository implements ITransactionRepository {
     public void delete(String tokenId) throws TransactionException {
         transactions.remove(get(tokenId));
     }
+
+
 
 }

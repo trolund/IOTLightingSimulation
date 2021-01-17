@@ -23,16 +23,14 @@ public class TransactionFactory {
         // is called dependency injection.
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
-        EventSender b = new RabbitMQSender();
+        EventSender b = new ReportSender();
         transactionSpyService = new TransactionSpyService(b, reportService);
-        RabbitMQReceiver r = new RabbitMQReceiver(transactionSpyService);
-
+        ReportListener r = new ReportListener(transactionSpyService);
         try {
-            r.initConnection("payments.*");
+            r.listen();
         } catch (Exception e) {
             throw new Error(e);
         }
-
         return transactionSpyService;
     }
 }

@@ -1,6 +1,7 @@
 package interfaces.rest;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import services.ReportService;
 import services.interfaces.IReportService;
 
 import javax.inject.Inject;
@@ -18,8 +19,8 @@ import java.text.ParseException;
 @Path("/management")
 public class ManagementResource {
 
-    @Inject
-    IReportService service;
+
+    private final static ReportService service = new ReportService();
 
     @Tag(ref = "All transactions and summery")
     @GET

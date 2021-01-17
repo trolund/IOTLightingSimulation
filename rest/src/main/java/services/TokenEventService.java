@@ -8,6 +8,7 @@ import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;

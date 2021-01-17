@@ -9,11 +9,11 @@ import exceptions.account.AccountNotFoundException;
 import exceptions.account.AccountRegistrationException;
 import exceptions.account.BankAccountException;
 import infrastructure.bank.*;
+import infrastructure.repositories.AccountRepository;
 import infrastructure.repositories.interfaces.IAccountRepository;
 import services.interfaces.IAccountService;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,7 @@ public class AccountService implements IAccountService {
 
     private final BankService bs = new BankServiceService().getBankServicePort();
 
-    @Inject
-    IAccountRepository repo;
+    private final IAccountRepository repo = AccountRepository.getInstance();
 
     @Override
     public String register(UserRegistrationDTO userRegistrationDTO)
@@ -95,7 +94,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public void retireAccount(String id) throws BankAccountException  {
+    public void retireAccount(String id) throws BankAccountException {
         AccountInformation accountInformation = repo.getById(id);
 
         // if it returns null,
@@ -109,7 +108,7 @@ public class AccountService implements IAccountService {
 
     private boolean isRegistered(UserRegistrationDTO userRegistrationDTO) {
         AccountInformation accountInformation = repo.getByCpr(userRegistrationDTO.getCprNumber());
-        return  accountInformation != null;
+        return accountInformation != null;
     }
 
     private String registerBankAccount(UserRegistrationDTO userRegistrationDTO)
@@ -173,7 +172,7 @@ public class AccountService implements IAccountService {
     }
 
     private void retireAccountFromInfo(AccountInformation accountInformation)
-    throws BankAccountException {
+            throws BankAccountException {
         try {
             bs.retireAccount(accountInformation.getBankId());
             repo.remove(accountInformation.getId());
