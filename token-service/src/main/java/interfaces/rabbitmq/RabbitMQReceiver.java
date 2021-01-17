@@ -5,6 +5,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import infrastructure.ConfigService;
+import infrastructure.IConfigService;
 import messaging.Event;
 import messaging.EventReceiver;
 
@@ -24,7 +26,8 @@ public class RabbitMQReceiver {
 
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbitmq");
+        IConfigService config = new ConfigService();
+        factory.setHost(config.getProp("rabbitmq.host"));
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);

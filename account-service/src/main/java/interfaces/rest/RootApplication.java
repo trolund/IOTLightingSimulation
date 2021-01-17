@@ -28,7 +28,7 @@ public class RootApplication extends Application {
     }
 
     void onStart(@Observes StartupEvent ev) {
-        LOGGER.info("The application is starting...");
+        LOGGER.info("The application is starting..." + System.getenv("RABBITMQ_HOST"));
         try {
             RabbitMqSender s = new RabbitMqSender();
             LOGGER.info("RabbitMqSender up");

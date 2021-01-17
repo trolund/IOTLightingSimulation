@@ -175,6 +175,14 @@
       <version>1.0.0</version>
     </dependency>
 
+    <!-- ################### mockito DEPENDENCIES ################### -->
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.7.7</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
