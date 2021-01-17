@@ -2,19 +2,20 @@ package com.MerchantApp;
 
 import com.CustomerApp.CustomerApp;
 import com.client.PaymentServiceClient;
-import com.dto.Token;
+import dto.PaymentRequest;
+import dto.Token;
 
 public class MerchantApp {
 
-    CustomerApp customerApp = new CustomerApp();
-    private PaymentServiceClient paymentClient = new PaymentServiceClient();
+    private final PaymentServiceClient paymentClient = new PaymentServiceClient();
+    private final CustomerApp customerApp = new CustomerApp();
 
     public Token requestTokenFromCustomer(String customerId) {
         return customerApp.getToken(customerId);
     }
 
-    public boolean processPayment(String customerId, String merchantId, Integer amount) {
-       return paymentClient.processPayment(customerId, merchantId, amount);
+    public boolean processPayment(PaymentRequest paymentRequest) {
+        return paymentClient.processPayment(paymentRequest);
     }
 
 }

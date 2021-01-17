@@ -1,62 +1,55 @@
 package infrastructure.repositories;
 
-import domain.CustomerToken;
-import domain.Token;
-import exceptions.*;
+import dto.CustomerTokens;
+import dto.Token;
+import exceptions.CustomerHasNoTokensException;
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
 import infrastructure.repositories.interfaces.ICustomerTokensRepository;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-@ApplicationScoped
 public class CustomerTokensRepository implements ICustomerTokensRepository {
 
-    private final List<CustomerToken> customerTokens;
+    private static CustomerTokensRepository instance;
+    private final List<CustomerTokens> customerTokens = new ArrayList<>();
 
-    public CustomerTokensRepository() {
-        customerTokens = new ArrayList<>();
-        testToken();
+    private CustomerTokensRepository() {
+
     }
 
-    private void testToken() {
-        // for testing
-        CustomerToken testct = new CustomerToken("0c4143e2-aed2-4cb8-bcb8-058ddd0a0929");
-        testct.getTokens().add(new Token("42"));
-        testct.getTokens().add(new Token("42"));
-        testct.getTokens().add(new Token("42"));
-        testct.getTokens().add(new Token("42"));
-        testct.getTokens().add(new Token("42"));
-        customerTokens.add(testct);
-    }
-
-    @Override
-    public void add(CustomerToken customerToken) throws CustomerAlreadyRegisteredException {
-        if (customerTokens.stream().noneMatch(obj -> obj.getCustomerId().equals(customerToken.getCustomerId()))) {
-            this.customerTokens.add(customerToken);
-        } else {
-            throw new CustomerAlreadyRegisteredException(customerToken.getCustomerId());
+    public static CustomerTokensRepository getInstance() {
+        if (instance == null) {
+            instance = new CustomerTokensRepository();
         }
+        return instance;
     }
 
     @Override
-    public CustomerToken get(String customerId) throws CustomerNotFoundException {
-        CustomerToken customerToken = this.customerTokens.stream()
+    public void add(CustomerTokens customerToken) {
+        this.customerTokens.add(customerToken);
+    }
+
+    @Override
+    public CustomerTokens get(String customerId) throws CustomerNotFoundException {
+        CustomerTokens customerTokens = this.customerTokens.stream()
                 .filter(obj -> obj.getCustomerId().equals(customerId))
                 .findAny()
                 .orElse(null);
 
-        if (customerToken == null) {
+        if (customerTokens == null) {
             throw new CustomerNotFoundException(customerId);
         }
 
-        return customerToken;
+        return customerTokens;
     }
 
     @Override
-    public CustomerToken getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
-        CustomerToken customerToken = this.customerTokens.stream()
-                .filter(obj -> obj.findTokenInList(tokenId))
+    public CustomerTokens getCustomerWithTokenId(String tokenId) throws TokenNotFoundException {
+        CustomerTokens customerToken = this.customerTokens.stream()
+                .filter(obj -> findTokenInList(tokenId, obj))
                 .findAny()
                 .orElse(null);
 
@@ -68,21 +61,32 @@ public class CustomerTokensRepository implements ICustomerTokensRepository {
     }
 
     @Override
-    public void deleteCustomer(String id) throws CustomerNotFoundException{
+    public void deleteCustomer(String id) throws CustomerNotFoundException {
         customerTokens.remove(get(id));
     }
 
     @Override
-    public Token validateTokenFromCustomer(String tokenId) throws TokenNotFoundException, InvalidTokenException {
-        return getCustomerWithTokenId(tokenId).validateToken(tokenId);
-    }
-
-    @Override
     public Token getTokenFromCustomer(String customerId) throws CustomerNotFoundException, CustomerHasNoTokensException {
+        Logger logger = Logger.getLogger(CustomerTokensRepository.class.getName());
         if (!get(customerId).getTokens().isEmpty()) {
-            return get(customerId).getTokens().get(0);
+            logger.severe("get token cus" + get(customerId));
+            System.out.println("get token cus" + get(customerId));
+            Token t = get(customerId).getTokens().get(0);
+            System.out.println("token " + t);
+            logger.severe("token " + t);
+            return t;
         } else {
             throw new CustomerHasNoTokensException(customerId);
         }
     }
+
+    private boolean findTokenInList(String tokenId, CustomerTokens customerTokens) {
+        Token result = customerTokens.getTokens().stream()
+                .filter(obj -> obj.getId()
+                        .equals(tokenId))
+                .findAny()
+                .orElse(null);
+        return result != null;
+    }
+
 }

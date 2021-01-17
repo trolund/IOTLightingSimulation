@@ -14,15 +14,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
-
 @OpenAPIDefinition(
         info = @Info(
                 title = "Group 11 - payment-service API",
                 version = "3.0.3"
         ))
-
 @ApplicationPath("/api/v1")
 public class RootApplication extends Application {
 

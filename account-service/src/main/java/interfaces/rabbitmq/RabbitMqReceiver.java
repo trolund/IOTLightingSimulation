@@ -8,6 +8,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import infrastructure.ConfigService;
+import infrastructure.IConfigService;
 import messaging.Event;
 import messaging.EventReceiver;
 
@@ -15,8 +17,10 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public class RabbitMqReceiver {
+
     private final static Logger LOGGER = Logger.getLogger(RabbitMqReceiver.class.getName());
-	private static final String EXCHANGE_NAME = "message-hub";
+
+    private static final String EXCHANGE_NAME = "message-hub";
 	private static final String QUEUE_TYPE = "topic";
 	private static final String TOPIC = "account.*";
 
@@ -28,7 +32,8 @@ public class RabbitMqReceiver {
 
 	public void listen() throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("rabbitmq");
+		IConfigService config = new ConfigService();
+		factory.setHost(config.getProp("rabbitmq.host"));
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 		channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);

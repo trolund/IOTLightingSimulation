@@ -3,17 +3,17 @@ package cucumber.steps;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import domain.UserAccount;
-import domain.BankAccount;
 import exceptions.EmptyNameException;
 import exceptions.EmptyCprException;
+import model.BankAccount;
+import model.UserAccount;
 import services.AccountService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserAccountSteps {
-//    UserAccount userAccount;
-//    BankAccount bankAccount;
+    UserAccount userAccount;
+    BankAccount bankAccount;
 //
 //    @When("a user with first name {string}, last name {string}, CPR {string} requests to create an account")
 //    public void a_user_with_first_name_last_name_cpr_requests_to_create_an_account(String string, String string2, String string3) {

@@ -1,128 +1,108 @@
 package interfaces.rest;
 
+import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.interfaces.IAccountService;
-import services.AccountService;
-
-import java.util.List;
-import java.util.logging.Logger;
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import domain.UserAccount;
-import exceptions.*;
+import java.util.List;
 
 @Tag(ref = "AccountResource")
-@Path("/users")
+@Path("/account")
 public class AccountResource {
 
-    private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
+    @Inject
+    IAccountService service;
 
-    IAccountService service = new AccountService();
-
-    @Tag(ref = "getUserById")
+    @Tag(ref = "getAccountById")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response getUser(@PathParam("id") String id) {
+    public Response getAccount(@PathParam("id") String id) {
         try {
-            UserAccount user = service.getById(id);
+            UserAccountDTO user = service.get(id);
             return Response.ok().entity(user).build();
-        // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
-    @Tag(ref = "registerUser")
+    @Tag(ref = "register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response registerUser(UserAccount user) {
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response register(UserRegistrationDTO user) {
         try {
-            service.add(user);
-            return Response.ok().build();
+            String userId = service.register(user);
+            return Response.ok().entity(userId).build();
         } catch (Exception e) {
-            // TODO: add correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
-    @Tag(ref = "getUserByCpr")
+    @Tag(ref = "getAccountByCpr")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/by-cpr/{cprNumber}")
-    public Response getUserByCpr(@PathParam("cprNumber") String cprNumber) {
+    @Path("/by-cpr/{cpr}")
+    public Response getAccountByCpr(@PathParam("cpr") String cpr) {
         try {
-            UserAccount user = service.getByCpr(cprNumber);
+            UserAccountDTO user = service.getByCpr(cpr);
             return Response.ok().entity(user).build();
         } catch (Exception e) {
-            // TODO: throw correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
-    @Tag(ref = "retireUserByCpr")
+    @Tag(ref = "retireAccountByCpr")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/by-cpr/{cprNumber}")
-    public Response retireUserByCpr(@PathParam("cprNumber") String cpr) {
+    @Path("/by-cpr/{cpr}")
+    public Response retireAccountByCpr(@PathParam("cpr") String cpr) {
         try {
-            service.retireAccount(service.getByCpr(cpr));
+            service.retireAccountByCpr(cpr);
             return Response.ok().build();
-        // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
-    @Tag(ref = "getAllUsers")
+    @Tag(ref = "getAllAccounts")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers() {
+    public Response getAllAccounts() {
         try {
-            List<UserAccount> accounts = service.getAll();
+            List<UserAccountDTO> accounts = service.getAll();
             return Response.ok().entity(accounts).build();
         } catch (Exception e) {
-            // TODO correct exception
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
-    @Tag(ref = "retireUser")
+    @Tag(ref = "retireAccount")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public Response retireUser(@PathParam("id") String id) {
         try {
-            service.retireAccount(service.getById(id));
+            service.retireAccount(id);
             return Response.ok().build();
-        // TODO: add correct exception
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
         }
     }
+
 }

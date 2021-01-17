@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import infrastructure.ConfigService;
+import infrastructure.IConfigService;
 import messaging.Event;
-import messaging.EventReceiver;
 import messaging.EventSender;
+
+import java.nio.charset.StandardCharsets;
 
 public class RabbitMQSender implements EventSender {
 
@@ -15,12 +17,12 @@ public class RabbitMQSender implements EventSender {
     private static final String QUEUE_TYPE = "topic";
     private static final String TOPIC = "token.service";
 
-    private EventReceiver service;
     private Channel channel;
 
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbitmq");
+        IConfigService config = new ConfigService();
+        factory.setHost(config.getProp("rabbitmq.host"));
         Connection connection = factory.newConnection();
         channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
@@ -29,7 +31,8 @@ public class RabbitMQSender implements EventSender {
     @Override
     public void sendEvent(Event event) throws Exception {
         String message = new Gson().toJson(event);
-        System.out.println("[x] sending "+message);
-        channel.basicPublish(EXCHANGE_NAME, TOPIC, null, message.getBytes("UTF-8"));
+        System.out.println("[x] sending " + message);
+        channel.basicPublish(EXCHANGE_NAME, TOPIC, null, message.getBytes(StandardCharsets.UTF_8));
     }
+
 }

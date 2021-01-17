@@ -1,6 +1,7 @@
 package com.client;
 
-import com.dto.User;
+import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -8,7 +9,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 public class AccountServiceClient {
 
@@ -19,43 +19,41 @@ public class AccountServiceClient {
         baseUrl = client.target("http://localhost:8082/api/v1/");
     }
 
-    public boolean registerUser(User userAccount) {
-        Response r = baseUrl.path("users")
+    public String registerAccount(UserRegistrationDTO registrationDTO) {
+        Response r = baseUrl.path("account")
                 .request()
-                .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
-        return r.getStatus() == Response.Status.OK.getStatusCode();
+                .post(Entity.entity(registrationDTO, MediaType.APPLICATION_JSON_TYPE));
+        return r.readEntity(String.class);
     }
 
-    public User getUserById(String userId) {
-        return baseUrl.path("users/" + userId)
+    public UserAccountDTO getAccount(String id) {
+        Response r = baseUrl.path("account/" + id)
                 .request()
-                .get(new GenericType<>() {
-                });
+                .get();
+
+        if (r.getStatus() == 200) {
+            return r.readEntity(new GenericType<>() {
+            });
+        }
+
+        return null;
     }
 
-    public User getUserByCpr(String cpr) {
-        return baseUrl.path("users/by-cpr/" + cpr)
+    public UserAccountDTO getAccountByCpr(String cpr) {
+        Response r = baseUrl.path("account/by-cpr/" + cpr)
                 .request()
-                .get(new GenericType<>() {
-                });
+                .get();
+
+        if (r.getStatus() == 200) {
+            return r.readEntity(new GenericType<>() {
+            });
+        }
+
+        return null;
     }
 
-    public boolean updateUser(User userAccount) {
-        Response r = baseUrl.path("users/" + userAccount.getCprNumber())
-                .request()
-                .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
-        return r.getStatus() == Response.Status.OK.getStatusCode();
-    }
-
-    public List<User> getAllUsers() {
-        return baseUrl.path("users")
-                .request()
-                .get(new GenericType<>() {
-                });
-    }
-
-    public boolean retireUser(String userId) {
-        Response r = baseUrl.path("users/" + userId)
+    public boolean retireAccount(String id) {
+        Response r = baseUrl.path("account/" + id)
                 .request()
                 .delete(new GenericType<>() {
                 });

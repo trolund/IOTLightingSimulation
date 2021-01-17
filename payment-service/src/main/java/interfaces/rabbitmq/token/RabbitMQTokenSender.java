@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import infrastructure.ConfigService;
+import infrastructure.IConfigService;
 import messaging.Event;
 import messaging.EventSender;
 
@@ -14,6 +16,9 @@ import java.util.logging.Logger;
 /**
  * @primary-author Troels (s161791)
  * @co-author Daniel (s151641)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
  */
 public class RabbitMQTokenSender implements EventSender {
 
@@ -26,7 +31,8 @@ public class RabbitMQTokenSender implements EventSender {
     @Override
     public void sendEvent(Event event) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("rabbitmq");
+        IConfigService config = new ConfigService();
+        factory.setHost(config.getProp("rabbitmq.host"));
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
             String message = new Gson().toJson(event);

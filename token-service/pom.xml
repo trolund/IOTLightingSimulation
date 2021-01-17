@@ -18,6 +18,14 @@
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>my-local-repo</id>
+      <url>file://${basedir}/../utils</url>
+    </repository>
+  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -136,6 +144,14 @@
       <artifactId>utils</artifactId>
       <version>1.0.0</version>
       <scope>compile</scope>
+    </dependency>
+
+    <!-- ################### utilities DEPENDENCIES ################### -->
+
+    <dependency>
+      <groupId>utilities</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
   </dependencies>

@@ -18,7 +18,6 @@ import java.util.logging.Logger;
                 title = "Group 11 - account-service API",
                 version = "3.0.3"
         ))
-
 @ApplicationPath("/api/v1")
 public class RootApplication extends Application {
 
@@ -29,7 +28,7 @@ public class RootApplication extends Application {
     }
 
     void onStart(@Observes StartupEvent ev) {
-        LOGGER.info("The application is starting...");
+        LOGGER.info("The application is starting..." + System.getenv("RABBITMQ_HOST"));
         try {
             RabbitMqSender s = new RabbitMqSender();
             LOGGER.info("RabbitMqSender up");

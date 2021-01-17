@@ -1,10 +1,10 @@
 Feature: Account Service
     Scenario: Initializing the account service
-        Given: a fresh instance of the service has been initialized
-        Then: the system contains 0 users
+        Given a fresh instance of the service has been initialized
+        Then the system contains 0 users
 
     Scenario: Adding a user
-        Given: a fresh instance of the account service has been initialized
+        Given a fresh instance of the account service has been initialized
         When a new user is created giving first name, last name and CPR
         Then the user is added to the list of users and the number of users is 1
 

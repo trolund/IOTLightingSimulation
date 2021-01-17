@@ -1,17 +1,20 @@
 package cucumber.steps;
 
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Given;
+import io.quarkus.test.junit.QuarkusTest;
+import model.UserAccount;
 import services.AccountService;
-import domain.UserAccount;
+
+import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@QuarkusTest
 public class AccountServiceSteps {
 
-    AccountService as = new AccountService();
+    @Inject
+    AccountService as;
     UserAccount ua;
+    
 //
 //    @Given("there exists {int} users in the system")
 //    public void there_exists_users_in_the_system(Integer int1) {

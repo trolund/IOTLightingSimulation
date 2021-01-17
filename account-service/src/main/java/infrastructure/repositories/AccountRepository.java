@@ -1,6 +1,6 @@
 package infrastructure.repositories;
 
-import domain.UserAccount;
+import dto.AccountInformation;
 import infrastructure.repositories.interfaces.IAccountRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -9,53 +9,45 @@ import java.util.List;
 
 @ApplicationScoped
 public class AccountRepository implements IAccountRepository {
-    private final List<UserAccount> accounts;
+
+    private final List<AccountInformation> accountInformations;
 
     public AccountRepository() {
-        accounts = new ArrayList<>();
+        accountInformations = new ArrayList<>();
     }
 
     @Override
-    public void add(UserAccount account) {
-        accounts.add(account);
+    public void add(AccountInformation accountInformation) {
+        accountInformations.add(accountInformation);
     }
 
     @Override
-    public void add(String id, String firstName, String lastName,
-            String cprNumber) {
-        accounts.add(new UserAccount(id, firstName, lastName, cprNumber));
+    public AccountInformation getById(String id) {
+        return accountInformations.stream()
+                .filter(a -> a.getId().equals(id))
+                .findAny()
+                .orElse(null);
     }
 
     @Override
-    public UserAccount getById(String id) {
-        UserAccount account = accounts.stream()
-                                      .filter(a -> a.getId().equals(id))
-                                      .findAny()
-                                      .orElse(null);
+    public AccountInformation getByCpr(String cpr) {
+        return accountInformations.stream()
+                .filter(a -> a.getCpr().equals(cpr))
+                .findAny()
+                .orElse(null);
+    }
 
-        if (account == null) {
-            // throw exception if null
+    @Override
+    public void remove(String id) {
+        AccountInformation accountInformation = getById(id);
+        if (accountInformation != null) {
+            accountInformations.remove(accountInformation);
         }
-
-        return account;
     }
 
     @Override
-    public UserAccount getByCpr(String cpr) {
-        UserAccount account = accounts.stream()
-                                      .filter(a -> a.getCprNumber().equals(cpr))
-                                      .findAny()
-                                      .orElse(null);
-
-        if (account == null) {
-            // throw exception if null
-        }
-
-        return account;
+    public List<AccountInformation> getAll() {
+        return accountInformations;
     }
 
-    @Override
-    public List<UserAccount> getAll() {
-        return accounts;
-    }
 }

@@ -1,23 +1,15 @@
 package services.interfaces;
 
-import dto.TransactionDTO;
-import exceptions.AccountException;
-import exceptions.TokenNotValidException;
-import exceptions.TransactionException;
-import exceptions.customer.CustomerException;
-import exceptions.merchant.MerchantException;
-import infrastructure.bank.Transaction;
-
-import java.util.List;
+import dto.PaymentRequest;
+import exceptions.account.AccountNotFoundException;
+import exceptions.token.InvalidTokenException;
+import exceptions.transaction.TransactionException;
 
 /**
  * @author Troels (s161791)
  * @co-author Daniel (s151641)
  */
 public interface IPaymentService {
-    void processPayment(String customerId, String merchantId, int amount, String token) throws TransactionException, CustomerException, MerchantException, TokenNotValidException, Exception;
-    List<TransactionDTO> getTransactions(String accountId) throws CustomerException, AccountException;
-    Transaction getLatestTransaction(String accountId) throws CustomerException, AccountException;
-    void refund(String customerId, String merchantId, int amount) throws CustomerException, MerchantException, TransactionException;
+    void processPayment(PaymentRequest paymentRequest) throws AccountNotFoundException, TransactionException, InvalidTokenException;
+    void refund(PaymentRequest paymentRequest) throws TransactionException, InvalidTokenException, AccountNotFoundException;
 }
-

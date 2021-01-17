@@ -1,7 +1,7 @@
 package services;
 
 import dto.TransactionDTO;
-import exceptions.AccountException;
+import exceptions.account.AccountNotFoundException;
 import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
@@ -16,22 +16,17 @@ import java.util.stream.Collectors;
 /**
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
- *
- * Payment microservice REST resource.
  */
 public class PaymentEventService implements EventReceiver {
 
-    PaymentService service;
-
     private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
-
     private final EventSender eventSender;
-
+    TransactionService ts;
     private CompletableFuture<String> result;
 
-    public PaymentEventService(EventSender eventSender, PaymentService service) {
+    public PaymentEventService(EventSender eventSender, TransactionService ts) {
         this.eventSender = eventSender;
-        this.service = service;
+        this.ts = ts;
     }
 
     @Override
@@ -51,10 +46,10 @@ public class PaymentEventService implements EventReceiver {
 
     public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
         Event event = null;
-        if(successful){
-            event = new Event("TransactionSuccessful", new Object[] {dto});
-        }else{
-            event = new Event("TransactionFailed", new Object[] {dto});
+        if (successful) {
+            event = new Event("TransactionSuccessful", new Object[]{dto});
+        } else {
+            event = new Event("TransactionFailed", new Object[]{dto});
         }
         eventSender.sendEvent(event);
     }
@@ -66,7 +61,7 @@ public class PaymentEventService implements EventReceiver {
         String accountId = (String) event.getArguments()[0];
 
         try {
-            arguments = new Object[]{service.getLatestTransaction(accountId)};
+            arguments = new Object[]{ts.getLatestTransaction(accountId)};
             eventToSend = new Event("getLatestTransactionSuccessful", arguments);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +83,7 @@ public class PaymentEventService implements EventReceiver {
         String accountId = (String) event.getArguments()[0];
 
         try {
-            List<TransactionDTO> dtos = service.getTransactions(accountId);
+            List<TransactionDTO> dtos = ts.getTransactions(accountId);
 
             List<TransactionDTO> dtosMapped = dtos.stream().peek(t -> {
 
@@ -100,7 +95,7 @@ public class PaymentEventService implements EventReceiver {
             }).collect(Collectors.toList());
             arguments = new Object[]{dtosMapped};
             eventToSend = new Event("getAllTransactionsSuccessful", arguments);
-        } catch (AccountException e) {
+        } catch (AccountNotFoundException e) {
             e.printStackTrace();
             eventToSend = new Event("getAllTransactionsFailed");
         }

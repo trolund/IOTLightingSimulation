@@ -42,7 +42,7 @@ services:
     links: 
       - rabbitmq
     ports:
-      - "8081:8080"
+      - "8081:8081"
   account:
     image: account:0.1
     container_name: account
@@ -56,7 +56,7 @@ services:
     links: 
       - rabbitmq
     ports:
-      - "8082:8080"
+      - "8082:8082"
   report:
     image: report:0.1
     container_name: report
@@ -70,7 +70,7 @@ services:
     links: 
       - rabbitmq
     ports:
-      - "8083:8080"
+      - "8083:8083"
   client:
     image: client:0.1
     container_name: client

@@ -10,8 +10,6 @@ import infrastructure.bank.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import domain.BankAccount;
-
 public class BankAccountSteps {
 //    
 //    BankService bs = new BankServiceService().getBankServicePort();

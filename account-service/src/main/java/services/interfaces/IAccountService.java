@@ -1,14 +1,19 @@
 package services.interfaces;
 
-import domain.UserAccount;
+import dto.UserAccountDTO;
+import dto.UserRegistrationDTO;
+import exceptions.account.AccountExistsException;
+import exceptions.account.AccountNotFoundException;
+import exceptions.account.AccountRegistrationException;
+import exceptions.account.BankAccountException;
+
 import java.util.List;
 
-import exceptions.*;
-
 public interface IAccountService {
-    void add(UserAccount account) throws Exception;
-    UserAccount getById(String id);
-    UserAccount getByCpr(String cpr);
-    List<UserAccount> getAll();
-    void retireAccount(UserAccount ua) throws RemoteAccountDoesNotExistException;
+    String register(UserRegistrationDTO userRegistrationDTO) throws AccountExistsException, AccountRegistrationException;
+    UserAccountDTO get(String id) throws AccountNotFoundException;
+    UserAccountDTO getByCpr(String cpr) throws AccountNotFoundException;
+    List<UserAccountDTO> getAll() throws BankAccountException;
+    void retireAccount(String id) throws BankAccountException;
+    void retireAccountByCpr(String cpr) throws BankAccountException;
 }

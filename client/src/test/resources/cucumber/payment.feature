@@ -1,14 +1,17 @@
+# primary-author: Daniel (s151641)
+# co-author: Troels (s161791)
+
 Feature: Payment
 
   Background:
     Given a new customer with cpr "001122-XXXX", first name "Michael", last name "Hardy" and a balance of 1000
     When the customer is registered
-    Then the registration should be successful
+    Then the customer registration should be successful
     And the new customer should exist in the system
     Then the customer requests 5 tokens
     Given a new merchant with cpr "221100-XXXX", first name "Elyse", last name "Williams" and a balance of 1000
     When the merchant is registered
-    Then the registration should be successful
+    Then the merchant registration should be successful
     Then the new merchant exists in the system
 
   Scenario Outline: Successful Payment in DTUPay
@@ -29,13 +32,20 @@ Feature: Payment
       | 0      | 1000      | 1000      |
       | 500    | 500       | 1500      |
 
-  Scenario: Unsuccessful payment in DTUPay: Customer not found
-   Given a customer with id "does-not-exist" that does not exist in the system
+  Scenario: Unsuccessful payment in DTUPay: Invalid token
+    Given a customer that exists in the system
+    And an invalid token "1234.4321"
+    And a merchant that exists in the system
+    When the merchant initiates a payment for 10 by the customer
+    Then the payment is unsuccessful
+
+  Scenario: Unsuccessful payment in DTUPay: Non-existent customer and invalid token
+   Given a customer with id "aaaa-bbb-ccc" and a token "1234.4321" where neither exist
    And a merchant that exists in the system
    When the merchant initiates a payment for 10 by the customer
    Then the payment is unsuccessful
 
-  Scenario: Unsuccessful payment in DTUPay: Merchant not found
+  Scenario: Unsuccessful payment in DTUPay: Non-existent merchant
     Given a customer that exists in the system
     And a merchant with id "does-not-exist" that does not exist in the system
     When the merchant initiates a payment for 10 by the customer

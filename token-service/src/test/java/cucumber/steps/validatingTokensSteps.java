@@ -1,8 +1,7 @@
 package cucumber.steps;
 
-import domain.Token;
+import dto.Token;
 import exceptions.CustomerAlreadyRegisteredException;
-
 import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -89,4 +88,5 @@ public class validatingTokensSteps {
     public void aExceptionIsReturned(String error) {
         Assertions.assertEquals(error, e.getMessage());
     }
+
 }
