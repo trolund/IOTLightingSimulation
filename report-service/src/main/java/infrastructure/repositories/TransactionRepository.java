@@ -4,8 +4,11 @@ import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Singleton
@@ -15,6 +18,10 @@ public class TransactionRepository implements ITransactionRepository {
 
     public TransactionRepository() {
         transactions = new ArrayList<>();
+
+        // test data
+        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(100), BigDecimal.valueOf(1000), "1234", "2345", "test", new Date(), true);
+        add(dto);
     }
 
     @Override

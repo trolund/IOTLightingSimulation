@@ -40,7 +40,6 @@ public class RootApplication extends Application {
         ReportService reportService = new ReportService();
         ReportReceiverService reportReceiverService = new ReportFactory().getService(reportService);
         TransactionSpyService transactionSpyService = new TransactionFactory().getService(reportService);
-       // reportService.addToRepo(new TransactionDTO(BigDecimal.valueOf(100), BigDecimal.valueOf(1000), "1234", "2345", "test", new Date()));
         LOGGER.info("The application is starting...");
     }
 

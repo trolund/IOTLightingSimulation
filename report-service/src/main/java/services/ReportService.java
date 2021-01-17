@@ -26,6 +26,7 @@ public class ReportService implements IReportService {
 
     public MoneySummery getSummary(){
         List<TransactionDTO> list = repo.getAll();
+        System.out.println(list);
         return new MoneySummery(requestSummary(list), list);
     }
 
