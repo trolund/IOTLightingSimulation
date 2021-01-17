@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class PaymentEventService implements EventReceiver {
 
-    private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PaymentEventService.class.getName());
     private final EventSender eventSender;
 
     private CompletableFuture<TransactionDTO> processPaymentResult;
@@ -33,15 +33,26 @@ public class PaymentEventService implements EventReceiver {
 
     @Override
     public void receiveEvent(Event event) {
+        LOGGER.info("Received event: " + event);
         switch (event.getEventType()) {
             case "PaymentSuccessful":
-            case "PaymentFailed":
                 TransactionDTO transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO.setSuccessful(true);
+                processPaymentResult.complete(transactionDTO);
+                break;
+            case "PaymentFailed":
+                transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO.setSuccessful(false);
                 processPaymentResult.complete(transactionDTO);
                 break;
             case "RefundSuccessful":
+                transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO.setSuccessful(true);
+                processRefundResult.complete(transactionDTO);
+                break;
             case "RefundFailed":
                 transactionDTO = (TransactionDTO) event.getArguments()[0];
+                transactionDTO.setSuccessful(false);
                 processRefundResult.complete(transactionDTO);
                 break;
             default:
@@ -59,6 +70,8 @@ public class PaymentEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             TransactionDTO transactionDTO = processPaymentResult.join();
 
             if (transactionDTO == null) {
@@ -82,6 +95,8 @@ public class PaymentEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             TransactionDTO transactionDTO = processRefundResult.join();
 
             if (transactionDTO == null) {

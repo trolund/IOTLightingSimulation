@@ -35,10 +35,53 @@ public class AccountEventService implements EventReceiver {
 
     @Override
     public void receiveEvent(Event event) {
+        LOGGER.info("Received event: " + event);
         switch (event.getEventType()) {
-            case "getLatestTransaction":
+            case "RegisterSuccessful":
+                String id = (String) event.getArguments()[0];
+                registerResult.complete(id);
                 break;
-            case "getTransactions":
+            case "RegisterFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                registerResult.complete(null);
+                break;
+            case "GetAccountSuccessful":
+                UserAccountDTO userAccountDTO = (UserAccountDTO) event.getArguments()[0];
+                getAccountResult.complete(userAccountDTO);
+                break;
+            case "GetAccountFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                getAccountResult.complete(null);
+                break;
+            case "GetAccountByCprSuccessful":
+                userAccountDTO = (UserAccountDTO) event.getArguments()[0];
+                getAccountByCprResult.complete(userAccountDTO);
+                break;
+            case "GetAccountByCprFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                getAccountByCprResult.complete(null);
+                break;
+            case "RetireAccountSuccessful":
+                retireAccountResult.complete(true);
+                break;
+            case "RetireAccountFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                retireAccountResult.complete(false);
+                break;
+            case "RetireAccountByCprSuccessful":
+                retireAccountByCprResult.complete(true);
+                break;
+            case "RetireAccountbyCprFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                retireAccountByCprResult.complete(false);
+                break;
+            case "GetAllAccountsSuccessful":
+                List<UserAccountDTO> userAccountDTOs = (List<UserAccountDTO>) event.getArguments()[0];
+                getAllAccountsResult.complete(userAccountDTOs);
+                break;
+            case "GetAllAccountsFailed":
+                //String errorMessage = (String) event.getArguments()[0];
+                getAllAccountsResult.complete(null);
                 break;
             default:
                 LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
@@ -55,6 +98,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             String id = registerResult.join();
 
             if (id == null) {
@@ -78,6 +123,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             UserAccountDTO userAccountDTO = getAccountResult.join();
 
             if (userAccountDTO == null) {
@@ -101,6 +148,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             UserAccountDTO userAccountDTO = getAccountByCprResult.join();
 
             if (userAccountDTO == null) {
@@ -124,6 +173,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             boolean isSuccessful = retireAccountResult.join();
 
             if (!isSuccessful) {
@@ -145,6 +196,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             boolean isSuccessful = retireAccountByCprResult.join();
 
             if (!isSuccessful) {
@@ -165,6 +218,8 @@ public class AccountEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             List<UserAccountDTO> userAccountDTOs = getAllAccountsResult.join();
 
             if (userAccountDTOs == null) {

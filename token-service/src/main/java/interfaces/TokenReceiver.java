@@ -43,14 +43,6 @@ public class TokenReceiver implements EventReceiver {
         }
         if (event.getEventType().equals("ValidateToken")) {
             try {
-                if (rs == null) {
-                    logger.severe("token service rs is null!");
-                    System.out.println("token service rs is null!");
-                }
-                if (eventSender == null) {
-                    logger.severe("eventSender rs is null!");
-                    System.out.println("eventSender rs is null!");
-                }
                 Token token = rs.validateToken((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("TokenValidationSuccessful", new Object[]{token.getId()}));
             } catch (Exception e) {

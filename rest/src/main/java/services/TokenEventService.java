@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class TokenEventService implements EventReceiver {
 
-    private final static Logger LOGGER = Logger.getLogger(RootApplication.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(TokenEventService.class.getName());
     private final EventSender eventSender;
     private CompletableFuture<Boolean> requestTokensResult;
     private CompletableFuture<Token> getTokenResult;
@@ -30,6 +30,7 @@ public class TokenEventService implements EventReceiver {
 
     @Override
     public void receiveEvent(Event event) {
+        LOGGER.info("Received event: " + event);
         switch (event.getEventType()) {
             case "RequestTokensSuccessful":
                 requestTokensResult.complete(true);
@@ -67,6 +68,8 @@ public class TokenEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             boolean isSuccessful = requestTokensResult.join();
 
             if (!isSuccessful) {
@@ -88,6 +91,8 @@ public class TokenEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             Token token = getTokenResult.join();
 
             if (token == null) {
@@ -110,6 +115,8 @@ public class TokenEventService implements EventReceiver {
 
         try {
             eventSender.sendEvent(event);
+            LOGGER.info("Sent event: " + event);
+
             boolean isSuccessful = retireCustomerTokensResult.join();
 
             if (!isSuccessful) {
