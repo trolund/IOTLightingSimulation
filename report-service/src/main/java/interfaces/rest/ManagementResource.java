@@ -16,7 +16,7 @@ import java.text.ParseException;
 
 @Tag(ref = "ManagementResource")
 @Path("/management")
-public class MangementResourse {
+public class ManagementResource {
 
     @Inject
     IReportService service;

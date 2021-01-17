@@ -11,7 +11,6 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 import services.ReportReceiverService;
 import services.ReportService;
 import services.TransactionSpyService;
-
 import javax.enterprise.event.Observes;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -41,7 +40,7 @@ public class RootApplication extends Application {
         ReportService reportService = new ReportService();
         ReportReceiverService reportReceiverService = new ReportFactory().getService(reportService);
         TransactionSpyService transactionSpyService = new TransactionFactory().getService(reportService);
-        reportService.addToRepo(new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "test", new Date()));
+       // reportService.addToRepo(new TransactionDTO(BigDecimal.valueOf(100), BigDecimal.valueOf(1000), "1234", "2345", "test", new Date()));
         LOGGER.info("The application is starting...");
     }
 
