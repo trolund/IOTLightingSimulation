@@ -11,8 +11,11 @@ import messaging.Event;
 import messaging.EventReceiver;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 public class TokenListener {
+
+    private final static Logger LOGGER = Logger.getLogger(TokenListener.class.getName());
 
     private static final String EXCHANGE_NAME = "message-hub";
     private static final String QUEUE_TYPE = "topic";
@@ -27,7 +30,9 @@ public class TokenListener {
     public void initConnection() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         IConfigService config = new ConfigService();
-        factory.setHost(config.getProp("rabbitmq.host"));
+        String rabbitMQhost = config.getProp("rabbitmq.host");
+        LOGGER.info("CONNECTING TO RABBITMQ HOST: " + rabbitMQhost);
+        factory.setHost(rabbitMQhost);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
