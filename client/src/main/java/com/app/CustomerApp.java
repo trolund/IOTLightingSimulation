@@ -1,4 +1,4 @@
-package com.CustomerApp;
+package com.app;
 
 import com.client.DTUPayClient;
 import dto.Token;

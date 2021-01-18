@@ -1,7 +1,7 @@
 package cucumber;
 
-import com.CustomerApp.CustomerApp;
-import com.MerchantApp.MerchantApp;
+import com.app.CustomerApp;
+import com.app.MerchantApp;
 import com.client.DTUPayClient;
 import com.client.ReportClient;
 import dto.*;
@@ -21,7 +21,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PaymentSteps {
+public class PaymentReportSteps {
 
     private final CustomerApp customerApp = new CustomerApp();
     private final MerchantApp merchantApp = new MerchantApp();
@@ -44,6 +44,7 @@ public class PaymentSteps {
     @After
     public void cleanup() {
         dtuPay.retireAccount(createdCustomerId);
+        dtuPay.retireCustomerTokens(createdCustomerId);
         dtuPay.retireAccount(createdMerchantId);
     }
 

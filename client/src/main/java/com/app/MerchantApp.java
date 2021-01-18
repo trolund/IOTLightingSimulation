@@ -1,6 +1,5 @@
-package com.MerchantApp;
+package com.app;
 
-import com.CustomerApp.CustomerApp;
 import com.client.DTUPayClient;
 import dto.PaymentRequest;
 import dto.Token;
