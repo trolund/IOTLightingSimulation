@@ -1,3 +1,5 @@
+package main;
+
 import interfaces.rabbitmq.payment.PaymentEventServiceFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
