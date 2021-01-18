@@ -87,6 +87,13 @@
             <version>1.7.5</version>
         </dependency>
 
+        <!-- ################### http client for tests DEPENDENCIES ################### -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.0.2.Final</version>
+        </dependency>
+
     </dependencies>
 
 
