@@ -29,39 +29,12 @@ public class TransactionRepository implements ITransactionRepository {
     public void add(TransactionDTO obj) throws TransactionException {
         if (obj.getCreditor() != null || obj.getDebtor() != null || obj.getAmount() != null) {
             transactions.add(obj);
-        } else {
-            throw new TransactionException("Minimum transaction information not found");
         }
-    }
-
-    @Override
-    public TransactionDTO get(String tokenId) throws TransactionException {
-        TransactionDTO transaction = transactions.stream()
-                .filter(obj -> obj.getToken().equals(tokenId))
-                .findAny()
-                .orElse(null);
-
-        if (transaction == null) {
-            throw new TransactionException("Transactions with tokenid " + tokenId + " was not found");
-        }
-
-        return transaction;
     }
 
     @Override
     public List<TransactionDTO> getAll() {
         return transactions;
-    }
-
-    @Override
-    public void update(TransactionDTO transaction) throws TransactionException {
-        delete(transaction.getToken());
-        add(transaction);
-    }
-
-    @Override
-    public void delete(String tokenId) throws TransactionException {
-        transactions.remove(get(tokenId));
     }
 
     @Override

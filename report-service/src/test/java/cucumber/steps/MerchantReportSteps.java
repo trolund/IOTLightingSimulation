@@ -85,7 +85,7 @@ public class MerchantReportSteps {
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
-            transaction.setDebtor((String) row.get("debtor"));
+            transaction.setCreditor((String) row.get("creditor"));
             transaction.setDescription((String) row.get("description"));
             XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
             transaction.setTime(calendar.toGregorianCalendar().getTime());

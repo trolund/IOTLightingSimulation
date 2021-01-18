@@ -1,5 +1,6 @@
 package cucumber.steps;
 
+import dto.MoneySummary;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import io.cucumber.java.PendingException;
@@ -33,7 +34,7 @@ public class AdminSteps {
     Event event;
     List<TransactionDTO> inputTransactions = new ArrayList<>();
     private final CompletableFuture<List<TransactionDTO>> result = new CompletableFuture<>();
-    private final CompletableFuture<Map<String, BigDecimal>> summary = new CompletableFuture<>();
+    private final CompletableFuture<MoneySummary> summary = new CompletableFuture<>();
     TransactionDTO transaction;
     private Exception e;
 
@@ -85,7 +86,7 @@ public class AdminSteps {
 
     @Then("a summary is made based on the transactions")
     public void aSummaryIsMadeBasedOnTheTransactions(DataTable table) {
-        Assertions.assertEquals(table.asMaps(String.class, BigDecimal.class).get(0), summary.join());
+        Assertions.assertEquals(table.asMaps(String.class, BigDecimal.class).get(0), summary.join().getSummary());
     }
 
     @Then("an event {string} has been sent")
@@ -94,7 +95,7 @@ public class AdminSteps {
     }
 
     @When("an event {string} has been sent back")
-    public void anEventHasBeenSentBack(String eventType) throws Exception {
+    public void anEventHasBeenSentBack(String eventType) {
         rr.receiveEvent(new Event(eventType, new Object[] {inputTransactions}));
     }
 
