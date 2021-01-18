@@ -23,7 +23,7 @@ Feature: Payment
     And the merchant should have a balance of <m_end_bal> left
     Then the latest transaction contain the amount <amount> for both accounts
     And the latest transaction related to the customer contain balance <c_end_bal>
-    And the latest transaction related to the merchant contain balance <m_end_bal>
+    And the latest transaction related to the merchant should contain anonymized balance and debtor
 
     Examples:
       | amount | c_end_bal | m_end_bal |
@@ -47,18 +47,24 @@ Feature: Payment
 
   Scenario: Unsuccessful payment in DTUPay: Non-existent merchant
     Given a customer that exists in the system
-    And a merchant with id "does-not-exist" that does not exist in the system
+    And a merchant with id "aaaa-bbb-ccc" that does not exist in the system
+    When the merchant asks for a token from the customer
+    Then the merchant should receive a token
     When the merchant initiates a payment for 10 by the customer
     Then the payment is unsuccessful
 
   Scenario: Unsuccessful payment in DTUPay: Customer does not have adequate balance
     Given a customer that exists in the system
     And a merchant that exists in the system
+    When the merchant asks for a token from the customer
+    Then the merchant should receive a token
     When the merchant initiates a payment for 2000 by the customer
     Then the payment is unsuccessful
 
   Scenario: Unsuccessful payment in DTUPay: Merchant initiates negative payment
     Given a customer that exists in the system
     And a merchant that exists in the system
+    When the merchant asks for a token from the customer
+    Then the merchant should receive a token
     When the merchant initiates a payment for -2000 by the customer
     Then the payment is unsuccessful

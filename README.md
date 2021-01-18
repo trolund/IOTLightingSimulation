@@ -12,23 +12,23 @@
 
 ## Microservices
 
-The microservices are running in the virtual-machine given by DTU Compute. The base URL for the virtual-machine is g-11.compute.dtu.dk. The services
-are listening on different ports, as described below. You can access the swagger-ui of each respective service by appending /swagger-ui at the end of the URI.
+The microservices are running in the virtual-machine given by DTU Compute. The
+base URL for the virtual-machine is `g-11.compute.dtu.dk`. The services are
+listening on different ports, as described below. You can access the Swagger UI
+of each respective service by appending `/swagger-ui` at the end of the URI.
 
 
 ### Payment-service
 
-The payment service is accessible at g-11.compute.dtu.dk:8080.
-
+The payment service is accessible at `g-11.compute.dtu.dk:8080`.
 
 ### Token-service
 
-The token service is listening on port 8081.
-
+The token service is listening on port `8081`.
 
 ### Account-service
 
-The account service is listening on port 8082.
+The account service is listening on port `8082`.
 
 The account service keeps track of the user accounts that exist in DTUPay.
 It interacts with the 3rd party FastMoney BankService who controls the bank
@@ -36,31 +36,28 @@ accounts. This service has a RabbitMQ adapter used for internal communication
 with other microservices within the system, and a REST adapter used for 
 external communication with various mobile applications.
 
-
 ### Report-service
 
-The report service is listening on port 8083.
-
-
+The report service is listening on port `8083`.
 
 ## OpenAPI
 
-To fetch the OpenAPI specification for the account microservice, you can execute the following CURL script. Change the port to get the specification for the respective service.
+To fetch the OpenAPI specification for the account microservice, you can
+execute the following CURL script. Change the port to get the specification for
+the respective service.
 
 ```
 curl -o openapi-spec.yml g-11.compute.dtu.dk:8082/openapi
 ```
 
-
-
 ## Installation
 
-To build and run the system, execute the following script. Docker and docker-compose is required.
+To build and run the system, execute the following script. Docker and
+docker-compose is required.
 
 ```
 build_and_run.sh
 ```
-
 
 ## Contributors
 

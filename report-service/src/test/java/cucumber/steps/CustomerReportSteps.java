@@ -1,7 +1,9 @@
 package cucumber.steps;
 
 import dto.TransactionDTO;
+import exceptions.transaction.TransactionException;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.ca.Cal;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -15,10 +17,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CustomerReportSteps {
@@ -35,7 +36,9 @@ public class CustomerReportSteps {
     }
 
     @Given("a list of customer transactions")
-    public void aListOfCustomerTransactions(DataTable table) throws DatatypeConfigurationException {
+    public void aListOfCustomerTransactions(DataTable table) throws TransactionException, DatatypeConfigurationException {
+        rs.getRepo().dropEverything();
+        inputTransactions = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
@@ -44,7 +47,8 @@ public class CustomerReportSteps {
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
             if (row.get("time") != null) {
-                transaction.setTime(new Date());
+                XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
+                transaction.setTime(calendar.toGregorianCalendar().getTime());
             }
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
@@ -81,7 +85,8 @@ public class CustomerReportSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            transaction.setTime(new Date());
+            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
+            transaction.setTime(calendar.toGregorianCalendar().getTime());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }
@@ -89,9 +94,11 @@ public class CustomerReportSteps {
     }
 
     @When("the customer {string} requests their transactions between {string} and {string}")
-    public void theCustomerRequestsTheirTransactionsBetweenAnd(String customerId, String beg, String end) {
+    public void theCustomerRequestsTheirTransactionsBetweenAnd(String customerId, String beg, String end) throws DatatypeConfigurationException {
+        XMLGregorianCalendar begTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(beg);
+        XMLGregorianCalendar endTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(end);
         new Thread(() -> {try {
-            result.complete(rr.requestAllCustomerTransactionsBetween(customerId, beg, end));
+            result.complete(rr.requestAllCustomerTransactionsBetween(customerId, timeFormat(begTime.toGregorianCalendar().getTime()), timeFormat(endTime.toGregorianCalendar().getTime())));
         } catch (Exception e) {
             throw new Error(e);
         }}).start();
@@ -107,10 +114,16 @@ public class CustomerReportSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            transaction.setTime(new Date());
+            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
+            transaction.setTime(calendar.toGregorianCalendar().getTime());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }
         Assertions.assertEquals(outputTransactions.toString(), result.join().toString());
+    }
+
+    public String timeFormat(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
+        return formatter.format(date);
     }
 }

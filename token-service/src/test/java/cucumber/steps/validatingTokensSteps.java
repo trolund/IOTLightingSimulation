@@ -1,13 +1,15 @@
 package cucumber.steps;
 
+import dto.PaymentAccounts;
 import dto.Token;
-import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messaging.Event;
 import org.junit.jupiter.api.Assertions;
+import services.TokenEventService;
 import services.TokenService;
 
 public class validatingTokensSteps {
@@ -15,9 +17,16 @@ public class validatingTokensSteps {
     TokenService ts = new TokenService();
     Token token;
     Exception e;
+    Event event;
+    TokenEventService tes;
+    PaymentAccounts paymentAccounts;
+
+    public validatingTokensSteps(){
+        tes = new TokenEventService(ev -> event = ev, ts);
+    }
 
     @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
+    public void aCustomerWithId(String cid) {
         customerId = cid;
         ts.registerCustomer(cid);
     }
@@ -25,9 +34,9 @@ public class validatingTokensSteps {
     @And("has an unused token")
     public void hasAnUnusedToken() {
         try {
-            ts.requestTokens(customerId, 1);
+            tes.receiveEvent(new Event("RequestTokens", new Object[]{customerId, 1}));
         } catch (Exception e) {
-            Assertions.fail(e.getMessage());
+            throw new Error(e);
         }
     }
 
@@ -35,7 +44,9 @@ public class validatingTokensSteps {
     public void aTokenIsSentToTheServer() {
         try {
             foundCustomerId = ts.getCustomerFromToken(token.getId()).getCustomerId();
-            ts.validateToken(token.getId());
+            PaymentAccounts paymentAccounts = new PaymentAccounts();
+            paymentAccounts.setToken(token.getId());
+            tes.receiveEvent(new Event("PaymentAccountsSuccessful", new Object[]{paymentAccounts}));
         } catch (Exception e) {
             this.e = e;
         }
@@ -43,6 +54,7 @@ public class validatingTokensSteps {
 
     @Then("^the token is invalidated$")
     public void theTokenIsInvalidated() {
+        System.out.println(event.getEventType());
         Assertions.assertThrows(TokenNotFoundException.class, () -> ts.validateToken(token.getId()));
         Assertions.assertNull(e);
     }
@@ -69,24 +81,50 @@ public class validatingTokensSteps {
     @And("the customer receives a token")
     public void theCustomerReceivesAToken() {
         try {
-            token = ts.getToken(customerId);
+            tes.receiveEvent(new Event("GetToken", new Object[]{customerId}));
+            token = new Token((String) event.getArguments()[0]);
         } catch (Exception e) {
-            Assertions.fail(e.getMessage());
+            throw new Error(e);
         }
     }
 
     @When("the customer tries to receive a token")
     public void theCustomerTriesToReceiveAToken() {
         try {
-            ts.getToken(customerId);
+            tes.receiveEvent(new Event("GetToken", new Object[]{customerId}));
+            token = new Token((String) event.getArguments()[0]);
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
+
+    @Then("an event of type {string} is received")
+    public void anEventOfTypeIsReceived(String eventType) {
+        Assertions.assertEquals(eventType, event.getEventType());
+    }
+
+    @Given("a broken validation paymentAccounts")
+    public void aBrokenValidationPaymentAccounts() {
+        paymentAccounts = new PaymentAccounts();
+        paymentAccounts.setToken(null);
+    }
+
+    @And("it gets a token successfully")
+    public void itGetsATokenSuccessfully() {
+        Assertions.assertEquals("GetTokenSuccessful", event.getEventType());
+    }
+
+    @When("the null token is sent to the server")
+    public void theNullTokenIsSentToTheServer() {
+        try {
+            tes.receiveEvent(new Event("PaymentAccountsSuccessful", new Object[]{paymentAccounts}));
         } catch (Exception e) {
             this.e = e;
         }
     }
 
-    @Then("a {string} exception is returned")
-    public void aExceptionIsReturned(String error) {
-        Assertions.assertEquals(error, e.getMessage());
+    @And("an error for customer {string} is returned")
+    public void anErrorForCustomerIsReturned(String failedCustomer) {
+        Assertions.assertEquals(failedCustomer, event.getArguments()[0]);
     }
-
 }

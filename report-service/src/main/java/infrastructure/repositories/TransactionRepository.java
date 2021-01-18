@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TransactionRepository implements ITransactionRepository {
 
-    private final List<TransactionDTO> transactions;
+    private List<TransactionDTO> transactions;
 
     private static TransactionRepository instance = null;
 
@@ -26,22 +26,10 @@ public class TransactionRepository implements ITransactionRepository {
     }
 
     @Override
-    public void add(TransactionDTO obj) {
-        transactions.add(obj);
-    }
-
-    @Override
-    public TransactionDTO get(String tokenId) throws TransactionException {
-        TransactionDTO transaction = transactions.stream()
-                .filter(obj -> obj.getToken().equals(tokenId))
-                .findAny()
-                .orElse(null);
-
-        if (transaction == null) {
-            throw new TransactionException("Transactions with tokenid " + tokenId + " was not found");
+    public void add(TransactionDTO obj) throws TransactionException {
+        if (obj.getCreditor() != null || obj.getDebtor() != null || obj.getAmount() != null) {
+            transactions.add(obj);
         }
-
-        return transaction;
     }
 
     @Override
@@ -50,14 +38,8 @@ public class TransactionRepository implements ITransactionRepository {
     }
 
     @Override
-    public void update(TransactionDTO transaction) throws TransactionException {
-        delete(transaction.getToken());
-        add(transaction);
-    }
-
-    @Override
-    public void delete(String tokenId) throws TransactionException {
-        transactions.remove(get(tokenId));
+    public void dropEverything() {
+        transactions = new ArrayList<>();
     }
 
 

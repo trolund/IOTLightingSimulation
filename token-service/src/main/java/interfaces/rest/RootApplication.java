@@ -7,6 +7,7 @@ import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
+import services.TokenService;
 
 import javax.enterprise.event.Observes;
 import javax.ws.rs.ApplicationPath;
@@ -33,7 +34,7 @@ public class RootApplication extends Application {
         try {
             TokenSender sender = new TokenSender();
             sender.initConnection();
-            TokenEventService tokenEventService = new TokenEventService(sender);
+            TokenEventService tokenEventService = new TokenEventService(sender, new TokenService());
             TokenListener receiver = new TokenListener(tokenEventService);
             receiver.initConnection();
             LOGGER.log(Level.INFO, "RabbitMQ initConnection() started successfully.");
