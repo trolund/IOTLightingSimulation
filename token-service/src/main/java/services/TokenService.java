@@ -118,7 +118,7 @@ public class TokenService implements ITokenService {
     }
 
     private String generateTokenId() {
-        return String.valueOf(Math.random() * 8100352);
+        return String.valueOf(Math.random() * 6972593);
     }
 
     private List<Token> generateTokens(Integer amount) {
