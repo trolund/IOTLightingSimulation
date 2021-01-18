@@ -12,14 +12,14 @@ import services.*;
  */
 public class PaymentEventServiceFactory {
 
-    static PaymentService paymentService = null;
+    static PaymentEventService paymentEventService = null;
 
-    public PaymentService getService() {
+    public PaymentEventService getService() {
         // The singleton pattern.
         // Ensure that there is at most
         // one instance of a PaymentService
-        if (paymentService != null) {
-            return paymentService;
+        if (paymentEventService != null) {
+            return paymentEventService;
         }
 
         // Hookup the classes to send and receive
@@ -31,13 +31,13 @@ public class PaymentEventServiceFactory {
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
         EventSender b = new PaymentSender();
-        paymentService = new PaymentService(b);
-        PaymentListener r = new PaymentListener(paymentService);
+        paymentEventService = new PaymentEventService(b);
+        PaymentListener r = new PaymentListener(paymentEventService);
         try {
             r.listen();
         } catch (Exception e) {
             throw new Error(e);
         }
-        return paymentService;
+        return paymentEventService;
     }
 }

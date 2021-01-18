@@ -3,8 +3,8 @@ package infrastructure.token;
 import infrastructure.token.interfaces.ITokenService;
 
 /**
- * @author Troels (s161791)
- * service for communicating with TokenService.
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
 public class TokenService implements ITokenService {
 

@@ -3,8 +3,8 @@ package infrastructure.token;
 import infrastructure.token.interfaces.ITokenService;
 
 /**
- * @author Troels (s161791)
- * Mock TokenService for testing.
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
 public class MockTokenService implements ITokenService {
 

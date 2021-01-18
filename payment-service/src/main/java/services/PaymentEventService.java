@@ -17,18 +17,17 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 /**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
+public class PaymentEventService implements EventReceiver {
 
-public class PaymentService implements EventReceiver {
-
-    private final static Logger LOGGER = Logger.getLogger(PaymentService.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(PaymentEventService.class.getName());
     private final EventSender eventSender;
     private final BankService bs = new BankServiceService().getBankServicePort();
     private final Gson gson = new Gson();
 
-    public PaymentService(EventSender eventSender) {
+    public PaymentEventService(EventSender eventSender) {
         this.eventSender = eventSender;
     }
 
