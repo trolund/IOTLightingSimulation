@@ -1,3 +1,6 @@
+# @primary-author Tobias (s173899)
+# @co-author Emil (s174265)
+
 Feature: Customer reporting
   Scenario: Customer requests a list of transactions
     Given a list of customer transactions
