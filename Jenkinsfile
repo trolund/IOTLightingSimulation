@@ -38,8 +38,7 @@ try {
                 }
             }
         }
-        /*
-
+    
         stage ('Account Tests') {
             script {
                 try {
@@ -50,7 +49,7 @@ try {
                 }
             }
         }
-        */
+        
 
         stage ('Token Tests') {
             script {
