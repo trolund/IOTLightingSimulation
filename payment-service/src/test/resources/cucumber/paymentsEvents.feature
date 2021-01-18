@@ -1,5 +1,4 @@
 # author Troels (s161791)
-
 Feature: Payment
 
   Scenario: Payment must fail because of wrong bank id's
