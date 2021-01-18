@@ -43,7 +43,7 @@ public class PaymentEventService implements EventReceiver {
                 transactionDTO.setSuccessful(false);
                 processPaymentResult.complete(transactionDTO);
                 break;
-            case "RefundSuccessful":
+/*            case "RefundSuccessful":
                 transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(true);
                 processRefundResult.complete(transactionDTO);
@@ -52,7 +52,7 @@ public class PaymentEventService implements EventReceiver {
                 transactionDTO = gson.fromJson(gson.toJson(event.getArguments()[0]), TransactionDTO.class);
                 transactionDTO.setSuccessful(false);
                 processRefundResult.complete(transactionDTO);
-                break;
+                break;*/
             default:
                 LOGGER.log(Level.WARNING, "Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
                 break;
@@ -84,9 +84,14 @@ public class PaymentEventService implements EventReceiver {
         }
     }
 
-    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest)
+    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest){
+        paymentRequest.
+        return sendProcessPaymentEvent(paymentRequest);
+    }
+
+/*    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest)
             throws SendEventFailedException, EventFailedException {
-        String eventType = "ProcessRefund";
+        String eventType = "ProcessPayment";
         Object[] arguments = new Object[]{paymentRequest};
         Event event = new Event(eventType, arguments);
         processRefundResult = new CompletableFuture<>();
@@ -107,6 +112,6 @@ public class PaymentEventService implements EventReceiver {
         } catch (Exception e) {
             throw new SendEventFailedException(eventType + " event failed to send!");
         }
-    }
+    }*/
 
 }

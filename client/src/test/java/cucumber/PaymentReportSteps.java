@@ -263,7 +263,7 @@ public class PaymentReportSteps {
 
     @Then("the refund is successful")
     public void the_refund_is_successful() {
-        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId(), false);
+        PaymentRequest paymentRequest = new PaymentRequest(currentCustomerId, currentMerchantId, paymentAmount, customerToken.getId(), true);
         successPayment = merchantApp.refund(paymentRequest);
         assertTrue(successPayment);
     }

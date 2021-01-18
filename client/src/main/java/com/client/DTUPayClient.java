@@ -131,7 +131,7 @@ public class DTUPayClient {
     }
 
     public boolean refund(PaymentRequest paymentRequest) {
-        Response r = baseUrl.path("refund")
+        Response r = baseUrl.path("payment/refund")
                 .request()
                 .post(Entity.entity(paymentRequest, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();

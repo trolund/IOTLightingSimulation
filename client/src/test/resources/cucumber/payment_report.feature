@@ -77,7 +77,7 @@ Feature: Payment
     When the merchant initiates a refund for 2000 by the customer
     Then the refund is successful
 
-  Scenario: Customer wants a refund
+  Scenario: Customer wants a refund fails
     Given a customer that exists in the system
     And a merchant that exists in the system
     When the merchant asks for a token from the customer

@@ -17,7 +17,7 @@ public class ConfigService implements IConfigService {
     public ConfigService() throws ConfigException {
         try {
             Properties p=new Properties();
-            p.setProperty("rabbitmq.host","rabbitmq");
+            p.setProperty("rabbitmq.host","localhost");
             p.store(new FileWriter("global.properties"),"global config"); 
         } catch (IOException e) {
             e.printStackTrace();
