@@ -19,14 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AccountServiceSteps {
     AccountService as;
 
+    String currentUserId = null;
+
     @Given("An instance of the account service has been initialized")
     public void an_instance_of_the_account_service_has_been_initialized() {
         as = new AccountService();
-        as.clear();
-        try {
-            assertEquals(as.getAll().size(), 0);
-        } catch (Exception e) {
-        }
+        as.clear(); // clear the internal list of users
     }
 
     @Then("The system contains no users")
@@ -45,7 +43,7 @@ public class AccountServiceSteps {
         BankRegistrationDTO bank = new BankRegistrationDTO(new BigDecimal(0));
         userRegister.setBankAccount(bank);
         try {
-            as.register(userRegister);
+            currentUserId = as.register(userRegister);
         } catch (AccountExistsException e) {
             e.getMessage();
         }
@@ -65,8 +63,8 @@ public class AccountServiceSteps {
     @Given("That user's ID is {string}")
     public void that_user_s_id_is(String string) {
         try {
-            UserAccountDTO userAccount = as.get(string);
-            assertEquals(userAccount.getId(), string);
+            UserAccountDTO userAccount = as.get(currentUserId);
+            assertEquals(userAccount.getId(), currentUserId);
         } catch (AccountNotFoundException e) {
             e.getMessage();
         }
@@ -75,7 +73,7 @@ public class AccountServiceSteps {
     @When("A user is requested retrieved using the ID {string}")
     public void a_user_is_requested_retrieved_using_the_id(String string) {
         try {
-            UserAccountDTO userAccount = as.get(string);
+            UserAccountDTO userAccount = as.get(currentUserId);
         } catch (AccountNotFoundException e) {
             e.getMessage();
         }
@@ -83,9 +81,8 @@ public class AccountServiceSteps {
 
     @Then("The user is retrieved")
     public void the_user_is_retrieved() {
-        String id = "123";
         try {
-            UserAccountDTO userAccount = as.get(id);
+            UserAccountDTO userAccount = as.get(currentUserId);
             assertNotNull(userAccount);
         } catch (AccountNotFoundException e) {
             e.getMessage();
@@ -95,9 +92,8 @@ public class AccountServiceSteps {
 
     @Then("The CPR of that user is {string}")
     public void the_cpr_of_that_user_is(String string) {
-        String id = "123";
         try {
-            UserAccountDTO userAccount = as.get(id);
+            UserAccountDTO userAccount = as.get(currentUserId);
             assertEquals(userAccount.getCpr(), string);
         } catch (AccountNotFoundException e) {
             e.getMessage();
@@ -107,7 +103,7 @@ public class AccountServiceSteps {
     @When("A user is requested retrieved using the CPR {string}")
     public void a_user_is_requested_retrieved_using_the_cpr(String string) {
         try {
-            UserAccountDTO userAccount = as.get(string);
+            UserAccountDTO userAccount = as.getByCpr(string);
         } catch (AccountNotFoundException e) {
             e.getMessage();
         }
@@ -186,9 +182,8 @@ public class AccountServiceSteps {
     @Then("The account with CPR {string} is retired")
     public void the_account_with_cpr_is_retired(String string) {
         try {
-            as.retireAccountByCpr(string);
             assertNull(as.getByCpr(string));
-        } catch (AccountNotFoundException | BankAccountException e) {
+        } catch (AccountNotFoundException e) {
             e.getMessage();
         }
     }
@@ -196,7 +191,7 @@ public class AccountServiceSteps {
     @When("A user requests to retire an account using ID {string}")
     public void a_user_requests_to_retire_an_account_using_id(String string) {
         try {
-            as.retireAccount(string);
+            as.retireAccount(currentUserId);
         } catch (BankAccountException e) {
             e.getMessage();
         }
@@ -205,20 +200,22 @@ public class AccountServiceSteps {
     @Then("The account with ID {string} is retired")
     public void the_account_with_id_is_retired(String string) {
         try {
-            as.retireAccount(string);
-            assertNull(as.get(string));
-        } catch (AccountNotFoundException | BankAccountException e) {
+            assertNull(as.get(currentUserId));
+        } catch (AccountNotFoundException e) {
             e.getMessage();
         }
     }
 
     @When("A request to register a user using the same information is requested")
     public void a_request_to_register_a_user_using_the_same_information_is_requested() {
+        UserRegistrationDTO original = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
+        original.setBankAccount(new BankRegistrationDTO(new BigDecimal(0)));
+
         UserRegistrationDTO duplicate = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
-        BankRegistrationDTO bank = new BankRegistrationDTO(new BigDecimal(0));
-        duplicate.setBankAccount(bank);
+        duplicate.setBankAccount(new BankRegistrationDTO(new BigDecimal(0)));
+
         try {
-            as.register(duplicate);
+            as.register(original);
             as.register(duplicate);
         } catch (AccountExistsException e) {
             assertNotNull(e.getMessage());
