@@ -25,6 +25,11 @@ public class AccountRepository implements IAccountRepository {
     }
 
     @Override
+    public void clear() {
+        accountInformations.clear();
+    }
+
+    @Override
     public void add(AccountInformation accountInformation) {
         accountInformations.add(accountInformation);
     }

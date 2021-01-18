@@ -25,19 +25,46 @@ public class AccountService implements IAccountService {
     private final BankService bs = new BankServiceService().getBankServicePort();
     private final IAccountRepository repo = AccountRepository.getInstance();
 
+    public void clear() {
+        repo.clear();
+    }
+
     @Override
-    public String register(UserRegistrationDTO userRegistrationDTO)
-            throws AccountExistsException, AccountRegistrationException {
+    public String register(UserRegistrationDTO creationRequest)
+            throws AccountExistsException {
 
-        if (isRegistered(userRegistrationDTO)) {
-            throw new AccountExistsException("Account with cpr (" + userRegistrationDTO.getCprNumber() + ") already exists!");
+        if (isRegistered(creationRequest)) {
+            throw new AccountExistsException("Account with cpr (" + creationRequest.getCprNumber() + ") already exists!");
         }
 
+        // create or retrieve bank account information for the user
+        String bankId = null;
         try {
-            return registerBankAccount(userRegistrationDTO);
+            bankId = registerBankAccount(creationRequest);
         } catch (BankAccountException e) {
-            throw new AccountRegistrationException(e.getMessage());
+            //throw new AccountRegistrationException(e.getMessage());
         }
+
+        if (bankId == null) {
+            // we didn't manage to create the user, try to fetch it
+            try {
+                Account a = getBankAccountByCpr(creationRequest.getCprNumber());
+                bankId = a.getId();
+            } catch (BankAccountException e) {
+//                throw new AccountRegistrationException(e.getMessage());
+            }
+        }
+
+        // create an internal uuid for the user, and add them to the repository
+//        String internalId = String.valueOf(UUID.randomUUID());
+        AccountInformation newAccount = new AccountInformation();
+        newAccount.setId(UUID.randomUUID().toString());
+        newAccount.setBankId(bankId);
+        newAccount.setCpr(creationRequest.getCprNumber());
+
+        repo.add(newAccount);
+
+        return newAccount.getId();
     }
 
     @Override
@@ -127,20 +154,16 @@ public class AccountService implements IAccountService {
                     " for account with cpr (" + userRegistrationDTO.getCprNumber() + ")");
         }
 
-        // if the creation has gone well,
-        // create an internal uuid for the user
-        // and add them to the repository
-        String internalId = String.valueOf(UUID.randomUUID());
+        return bankId;
 
-        AccountInformation newAccount = new AccountInformation();
-        newAccount.setId(internalId);
-        newAccount.setBankId(bankId);
-        newAccount.setCpr(userRegistrationDTO.getCprNumber());
+    }
 
-        repo.add(newAccount);
-
-        // and return the internal id
-        return internalId;
+    private Account getBankAccountByCpr(String cpr) throws BankAccountException {
+        try {
+            return bs.getAccountByCprNumber(cpr);
+        } catch (BankServiceException_Exception e) {
+            throw new BankAccountException(e.getMessage());
+        }
     }
 
     private Account getBankAccount(String bankId) throws BankAccountException {

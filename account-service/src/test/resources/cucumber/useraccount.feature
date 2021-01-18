@@ -1,9 +1,9 @@
 Feature: User Account
-    Scenario: Creating a new user account
-        When a user with first name "Bjarne", last name "Ivertsen", CPR "123456-7890" requests to create an account
-        Then a new account with first name "Bjarne", last name "Ivertsen" and CPR "123456-7890" is created
-        And a unique identifier for the account is some string
-        And the account has a bank account attached
+    #    Scenario: Creating a new user account
+    #        When a user with first name "Bjarne", last name "Ivertsen", CPR "123456-7890" requests to create an account
+    #        Then a new account with first name "Bjarne", last name "Ivertsen" and CPR "123456-7890" is created
+    #        And a unique identifier for the account is some string
+    #        And the account has a bank account attached
 
         #    Scenario: The bank account is related to the user CPR number
         #        Given a user with CPR "555555-5555" has been created

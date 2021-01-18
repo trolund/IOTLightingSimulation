@@ -10,6 +10,7 @@ import exceptions.account.BankAccountException;
 import java.util.List;
 
 public interface IAccountService {
+    void clear();
     String register(UserRegistrationDTO userRegistrationDTO) throws AccountExistsException, AccountRegistrationException;
     UserAccountDTO get(String id) throws AccountNotFoundException;
     UserAccountDTO getByCpr(String cpr) throws AccountNotFoundException;
