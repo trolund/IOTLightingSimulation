@@ -1,50 +1,48 @@
-package cucumber.steps;
+/*package cucumber.steps;
 
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import exceptions.EmptyNameException;
-import exceptions.EmptyCprException;
-import model.BankAccount;
-import model.UserAccount;
-import services.AccountService;
+import exceptions.account.*;
+import dto.BankAccountDTO;
+import dto.UserAccountDTO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserAccountSteps {
-    UserAccount userAccount;
-    BankAccount bankAccount;
-//
-//    @When("a user with first name {string}, last name {string}, CPR {string} requests to create an account")
-//    public void a_user_with_first_name_last_name_cpr_requests_to_create_an_account(String string, String string2, String string3) {
-//        userAccount = new UserAccount(string, string2, string3);
-//        bankAccount = new BankAccount();
-//        userAccount.setBankAccount(bankAccount);
-//    }
-//
-//    @Then("a new account with first name {string}, last name {string} and CPR {string} is created")
-//    public void a_new_account_with_first_name_last_name_and_cpr_is_created(String string, String string2, String string3) {
-//        assertEquals(userAccount.getFirstName(), string);
-//        assertEquals(userAccount.getLastName(), string2);
-//        assertEquals(userAccount.getCprNumber(), string3);
-//    }
-//
-//    @Then("a unique identifier for the account is some string")
-//    public void a_unique_identifier_for_the_account_is_some_string() {
-//        userAccount.setId("some string");
-//        assertEquals("some string", userAccount.getId());
-//    }
-//
-//    @Then("the account is not disabled")
-//    public void the_account_is_not_disabled() {
-//        assertFalse(userAccount.getDisabled());
-//    }
-//
-//    @Then("the account has a bank account attached")
-//    public void the_account_has_a_bank_account_attached() {
-//        assertNotNull(userAccount.getBankAccount());
-//    }
-//
+    UserAccountDTO userAccount;
+    BankAccountDTO bankAccount;
+
+    @When("a user with first name {string}, last name {string}, CPR {string} requests to create an account")
+    public void a_user_with_first_name_last_name_cpr_requests_to_create_an_account(String string, String string2, String string3) {
+        userAccount = new UserAccountDTO();
+        bankAccount = new BankAccountDTO();
+        userAccount.setFirstName(string);
+        userAccount.setLastName(string2);
+        userAccount.setCpr(string3);
+        userAccount.setBankAccount(bankAccount);
+        userAccount.setId("some string");
+
+    }
+
+    @Then("a new account with first name {string}, last name {string} and CPR {string} is created")
+    public void a_new_account_with_first_name_last_name_and_cpr_is_created(String string, String string2, String string3) {
+        assertEquals(userAccount.getFirstName(), string);
+        assertEquals(userAccount.getLastName(), string2);
+        assertEquals(userAccount.getCpr(), string3);
+    }
+
+    @Then("a unique identifier for the account is some string")
+    public void a_unique_identifier_for_the_account_is_some_string() {
+        assertEquals("some string", userAccount.getId());
+    }
+
+
+    @Then("the account has a bank account attached")
+    public void the_account_has_a_bank_account_attached() {
+        assertNotNull(userAccount.getBankAccount());
+    }
+
 //    @Given("a user with CPR {string} has been created")
 //    public void a_user_with_cpr_has_been_created(String string) {
 //        userAccount = new UserAccount("Bjarne", "Ivertsen", "123456-7890");
@@ -107,4 +105,4 @@ public class UserAccountSteps {
 //        assertTrue(userAccount.getDisabled());
 //    }
 //
-}
+//}
