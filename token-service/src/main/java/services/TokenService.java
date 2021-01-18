@@ -1,3 +1,10 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  Main service for token, handles business logic
+ */
+
 package services;
 
 import dto.CustomerTokens;
