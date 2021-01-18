@@ -256,4 +256,16 @@ public class PaymentReportSteps {
         }
     }
 
+    @When("the merchant initiates a refund for {int} by the customer")
+    public void the_merchant_initiates_a_refund_for_by_the_customer(Integer paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    @Then("the refund is successful")
+    public void the_refund_is_successful() {
+        PaymentRequest paymentRequest = new PaymentRequest(currentMerchantId, currentCustomerId, paymentAmount, customerToken.getId(), false);
+        successPayment = merchantApp.processPayment(paymentRequest);
+        assertTrue(successPayment);
+    }
+
 }
