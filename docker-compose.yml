@@ -85,21 +85,21 @@ services:
       - rabbitmq
     ports:
       - "8083:8083"
-  client:
-    image: client:0.1
-    container_name: client
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.client
-    depends_on:
-      - rest
-      - token
-      - payment
-      - account
-      - report
-    links:
-     - rest
-     - token
-     - payment
-     - account
-     - report
+  # client:
+  #   image: client:0.1
+  #   container_name: client
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile.client
+  #   depends_on:
+  #     - rest
+  #     - token
+  #     - payment
+  #     - account
+  #     - report
+  #   links:
+  #    - rest
+  #    - token
+  #    - payment
+  #    - account
+  #    - report
