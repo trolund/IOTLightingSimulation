@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
+ * @primary-author Emil (s174265)
+ * @co-author Tobias (s173899)
  * <p>
  * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
  * rabbitMQ implementation template.

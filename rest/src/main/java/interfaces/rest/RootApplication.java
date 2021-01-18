@@ -10,12 +10,15 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.logging.Logger;
 
+/**
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
+ */
 @OpenAPIDefinition(
         info = @Info(
                 title = "Group 11 DTUPay API",
                 version = "3.0.3"
         ))
-
 @ApplicationPath("/api/v1")
 public class RootApplication extends Application {
 

@@ -3,19 +3,17 @@ package services;
 import dto.Token;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
-import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
 public class TokenEventService implements EventReceiver {
 

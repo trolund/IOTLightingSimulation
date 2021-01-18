@@ -7,11 +7,14 @@ import infrastructure.rabbitmq.token.TokenFactory;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.TokenEventService;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ */
 @Tag(ref = "TokenResource")
 @Path("/token")
 public class TokenResource {

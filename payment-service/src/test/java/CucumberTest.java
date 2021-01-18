@@ -8,6 +8,13 @@ either the word Test in the beginning or at the end.
 For example, the class name CucumberTests (Test with an s) will be ignored by Maven.
 */
 
+/**
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ * <p>
+ * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
+ * rabbitMQ implementation template.
+ */
 @Cucumber
 public class CucumberTest {
 

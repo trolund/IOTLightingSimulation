@@ -8,12 +8,15 @@ import infrastructure.rabbitmq.account.AccountFactory;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import services.AccountEventService;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * @primary-author Kasper (s141250)
+ * @co-author Sebastian (s135243)
+ */
 @Tag(ref = "AccountResource")
 @Path("/account")
 public class AccountResource {
