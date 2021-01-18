@@ -30,10 +30,11 @@ public class PaymentSteps {
     private final ReportServiceClient reportService = new ReportServiceClient();
     boolean successPayment;
 
-    private UserRegistrationDTO cusRegDTO, mercRegDTO;
+    private UserRegistrationDTO customerRegDTO, merchantRegDTO;
 
     private UserAccountDTO customerDTO, merchantDTO;
 
+    private String createdCustomerId, createdMerchantId;
     private String currentCustomerId, currentMerchantId;
     private Token customerToken;
     private Integer paymentAmount;
@@ -42,25 +43,25 @@ public class PaymentSteps {
 
     @After
     public void cleanup() {
-        accountService.retireAccount(currentCustomerId);
-        accountService.retireAccount(currentMerchantId);
+        accountService.retireAccount(createdCustomerId);
+        accountService.retireAccount(createdMerchantId);
     }
 
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_customer_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        cusRegDTO = new UserRegistrationDTO();
-        cusRegDTO.setBankAccount(new BankRegistrationDTO());
+        customerRegDTO = new UserRegistrationDTO();
+        customerRegDTO.setBankAccount(new BankRegistrationDTO());
 
-        cusRegDTO.setCprNumber(cpr);
-        cusRegDTO.setFirstName(firstName);
-        cusRegDTO.setLastName(lastName);
-        cusRegDTO.getBankAccount().setBalance(BigDecimal.valueOf(balance));
+        customerRegDTO.setCprNumber(cpr);
+        customerRegDTO.setFirstName(firstName);
+        customerRegDTO.setLastName(lastName);
+        customerRegDTO.getBankAccount().setBalance(BigDecimal.valueOf(balance));
     }
 
     @When("the customer is registered")
     public void when_the_customer_is_registered() {
-        currentCustomerId = accountService.registerAccount(cusRegDTO);
-        System.out.println("CusID " + currentCustomerId);
+        currentCustomerId = accountService.registerAccount(customerRegDTO);
+        createdCustomerId = currentCustomerId;
     }
 
     @Then("the customer registration should be successful")
@@ -82,19 +83,19 @@ public class PaymentSteps {
 
     @Given("a new merchant with cpr {string}, first name {string}, last name {string} and a balance of {int}")
     public void a_new_merchant_with_cpr_first_name(String cpr, String firstName, String lastName, Integer balance) {
-        mercRegDTO = new UserRegistrationDTO();
-        mercRegDTO.setBankAccount(new BankRegistrationDTO());
+        merchantRegDTO = new UserRegistrationDTO();
+        merchantRegDTO.setBankAccount(new BankRegistrationDTO());
 
-        mercRegDTO.setCprNumber(cpr);
-        mercRegDTO.setFirstName(firstName);
-        mercRegDTO.setLastName(lastName);
-        mercRegDTO.getBankAccount().setBalance(BigDecimal.valueOf(balance));
+        merchantRegDTO.setCprNumber(cpr);
+        merchantRegDTO.setFirstName(firstName);
+        merchantRegDTO.setLastName(lastName);
+        merchantRegDTO.getBankAccount().setBalance(BigDecimal.valueOf(balance));
     }
 
     @When("the merchant is registered")
     public void when_the_merchant_is_registered() {
-        currentMerchantId = accountService.registerAccount(mercRegDTO);
-        System.out.println("merID " + currentMerchantId);
+        currentMerchantId = accountService.registerAccount(merchantRegDTO);
+        createdMerchantId = currentMerchantId;
     }
 
     @Then("the merchant registration should be successful")
@@ -144,11 +145,16 @@ public class PaymentSteps {
         Assert.assertEquals(BigDecimal.valueOf(balanceLeft).intValue(), merchantDTO.getBankAccount().getBalance().intValue());
     }
 
-
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
         MoneySummary moneySummary = reportService.getAllTransactions();
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
+
+        /*
+         * To make the test work, we need to wait a little bit
+         * before the report service has registered the previous payment
+         */
+        wait(200);
 
         latestTransaction = moneySummary.getTransactions().stream().max(comparator).get();
         Assert.assertNotNull(latestTransaction);
@@ -157,11 +163,20 @@ public class PaymentSteps {
 
     @And("the latest transaction related to the customer contain balance {int}")
     public void the_latest_transaction_related_to_the_customer_contain_balance(Integer balance) {
+        Date startDate = Date.from(LocalDate.now().minusDays(1).atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
         Date endDate = Date.from(LocalDate.now().plusDays(7).atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
 
-        List<TransactionDTO> transactions = reportService.getCustomerReport(currentCustomerId, new Date(), endDate);
+        /*
+         * To make the test work, we need to wait a little bit
+         * before the report service has registered the previous payment
+         */
+        wait(200);
+
+        List<TransactionDTO> transactions = reportService.getCustomerReport(currentCustomerId, startDate, endDate);
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
 
         latestTransaction = transactions.stream().max(comparator).get();
@@ -169,29 +184,40 @@ public class PaymentSteps {
         Assert.assertEquals(BigDecimal.valueOf(balance).intValue(), latestTransaction.getBalance().intValue());
     }
 
-    @And("the latest transaction related to the merchant contain balance {int}")
-    public void the_latest_transaction_related_to_the_merchant_contain_balance(Integer balance) {
+    @And("the latest transaction related to the merchant should contain anonymized balance and debtor")
+    public void the_latest_transaction_related_to_the_merchant_contain_balance() {
+        Date startDate = Date.from(LocalDate.now().minusDays(1).atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
         Date endDate = Date.from(LocalDate.now().plusDays(7).atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
 
-        List<TransactionDTO> transactions = reportService.getMerchantReport(currentMerchantId, new Date(), endDate);
+        /*
+         * To make the test work, we need to wait a little bit
+         * before the report service has registered the previous payment
+         */
+        wait(200);
+
+        List<TransactionDTO> transactions = reportService.getMerchantReport(currentMerchantId, startDate, endDate);
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
 
         latestTransaction = transactions.stream().max(comparator).get();
+
         Assert.assertNotNull(latestTransaction);
-        Assert.assertEquals(BigDecimal.valueOf(balance).intValue(), latestTransaction.getBalance().intValue());
+        assertNull(latestTransaction.getBalance());
+        assertNull(latestTransaction.getDebtor());
     }
 
     @And("an invalid token {string}")
     public void an_invalid_token(String token) {
-        customerToken.setId(token);
+        customerToken = new Token(token);
     }
 
     @Given("a customer with id {string} and a token {string} where neither exist")
     public void a_customer_with_id_and_a_token_where_neither_exist(String id, String token) {
         this.currentCustomerId = id;
-        this.customerToken.setId(token);
+        this.customerToken = new Token(token);
     }
 
     @And("a merchant that exists in the system")
@@ -208,13 +234,21 @@ public class PaymentSteps {
     }
 
     @Given("a customer that exists in the system")
-    public void a_customer_that_exist_in_the_system(String id) {
-        this.currentCustomerId = id;
+    public void a_customer_that_exist_in_the_system() {
+        this.currentCustomerId = createdCustomerId;
     }
 
     @Given("a merchant with id {string} that does not exist in the system")
     public void a_merchant_with_id_that_does_not_exist_in_the_system(String id) {
         this.currentMerchantId = id;
+    }
+
+    private void wait(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

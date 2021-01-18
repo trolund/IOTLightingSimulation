@@ -27,7 +27,6 @@ public class TokenServiceClient {
     public Token getToken(String customerId) {
         Response r = baseUrl.path("token/" + customerId).request().get();
         Token t = r.readEntity(Token.class);
-        System.out.println("cus: " + customerId + " token" + t);
         return t;
     }
 
@@ -35,7 +34,6 @@ public class TokenServiceClient {
         Response r = baseUrl.path("token/validate/" + tokenId)
                 .request()
                 .post(null);
-        System.out.println("Validate : " + tokenId);
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 

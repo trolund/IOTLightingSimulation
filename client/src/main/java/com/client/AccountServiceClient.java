@@ -23,7 +23,15 @@ public class AccountServiceClient {
         Response r = baseUrl.path("account")
                 .request()
                 .post(Entity.entity(registrationDTO, MediaType.APPLICATION_JSON_TYPE));
-        return r.readEntity(String.class);
+
+        if (r.getStatus() == 200) {
+            String result = r.readEntity(new GenericType<>() {
+            });
+
+            return result.length() == 0 ? null : result;
+        }
+
+        return null;
     }
 
     public UserAccountDTO getAccount(String id) {
