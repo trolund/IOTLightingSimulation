@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * RabbitMQ sender based on code given by Hubert
+ */
+
 package interfaces.rabbitmq;
 
 import com.google.gson.Gson;

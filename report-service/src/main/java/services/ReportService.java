@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Main service for reporting, handles business logic.
+ */
+
 package services;
 
 import dto.MoneySummary;
@@ -117,7 +124,7 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, String beg, String end) throws DatatypeConfigurationException, ParseException {
+    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, String beg, String end) throws ParseException {
         List<TransactionDTO> transactionsCopy = deepCopyTransactions(transactions);
         SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
 

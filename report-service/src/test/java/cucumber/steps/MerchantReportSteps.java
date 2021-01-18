@@ -1,3 +1,8 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ */
+
 package cucumber.steps;
 
 import dto.TransactionDTO;
