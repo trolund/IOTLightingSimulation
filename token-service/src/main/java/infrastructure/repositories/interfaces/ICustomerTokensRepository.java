@@ -1,3 +1,7 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ */
 package infrastructure.repositories.interfaces;
 
 import dto.CustomerTokens;

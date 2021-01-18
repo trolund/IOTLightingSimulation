@@ -1,3 +1,9 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  Repository for CustomerTokens objects
+ */
 package infrastructure.repositories;
 
 import dto.CustomerTokens;

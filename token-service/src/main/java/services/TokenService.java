@@ -1,3 +1,10 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  Main service for token, handles business logic
+ */
+
 package services;
 
 import dto.CustomerTokens;
@@ -111,7 +118,7 @@ public class TokenService implements ITokenService {
     }
 
     private String generateTokenId() {
-        return String.valueOf(Math.random() * 8100352);
+        return String.valueOf(Math.random() * 6972593);
     }
 
     private List<Token> generateTokens(Integer amount) {

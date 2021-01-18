@@ -1,3 +1,10 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  REST interface for the token service
+ */
+
 package interfaces.rest;
 
 import dto.Token;

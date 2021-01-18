@@ -1,3 +1,7 @@
+# @primary-author Emil (s174265)
+# @co-author Tobias (s173899)
+
+
 Feature: Validation of tokens
 
   Scenario: Validation of an unused token
