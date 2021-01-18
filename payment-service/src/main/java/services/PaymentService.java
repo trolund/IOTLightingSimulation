@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  * @primary-author Daniel (s151641)
  * @co-author Troels (s161791)
  */
+
 public class PaymentService implements EventReceiver {
 
     private final static Logger LOGGER = Logger.getLogger(PaymentService.class.getName());
