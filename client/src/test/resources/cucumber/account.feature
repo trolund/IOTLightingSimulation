@@ -3,49 +3,43 @@
 
 Feature: Account management
 
-  # Register account in dtupay
-  # Register account that already exists
-
-  # Get account by id that exists
-
-  # Get account by cpr that exists
-  # Get account by id that does not exist
-  # Get account by cpr that does not exist
-
-
-  Scenario Outline: Successful registration in DTUPay: Register account
-    Given a new account with cpr <cpr>, first name <first_name>, last name <last_name> and an initial balance of <initial_balance>
+  Background:
+    Given a new account with cpr "001122-XXXX", first name "Michael", last name "Hardy" and an initial balance of 5000
     When the account is registered
     Then the registration should be successful
     And the new account should exist in the system with correct information
 
-    Examples:
-      | cpr             | first_name | last_name   | initial_balance |
-      | "001122-XXXX"   | "Michael"  | "Hardy"     | 0               |
-      | "221100-XXXX"   | "Elyse"    | "Williams"  | 50              |
-
   Scenario: Unsuccessful registration in DTUPay: Account already exists
-    Given a new account with cpr "001122-XXXX", first name "Michael", last name "Hardy" and an initial balance of 50
-    When the account is registered
-    Then the registration should be successful
-    Then the account is registered again
+    When the account is registered again
     Then the registration should be unsuccessful
 
+  Scenario: Successful account information retrieval by cpr from DTUPay: Account exists
+    When account information is retrieved by cpr
+    Then the retrieval should be successful
+    And the retrieved information should be correct
 
+  Scenario: Unsuccessful account information retrieval by id from DTUPay: Account does not exist
+    When account information is retrieved by id "111-222-333-444" that does not exist
+    Then the retrieval should be unsuccessful
 
+  Scenario: Unsuccessful account information retrieval by cpr from DTUPay: Account does not exist
+    When account information is retrieved by cpr "010203-0405" that does not exist
+    Then the retrieval should be unsuccessful
 
+  Scenario: Successful retirement of account by cpr in DTUPay: Account exists
+    When a customer retires their account by cpr
+    Then the retirement should be successful
 
+  Scenario: Successful retirement of account by cpr in DTUPay: Account does not exist
+    When a customer retires their account by cpr with cpr "010203-04-05"
+    Then the retirement should be successful
 
+  Scenario: Successful retirement of account by id in DTUPay: Account does not exist
+    When a customer retires their account by id with id "111-222-333-444"
+    Then the retirement should be successful
 
-
-#  Scenario: Unsuccessful registration in DTUPay: Register user
-#    Given a registered merchant with cpr "001122-XXXX" who has been to numerolog
-#    And wants to change their name to first name "Mogens" and last name "Ukkerholt"
-#    Then the system should update the information accordingly
-#
-#  Scenario: Retire merchant in DTUPay
-#    Given a registered merchant with cpr "001122-XXXX" who is tired of DTUPay
-#    And wants to retire their account
-#    Then their information should be deleted
-
+  Scenario: Successful retrieval of all account information in DTUPay
+    When a customer requests all account information from DTUPay
+    Then the request should be successful
+    And should contain the right amount of accounts
 

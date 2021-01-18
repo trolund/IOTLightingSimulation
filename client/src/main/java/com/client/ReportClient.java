@@ -11,11 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class ReportServiceClient {
+public class ReportClient {
 
     private final WebTarget baseUrl;
 
-    public ReportServiceClient() {
+    public ReportClient() {
         javax.ws.rs.client.Client client = ClientBuilder.newClient();
         baseUrl = client.target("http://localhost:8083/api/v1/");
     }

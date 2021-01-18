@@ -1,18 +1,18 @@
 package com.CustomerApp;
 
-import com.client.TokenServiceClient;
+import com.client.DTUPayClient;
 import dto.Token;
 
 public class CustomerApp {
 
-    private final TokenServiceClient tokenService = new TokenServiceClient();
+    private final DTUPayClient dtuPay = new DTUPayClient();
 
     public Token getToken(String customerId) {
-        return tokenService.getToken(customerId);
+        return dtuPay.getToken(customerId);
     }
 
     public boolean requestTokens(String customerId, int amount) {
-        return tokenService.requestTokens(customerId, amount);
+        return dtuPay.requestTokens(customerId, amount);
     }
 
 }

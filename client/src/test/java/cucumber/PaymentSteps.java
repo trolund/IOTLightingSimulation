@@ -2,8 +2,8 @@ package cucumber;
 
 import com.CustomerApp.CustomerApp;
 import com.MerchantApp.MerchantApp;
-import com.client.AccountServiceClient;
-import com.client.ReportServiceClient;
+import com.client.DTUPayClient;
+import com.client.ReportClient;
 import dto.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -26,8 +26,8 @@ public class PaymentSteps {
     private final CustomerApp customerApp = new CustomerApp();
     private final MerchantApp merchantApp = new MerchantApp();
 
-    private final AccountServiceClient accountService = new AccountServiceClient();
-    private final ReportServiceClient reportService = new ReportServiceClient();
+    private final DTUPayClient dtuPay = new DTUPayClient();
+    private final ReportClient reportClient = new ReportClient();
     boolean successPayment;
 
     private UserRegistrationDTO customerRegDTO, merchantRegDTO;
@@ -43,8 +43,8 @@ public class PaymentSteps {
 
     @After
     public void cleanup() {
-        accountService.retireAccount(createdCustomerId);
-        accountService.retireAccount(createdMerchantId);
+        dtuPay.retireAccount(createdCustomerId);
+        dtuPay.retireAccount(createdMerchantId);
     }
 
     @Given("a new customer with cpr {string}, first name {string}, last name {string} and a balance of {int}")
@@ -60,7 +60,7 @@ public class PaymentSteps {
 
     @When("the customer is registered")
     public void when_the_customer_is_registered() {
-        currentCustomerId = accountService.registerAccount(customerRegDTO);
+        currentCustomerId = dtuPay.registerAccount(customerRegDTO);
         createdCustomerId = currentCustomerId;
     }
 
@@ -71,7 +71,7 @@ public class PaymentSteps {
 
     @And("the new customer should exist in the system")
     public void the_new_customer_exists_in_the_system() {
-        customerDTO = accountService.getAccount(currentCustomerId);
+        customerDTO = dtuPay.getAccount(currentCustomerId);
         Assert.assertNotNull(customerDTO);
     }
 
@@ -94,7 +94,7 @@ public class PaymentSteps {
 
     @When("the merchant is registered")
     public void when_the_merchant_is_registered() {
-        currentMerchantId = accountService.registerAccount(merchantRegDTO);
+        currentMerchantId = dtuPay.registerAccount(merchantRegDTO);
         createdMerchantId = currentMerchantId;
     }
 
@@ -105,7 +105,7 @@ public class PaymentSteps {
 
     @Then("the new merchant exists in the system")
     public void the_new_merchant_exists_in_the_system() {
-        merchantDTO = accountService.getAccount(currentMerchantId);
+        merchantDTO = dtuPay.getAccount(currentMerchantId);
         Assert.assertNotNull(merchantDTO);
     }
 
@@ -133,21 +133,21 @@ public class PaymentSteps {
 
     @Then("the customer should have a balance of {int} left")
     public void the_customer_should_have_a_balance_of_left(Integer balanceLeft) {
-        customerDTO = accountService.getAccount(currentCustomerId);
+        customerDTO = dtuPay.getAccount(currentCustomerId);
         Assert.assertNotNull(customerDTO);
         Assert.assertEquals(BigDecimal.valueOf(balanceLeft).intValue(), customerDTO.getBankAccount().getBalance().intValue());
     }
 
     @Then("the merchant should have a balance of {int} left")
     public void the_merchant_should_have_a_balance_of_left(Integer balanceLeft) {
-        merchantDTO = accountService.getAccount(currentMerchantId);
+        merchantDTO = dtuPay.getAccount(currentMerchantId);
         Assert.assertNotNull(merchantDTO);
         Assert.assertEquals(BigDecimal.valueOf(balanceLeft).intValue(), merchantDTO.getBankAccount().getBalance().intValue());
     }
 
     @Then("the latest transaction contain the amount {int} for both accounts")
     public void the_latest_transaction_contain_the_amount_for_both_accounts(Integer transactionAmount) {
-        MoneySummary moneySummary = reportService.getAllTransactions();
+        MoneySummary moneySummary = reportClient.getAllTransactions();
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
 
         /*
@@ -176,7 +176,7 @@ public class PaymentSteps {
          */
         wait(200);
 
-        List<TransactionDTO> transactions = reportService.getCustomerReport(currentCustomerId, startDate, endDate);
+        List<TransactionDTO> transactions = reportClient.getCustomerReport(currentCustomerId, startDate, endDate);
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
 
         latestTransaction = transactions.stream().max(comparator).get();
@@ -199,7 +199,7 @@ public class PaymentSteps {
          */
         wait(200);
 
-        List<TransactionDTO> transactions = reportService.getMerchantReport(currentMerchantId, startDate, endDate);
+        List<TransactionDTO> transactions = reportClient.getMerchantReport(currentMerchantId, startDate, endDate);
         Comparator<TransactionDTO> comparator = Comparator.comparing(TransactionDTO::getTime);
 
         latestTransaction = transactions.stream().max(comparator).get();
