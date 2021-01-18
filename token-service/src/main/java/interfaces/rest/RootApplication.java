@@ -1,3 +1,7 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ */
 package interfaces.rest;
 
 import services.TokenEventService;

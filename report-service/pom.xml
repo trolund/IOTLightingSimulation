@@ -122,12 +122,6 @@
       <artifactId>jersey-common</artifactId>
       <version>2.32</version>
     </dependency>
-    <dependency>
-      <groupId>utilities</groupId>
-      <artifactId>utils</artifactId>
-      <version>1.0.0</version>
-      <scope>compile</scope>
-    </dependency>
 
     <!-- ################### RABBITMQ DEPENDENCIES ################### -->
     <dependency>
@@ -156,18 +150,13 @@
       <artifactId>gson</artifactId>
       <version>2.8.6</version>
     </dependency>
+
     <dependency>
       <groupId>utilities</groupId>
       <artifactId>utils</artifactId>
       <version>1.0.0</version>
       <scope>compile</scope>
     </dependency>
-      <dependency>
-          <groupId>utilities</groupId>
-          <artifactId>utils</artifactId>
-          <version>1.0.0</version>
-          <scope>compile</scope>
-      </dependency>
 
   </dependencies>
   <build>

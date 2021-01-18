@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Handles incoming REST calls and sends to business logic.
+ */
+
 package services;
 
 import dto.MoneySummary;

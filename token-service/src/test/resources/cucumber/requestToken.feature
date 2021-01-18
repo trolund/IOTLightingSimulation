@@ -1,3 +1,6 @@
+# @primary-author Emil (s174265)
+# @co-author Tobias (s173899)
+
 Feature: Customer requests tokens
 
   Scenario: Tokens given

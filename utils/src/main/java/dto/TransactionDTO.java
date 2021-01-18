@@ -30,7 +30,13 @@ public class TransactionDTO implements Serializable {
         this.creditor = transactionDTO.getCreditor();
         this.debtor = transactionDTO.getDebtor();
         this.description = transactionDTO.getDescription();
-        this.time = new Date(transactionDTO.getTime().getTime());
+
+        if (transactionDTO.getTime() != null) {
+            this.time = new Date(transactionDTO.getTime().getTime());
+        } else {
+            this.time = null;
+        }
+
         if (transactionDTO.getToken() != null) {
             this.token = transactionDTO.getToken();
         } else {

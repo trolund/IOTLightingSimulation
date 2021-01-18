@@ -1,3 +1,6 @@
+# @primary-author Tobias (s173899)
+# @co-author Emil (s174265)
+
 Feature: Manager of DTU Pay
   Scenario: Report of transactions
     Given a list of transactions

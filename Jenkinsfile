@@ -3,6 +3,7 @@
 
 try {
     node {
+        
         stage ('Package All Applications') {
             script {
                 try {
@@ -26,7 +27,8 @@ try {
             }
         }
 
-         /*stage ('Payment Tests') {
+         /*
+         stage ('Payment Tests') {
             script {
                 try {
                     checkout scm
@@ -47,6 +49,7 @@ try {
                 }
             }
         }
+        */
 
         stage ('Token Tests') {
             script {
@@ -79,13 +82,14 @@ try {
                     echo err.getMessage()
                 }
             }
-        }*/
-
+        }
     }
 } finally {
     node {
         stage ('Deployment finished') {
             checkout scm
+            // prune unused docker-images to save space on the virtual machine
+            sh 'docker image prune -f'
             sh 'echo "Deployment finished!"'
         }
     }

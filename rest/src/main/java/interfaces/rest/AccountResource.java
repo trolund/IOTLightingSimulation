@@ -23,7 +23,7 @@ public class AccountResource {
     @Tag(ref = "register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response register(UserRegistrationDTO userRegistrationDTO) {
         try {
             String internalId = service.sendRegisterEvent(userRegistrationDTO);

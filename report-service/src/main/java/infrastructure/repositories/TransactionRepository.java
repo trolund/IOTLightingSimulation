@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Repository for transactions
+ */
+
 package infrastructure.repositories;
 
 import dto.AccountInformation;

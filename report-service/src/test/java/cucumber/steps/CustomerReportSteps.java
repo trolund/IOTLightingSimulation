@@ -1,3 +1,8 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ */
+
 package cucumber.steps;
 
 import dto.TransactionDTO;
@@ -71,7 +76,7 @@ public class CustomerReportSteps {
     }
 
     @When("a customer event {string} has been sent back")
-    public void aCustomerEventHasBeenSentBack(String eventType) throws Exception {
+    public void aCustomerEventHasBeenSentBack(String eventType) {
         rr.receiveEvent(new Event(eventType, new Object[] {inputTransactions}));
     }
 
