@@ -1,3 +1,9 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  RabbitMQ event receiver
+ */
 package services;
 
 import com.google.gson.Gson;

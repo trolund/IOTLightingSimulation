@@ -1,3 +1,9 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  RabbitMQ listener based in code given by Hubert
+ */
 package interfaces.rabbitmq;
 
 import com.google.gson.Gson;

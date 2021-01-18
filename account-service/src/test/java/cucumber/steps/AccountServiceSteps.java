@@ -21,14 +21,14 @@ public class AccountServiceSteps {
 
     @Given("An instance of the account service has been initialized")
     public void an_instance_of_the_account_service_has_been_initialized() {
-        AccountService as = new AccountService();
+        as = new AccountService();
     }
 
-    @Then("The system contains {int} users")
-    public void the_system_contains_users() {
+    @Then("The system contains no users")
+    public void the_system_contains_no_users() {
         try {
             List<UserAccountDTO> dtos = as.getAll();
-            assertNull(dtos.size());
+            assertEquals(0, dtos.size());
         } catch (BankAccountException e) {
             e.getMessage();
         }
@@ -46,182 +46,197 @@ public class AccountServiceSteps {
         }
 
     }
-//
-//    @Then("the user is added to the list of users and the number of users is {int}")
-//    public void the_user_is_added_to_the_list_of_users_and_the_number_of_users_is(Integer int1) {
-//        try {
-//            List<UserAccountDTO> dtos = as.getAll();
-//            assertEquals(int1, dtos.size());
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Given("That user's ID is {string}")
-//    public void that_user_s_id_is(String string) {
-//        try {
-//            UserAccountDTO userAccount = as.get(string);
-//            assertEquals(userAccount.getId(), string);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A user is requested retrieved using the ID {string}")
-//    public void a_user_is_requested_retrieved_using_the_id(String string) {
-//        try {
-//            UserAccountDTO userAccount = as.get(string);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("the user is retrieved")
-//    public void the_user_is_retrieved() {
-//        String id = "123";
-//        try {
-//            UserAccountDTO userAccount = as.get(id);
-//            assertNotNull(userAccount);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//
-//    @Then("the CPR of that user is {string}")
-//    public void the_cpr_of_that_user_is(String string) {
-//        String id = "123";
-//        try {
-//            UserAccountDTO userAccount = as.get(id);
-//            assertEquals(userAccount.getCpr(), string);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A user is requested retrieved using the CPR {string}")
-//    public void a_user_is_requested_retrieved_using_the_cpr(String string) {
-//        try {
-//            UserAccountDTO userAccount = as.get(string);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("the ID of that user is {string}")
-//    public void the_id_of_that_user_is(String string) {
-//        String cpr = "123456-7890";
-//        try {
-//            UserAccountDTO userAccount = as.getByCpr(cpr);
-//            assertEquals(userAccount.getId(), string);
-//        } catch (AccountNotFoundException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Given("Two users are registered")
-//    public void two_users_are_registered() {
-//        UserRegistrationDTO userRegister1 = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
-//        UserRegistrationDTO userRegister2 = new UserRegistrationDTO("Soeren", "Soerensen", "123456-7890");
-//        try {
-//            as.register(userRegister1);
-//            as.register(userRegister2);
-//        } catch (AccountExistsException | AccountRegistrationException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A request to retrieve all users is received")
-//    public void a_request_to_retrieve_all_users_is_received() {
-//        try {
-//            as.getAll();
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("A list of all the users is retrieved")
-//    public void a_list_of_all_the_users_is_retrieved() {
-//        try {
-//            List<UserAccountDTO> users = as.getAll();
-//            assertNotNull(users);
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("The number of users in the list is {int}")
-//    public void the_number_of_users_in_the_list_is(Integer int1) {
-//        try {
-//            List<UserAccountDTO> users = as.getAll();
-//            assertEquals(users.size(), int1);
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A user requests to retire an account using CPR {string}")
-//    public void a_user_requests_to_retire_an_account_using_cpr(String string) {
-//        try {
-//            as.retireAccountByCpr(string);
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("The account with CPR {string} is retired")
-//    public void the_account_with_cpr_is_retired(String string) {
-//        try {
-//            as.retireAccountByCpr(string);
-//            assertNull(as.getByCpr(string));
-//        } catch (AccountNotFoundException | BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A user requests to retire an account using ID {string}")
-//    public void a_user_requests_to_retire_an_account_using_id(String string) {
-//        try {
-//            as.retireAccount(string);
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @Then("The account with ID {string} is retired")
-//    public void the_account_with_id_is_retired(String string) {
-//        try {
-//            as.retireAccount(string);
-//            assertNull(as.get(string));
-//        } catch (AccountNotFoundException | BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//
-//    @When("A request to register a user using the same information is requested")
-//    public void a_request_to_register_a_user_using_the_same_information_is_requested() {
-//        UserRegistrationDTO duplicate = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
-//        try {
-//            as.register(duplicate);
-//            as.register(duplicate);
-//        } catch (AccountExistsException | AccountRegistrationException e) {
-//            assertNotNull(e.getMessage());
-//        }
-//    }
-//
-//    @Then("The duplicate user is not registered")
-//    public void the_duplicate_user_is_not_registered() {
-//        try {
-//            List<UserAccountDTO> users = as.getAll();
-//            assertNotEquals(users.size(), 2);
-//        } catch (BankAccountException e) {
-//            e.getMessage();
-//        }
-//    }
-//    @Then("An exception is thrown")
-//    public void an_exception_is_thrown() {
-//    // Write code here that turns the phrase above into concrete actions
-//    }
+
+    @Then("The user is added to the list of users and the number of users is {int}")
+    public void the_user_is_added_to_the_list_of_users_and_the_number_of_users_is(Integer int1) {
+        try {
+            // register the a dummy user
+            UserRegistrationDTO dummy = new UserRegistrationDTO("name", "name2", "cpr");
+            BankRegistrationDTO bank = new BankRegistrationDTO(new BigDecimal(0));
+            dummy.setBankAccount(bank);
+            as.register(dummy);
+
+            // check length of the list in the repository
+            List<UserAccountDTO> dtos = as.getAll();
+            assertEquals(int1, dtos.size());
+        } catch (BankAccountException | AccountExistsException | AccountRegistrationException e) {
+            e.getMessage();
+        }
+    }
+
+    @Given("That user's ID is {string}")
+    public void that_user_s_id_is(String string) {
+        try {
+            UserAccountDTO userAccount = as.get(string);
+            assertEquals(userAccount.getId(), string);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A user is requested retrieved using the ID {string}")
+    public void a_user_is_requested_retrieved_using_the_id(String string) {
+        try {
+            UserAccountDTO userAccount = as.get(string);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("The user is retrieved")
+    public void the_user_is_retrieved() {
+        String id = "123";
+        try {
+            UserAccountDTO userAccount = as.get(id);
+            assertNotNull(userAccount);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+
+    @Then("The CPR of that user is {string}")
+    public void the_cpr_of_that_user_is(String string) {
+        String id = "123";
+        try {
+            UserAccountDTO userAccount = as.get(id);
+            assertEquals(userAccount.getCpr(), string);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A user is requested retrieved using the CPR {string}")
+    public void a_user_is_requested_retrieved_using_the_cpr(String string) {
+        try {
+            UserAccountDTO userAccount = as.get(string);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("The ID of that user is {string}")
+    public void the_id_of_that_user_is(String string) {
+        String cpr = "123456-7890";
+        try {
+            UserAccountDTO userAccount = as.getByCpr(cpr);
+            assertEquals(userAccount.getId(), string);
+        } catch (AccountNotFoundException e) {
+            e.getMessage();
+        }
+    }
+
+    @Given("Two users are registered")
+    public void two_users_are_registered() {
+        UserRegistrationDTO userRegister1 = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
+        UserRegistrationDTO userRegister2 = new UserRegistrationDTO("Soeren", "Soerensen", "123456-7890");
+        BankRegistrationDTO bank1 = new BankRegistrationDTO(new BigDecimal(0));
+        BankRegistrationDTO bank2 = new BankRegistrationDTO(new BigDecimal(0));
+        userRegister1.setBankAccount(bank1);
+        userRegister2.setBankAccount(bank2);
+        try {
+            as.register(userRegister1);
+            as.register(userRegister2);
+            List<UserAccountDTO> users = as.getAll();
+            assertEquals(2, users.size());
+        } catch (BankAccountException | AccountExistsException | AccountRegistrationException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A request to retrieve all users is received")
+    public void a_request_to_retrieve_all_users_is_received() {
+        try {
+            as.getAll();
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("A list of all the users is retrieved")
+    public void a_list_of_all_the_users_is_retrieved() {
+        try {
+            List<UserAccountDTO> users = as.getAll();
+            assertNotNull(users);
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("The number of users in the list is {int}")
+    public void the_number_of_users_in_the_list_is(Integer int1) {
+        try {
+            List<UserAccountDTO> users = as.getAll();
+            assertEquals(int1, users.size());
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A user requests to retire an account using CPR {string}")
+    public void a_user_requests_to_retire_an_account_using_cpr(String string) {
+        try {
+            as.retireAccountByCpr(string);
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("The account with CPR {string} is retired")
+    public void the_account_with_cpr_is_retired(String string) {
+        try {
+            as.retireAccountByCpr(string);
+            assertNull(as.getByCpr(string));
+        } catch (AccountNotFoundException | BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A user requests to retire an account using ID {string}")
+    public void a_user_requests_to_retire_an_account_using_id(String string) {
+        try {
+            as.retireAccount(string);
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @Then("The account with ID {string} is retired")
+    public void the_account_with_id_is_retired(String string) {
+        try {
+            as.retireAccount(string);
+            assertNull(as.get(string));
+        } catch (AccountNotFoundException | BankAccountException e) {
+            e.getMessage();
+        }
+    }
+
+    @When("A request to register a user using the same information is requested")
+    public void a_request_to_register_a_user_using_the_same_information_is_requested() {
+        UserRegistrationDTO duplicate = new UserRegistrationDTO("Bjarne", "Ivertsen", "123456-7890");
+        BankRegistrationDTO bank = new BankRegistrationDTO(new BigDecimal(0));
+        duplicate.setBankAccount(bank);
+        try {
+            as.register(duplicate);
+            as.register(duplicate);
+        } catch (AccountExistsException | AccountRegistrationException e) {
+            assertNotNull(e.getMessage());
+        }
+    }
+
+    @Then("The duplicate user is not registered")
+    public void the_duplicate_user_is_not_registered() {
+        try {
+            List<UserAccountDTO> users = as.getAll();
+            assertNotEquals(users.size(), 2);
+        } catch (BankAccountException e) {
+            e.getMessage();
+        }
+    }
+    @Then("An exception is thrown")
+    public void an_exception_is_thrown() {
+    // Write code here that turns the phrase above into concrete actions
+    }
 
 
 //    @Given("An instance of the bank service has been initialized")

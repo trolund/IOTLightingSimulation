@@ -13,19 +13,19 @@ Feature: Account Service
         And A user with first name "Bjarne", last name "Ivertsen", CPR "123456-7890" is added
         And That user's ID is "123"
         When A user is requested retrieved using the ID "123"
-        Then the user is retrieved
-        And the CPR of that user is "123456-7890"
+        Then The user is retrieved
+        And The CPR of that user is "123456-7890"
 
     Scenario: Retrieving a user by its CPR number
         Given An instance of the account service has been initialized
         And A user with first name "Bjarne", last name "Ivertsen", CPR "123456-7890" is added
         And That user's ID is "123"
         When A user is requested retrieved using the CPR "123456-7890"
-        Then the user is retrieved
-        And the ID of that user is "123"
+        Then The user is retrieved
+        And The ID of that user is "123"
 
     Scenario: Get all users
-        Given A instance of the account service has been initialized
+        Given An instance of the account service has been initialized
         And Two users are registered
         When A request to retrieve all users is received
         Then A list of all the users is retrieved

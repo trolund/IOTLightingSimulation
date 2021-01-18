@@ -11,6 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * primary-author: Daniel (s151641)
+ * co-author: Troels (s161791)
+ */
 public class ReportClient {
 
     private final WebTarget baseUrl;

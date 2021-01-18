@@ -3,6 +3,7 @@
 
 try {
     node {
+        
         stage ('Package All Applications') {
             script {
                 try {
@@ -87,6 +88,8 @@ try {
     node {
         stage ('Deployment finished') {
             checkout scm
+            // prune unused docker-images to save space on the virtual machine
+            sh 'docker image prune -f'
             sh 'echo "Deployment finished!"'
         }
     }

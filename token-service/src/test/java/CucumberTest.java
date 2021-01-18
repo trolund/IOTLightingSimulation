@@ -1,5 +1,7 @@
-import org.junit.runner.RunWith;
-
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ */
 import io.cucumber.junit.platform.engine.Cucumber;
 
 /* Important:

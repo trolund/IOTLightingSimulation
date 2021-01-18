@@ -1,3 +1,9 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  Object for a given customer and its tokens
+ */
 package dto;
 
 import java.io.Serializable;
