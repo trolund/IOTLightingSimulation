@@ -23,7 +23,6 @@ import java.util.UUID;
 public class AccountService implements IAccountService {
 
     private final BankService bs = new BankServiceService().getBankServicePort();
-
     private final IAccountRepository repo = AccountRepository.getInstance();
 
     @Override
