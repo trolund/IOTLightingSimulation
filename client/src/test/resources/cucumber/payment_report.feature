@@ -68,3 +68,19 @@ Feature: Payment
     Then the merchant should receive a token
     When the merchant initiates a payment for -2000 by the customer
     Then the payment is unsuccessful
+
+  Scenario: Customer wants a refund
+    Given a customer that exists in the system
+    And a merchant that exists in the system
+    When the merchant asks for a token from the customer
+    Then the merchant should receive a token
+    When the merchant initiates a refund for 2000 by the customer
+    Then the refund is successful
+
+  Scenario: Customer wants a refund
+    Given a customer that exists in the system
+    And a merchant that exists in the system
+    When the merchant asks for a token from the customer
+    Then the merchant should receive a token
+    When the merchant initiates a refund for -10 by the customer
+    Then the payment is unsuccessful

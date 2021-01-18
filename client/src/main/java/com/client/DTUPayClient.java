@@ -130,4 +130,10 @@ public class DTUPayClient {
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
+    public boolean refund(PaymentRequest paymentRequest) {
+        Response r = baseUrl.path("refund")
+                .request()
+                .post(Entity.entity(paymentRequest, MediaType.APPLICATION_JSON_TYPE));
+        return r.getStatus() == Response.Status.OK.getStatusCode();
+    }
 }
