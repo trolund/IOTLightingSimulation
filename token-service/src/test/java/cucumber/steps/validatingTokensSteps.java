@@ -2,7 +2,6 @@ package cucumber.steps;
 
 import dto.PaymentAccounts;
 import dto.Token;
-import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.TokenNotFoundException;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -20,13 +19,14 @@ public class validatingTokensSteps {
     Exception e;
     Event event;
     TokenEventService tes;
+    PaymentAccounts paymentAccounts;
 
     public validatingTokensSteps(){
         tes = new TokenEventService(ev -> event = ev, ts);
     }
 
     @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
+    public void aCustomerWithId(String cid) {
         customerId = cid;
         ts.registerCustomer(cid);
     }
@@ -42,7 +42,6 @@ public class validatingTokensSteps {
 
     @And("^a token is sent to the server")
     public void aTokenIsSentToTheServer() {
-        Assertions.assertEquals("GetTokenSuccessful", event.getEventType());
         try {
             foundCustomerId = ts.getCustomerFromToken(token.getId()).getCustomerId();
             PaymentAccounts paymentAccounts = new PaymentAccounts();
@@ -104,8 +103,28 @@ public class validatingTokensSteps {
         Assertions.assertEquals(eventType, event.getEventType());
     }
 
-    @And("a {string} exception is returned")
-    public void aExceptionIsReturned(String error) {
-        Assertions.assertEquals(error, "Customer " + event.getArguments()[0] + " has no tokens.");
+    @Given("a broken validation paymentAccounts")
+    public void aBrokenValidationPaymentAccounts() {
+        paymentAccounts = new PaymentAccounts();
+        paymentAccounts.setToken(null);
+    }
+
+    @And("it gets a token successfully")
+    public void itGetsATokenSuccessfully() {
+        Assertions.assertEquals("GetTokenSuccessful", event.getEventType());
+    }
+
+    @When("the null token is sent to the server")
+    public void theNullTokenIsSentToTheServer() {
+        try {
+            tes.receiveEvent(new Event("PaymentAccountsSuccessful", new Object[]{paymentAccounts}));
+        } catch (Exception e) {
+            this.e = e;
+        }
+    }
+
+    @And("an error for customer {string} is returned")
+    public void anErrorForCustomerIsReturned(String failedCustomer) {
+        Assertions.assertEquals(failedCustomer, event.getArguments()[0]);
     }
 }

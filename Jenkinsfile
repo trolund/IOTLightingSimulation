@@ -26,7 +26,8 @@ try {
             }
         }
 
-         /*stage ('Payment Tests') {
+         /*
+         stage ('Payment Tests') {
             script {
                 try {
                     checkout scm
@@ -47,6 +48,7 @@ try {
                 }
             }
         }
+        */
 
         stage ('Token Tests') {
             script {
@@ -79,8 +81,7 @@ try {
                     echo err.getMessage()
                 }
             }
-        }*/
-
+        }
     }
 } finally {
     node {

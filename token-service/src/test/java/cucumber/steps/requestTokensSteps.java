@@ -1,7 +1,6 @@
 package cucumber.steps;
 
 import dto.CustomerTokens;
-import exceptions.CustomerAlreadyRegisteredException;
 import exceptions.CustomerNotFoundException;
 import interfaces.rabbitmq.TokenListener;
 import io.cucumber.java.en.And;
@@ -28,7 +27,7 @@ public class requestTokensSteps {
     }
 
     @Given("^the customer with id \"([^\"]*)\"$")
-    public void theCustomerWithId(String cid) throws CustomerAlreadyRegisteredException {
+    public void theCustomerWithId(String cid) {
         this.customerId = cid;
         ts.registerCustomer(cid);
     }
@@ -61,8 +60,12 @@ public class requestTokensSteps {
     }
 
     @When("the customer is deleted")
-    public void theCustomerIsDeleted() throws Exception {
-        tes.receiveEvent(new Event("RetireCustomerTokens", new Object[]{customerId}));
+    public void theCustomerIsDeleted() {
+        try {
+            tes.receiveEvent(new Event("RetireCustomerTokens", new Object[]{customerId}));
+        } catch (Exception e) {
+            this.e = e;
+        }
     }
 
     @Then("the customer is not found")
@@ -80,5 +83,14 @@ public class requestTokensSteps {
         }
     }
 
+    @Then("an event of type {string} is returned")
+    public void anEventOfTypeIsReturned(String eventType) {
+        Assertions.assertEquals(eventType, event.getEventType());
+    }
+
+    @Then("an error for customer {string} is received")
+    public void anErrorForCustomerIsReceived(String failedCustomer) {
+        Assertions.assertEquals(failedCustomer, event.getArguments()[0]);
+    }
 }
 

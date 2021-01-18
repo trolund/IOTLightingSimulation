@@ -3,7 +3,9 @@ package services;
 import com.google.gson.Gson;
 import dto.PaymentAccounts;
 import dto.Token;
-import exceptions.TokenNotFoundException;
+import exceptions.CustomerAlreadyRegisteredException;
+import exceptions.CustomerNotFoundException;
+import exceptions.TooManyTokensException;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
@@ -29,7 +31,7 @@ public class TokenEventService implements EventReceiver {
                 int amount = Double.valueOf(String.valueOf(event.getArguments()[1])).intValue();
                 String customerId = rs.requestTokens(id, amount);
                 eventSender.sendEvent(new Event("RequestTokensSuccessful", new Object[]{customerId}));
-            } catch (TokenNotFoundException e) {
+            } catch (CustomerNotFoundException | TooManyTokensException | CustomerAlreadyRegisteredException e) {
                 eventSender.sendEvent(new Event("RequestTokensFailed", new Object[]{e.getMessage().split(" ")[1]})); // TODO: Extract this
             }
         }
@@ -65,11 +67,6 @@ public class TokenEventService implements EventReceiver {
             PaymentAccounts paymentAccounts = gson.fromJson(gson.toJson(event.getArguments()[0]), PaymentAccounts.class);
             try {
                 Token token = rs.validateToken(paymentAccounts.getToken());
-
-                if (token == null) {
-                    eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{"Token is null"}));
-                    return;
-                }
 
                 Event eventOut = new Event("TokenValidationSuccessful", new Object[]{paymentAccounts});
                 eventSender.sendEvent(eventOut);

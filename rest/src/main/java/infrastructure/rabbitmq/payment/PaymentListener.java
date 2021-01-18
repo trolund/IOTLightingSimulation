@@ -38,7 +38,9 @@ public class PaymentListener {
     public void listen() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         IConfigService config = new ConfigService();
-        factory.setHost(config.getProp("rabbitmq.host"));
+        String rabbitMQhost = config.getProp("rabbitmq.host");
+        LOGGER.info("CONNECTING TO RABBITMQ HOST: " + rabbitMQhost);
+        factory.setHost(rabbitMQhost);
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
