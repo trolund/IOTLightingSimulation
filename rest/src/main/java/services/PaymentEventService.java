@@ -5,28 +5,25 @@ import dto.PaymentRequest;
 import dto.TransactionDTO;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
-import interfaces.rest.RootApplication;
 import messaging.Event;
 import messaging.EventReceiver;
 import messaging.EventSender;
 
-import javax.enterprise.context.ApplicationScoped;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
 public class PaymentEventService implements EventReceiver {
 
     private final static Logger LOGGER = Logger.getLogger(PaymentEventService.class.getName());
     private final EventSender eventSender;
-
+    private final Gson gson = new Gson();
     private CompletableFuture<TransactionDTO> processPaymentResult;
     private CompletableFuture<TransactionDTO> processRefundResult;
-    private final Gson gson = new Gson();
 
     public PaymentEventService(EventSender eventSender) {
         this.eventSender = eventSender;
