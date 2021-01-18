@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Event receiver which logs every transactions to a repo.
+ */
+
 package services;
 
 import com.google.gson.Gson;

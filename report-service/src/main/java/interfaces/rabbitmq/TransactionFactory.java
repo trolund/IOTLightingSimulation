@@ -1,3 +1,10 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Factory for RabbitMQ receiver
+ */
+
 package interfaces.rabbitmq;
 
 import messaging.EventSender;

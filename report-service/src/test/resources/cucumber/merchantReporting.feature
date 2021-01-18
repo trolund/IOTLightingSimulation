@@ -1,3 +1,6 @@
+# @primary-author Tobias (s173899)
+# @co-author Emil (s174265)
+
 Feature: Merchant reporting
   Scenario: Merchant requests a list of transactions
     Given a list of merchant transactions
