@@ -27,7 +27,7 @@ try {
             }
         }
 
-         /*
+        
          stage ('Payment Tests') {
             script {
                 try {
@@ -38,6 +38,7 @@ try {
                 }
             }
         }
+        /*
 
         stage ('Account Tests') {
             script {
