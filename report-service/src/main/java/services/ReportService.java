@@ -22,20 +22,35 @@ public class ReportService implements IReportService {
 
     private static final ITransactionRepository repo = TransactionRepository.getInstance();
 
+    @Override
     public MoneySummary getSummary(){
         List<TransactionDTO> list = repo.getAll();
         System.out.println(list);
         return new MoneySummary(requestSummary(list), list);
     }
 
+    @Override
     public List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException {
         List<TransactionDTO> list = repo.getAll();
         return requestAllCustomerTransactionsBetween(list, customerId, start, end);
     }
 
+    @Override
+    public List<TransactionDTO> customerReport(String customerId) {
+        List<TransactionDTO> list = repo.getAll();
+        return requestAllCustomerTransactions(list, customerId);
+    }
+
+    @Override
     public List<TransactionDTO> merchantReport(String merchantId, String start, String end) throws DatatypeConfigurationException, ParseException {
         List<TransactionDTO> list = repo.getAll();
         return requestAllMerchantTransactionsBetween(list, merchantId, start, end);
+    }
+
+    @Override
+    public List<TransactionDTO> merchantReport(String merchantId) {
+        List<TransactionDTO> list = repo.getAll();
+        return requestAllMerchantTransactions(list, merchantId);
     }
 
     @Override
@@ -65,18 +80,18 @@ public class ReportService implements IReportService {
 
     @Override
     public List<TransactionDTO> requestAllCustomerTransactions(List<TransactionDTO> transactions, String customerId) {
-        transactions.removeIf(obj -> !obj.getCreditor().equals(customerId));
+        transactions.removeIf(obj -> !obj.getDebtor().equals(customerId));
         return transactions;
     }
 
     @Override
-    public List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws DatatypeConfigurationException, ParseException {
+    public List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws ParseException {
         SimpleDateFormat formatter =new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
 
         Date startDate = formatter.parse(beg);
         Date endDate = formatter.parse(end);
         transactions.removeIf(obj -> obj.getTime() == null);
-        transactions.removeIf(obj -> !obj.getCreditor().equals(customerId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
+        transactions.removeIf(obj -> !obj.getDebtor().equals(customerId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
         return transactions;
     }
 
@@ -87,24 +102,24 @@ public class ReportService implements IReportService {
 
     @Override
     public List<TransactionDTO> requestAllMerchantTransactions(List<TransactionDTO> transactions, String merchantId) {
-        transactions.removeIf(obj -> !obj.getDebtor().equals(merchantId));
+        transactions.removeIf(obj -> !obj.getCreditor().equals(merchantId));
         for(TransactionDTO transaction : transactions) {
-            transaction.setCreditor(null);
+            transaction.setDebtor(null);
             transaction.setBalance(null);
         }
         return transactions;
     }
 
     @Override
-    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, String beg, String end) throws DatatypeConfigurationException, ParseException {
+    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, String beg, String end) throws ParseException {
         SimpleDateFormat formatter =new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
 
         Date startDate = formatter.parse(beg);
         Date endDate = formatter.parse(end);
         transactions.removeIf(obj -> obj.getTime() == null);
-        transactions.removeIf(obj -> !obj.getDebtor().equals(merchantId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
+        transactions.removeIf(obj -> !obj.getCreditor().equals(merchantId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
         for(TransactionDTO transaction : transactions) {
-            transaction.setCreditor(null);
+            transaction.setDebtor(null);
             transaction.setBalance(null);
         }
         return transactions;
