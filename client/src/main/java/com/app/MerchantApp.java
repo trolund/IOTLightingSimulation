@@ -21,4 +21,8 @@ public class MerchantApp {
         return dtuPay.processPayment(paymentRequest);
     }
 
+    public boolean refund(PaymentRequest paymentRequest) {
+        return dtuPay.refund(paymentRequest);
+    }
+
 }
