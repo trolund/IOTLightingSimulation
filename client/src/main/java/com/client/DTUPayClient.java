@@ -13,6 +13,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * primary-author: Daniel (s151641)
+ * co-author: Troels (s161791)
+ */
 public class DTUPayClient {
 
     private final WebTarget baseUrl;

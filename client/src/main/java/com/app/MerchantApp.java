@@ -4,6 +4,10 @@ import com.client.DTUPayClient;
 import dto.PaymentRequest;
 import dto.Token;
 
+/**
+ * primary-author: Troels (s161791)
+ * co-author: Daniel (s151641)
+ */
 public class MerchantApp {
 
     private final DTUPayClient dtuPay = new DTUPayClient();

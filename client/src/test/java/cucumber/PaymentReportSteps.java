@@ -21,6 +21,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * primary-author: Daniel (s151641)
+ * co-author: Troels (s161791)
+ */
 public class PaymentReportSteps {
 
     private final CustomerApp customerApp = new CustomerApp();

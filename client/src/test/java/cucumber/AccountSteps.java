@@ -16,6 +16,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * primary-author: Troels (s161791)
+ * co-author: Daniel (s151641)
+ */
 public class AccountSteps {
 
     private final DTUPayClient dtuPay = new DTUPayClient();
