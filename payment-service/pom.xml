@@ -73,6 +73,29 @@
             <artifactId>utils</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <!-- ################### logger DEPENDENCIES ################### -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+
+        <!-- ################### http client for tests DEPENDENCIES ################### -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.0.2.Final</version>
+        </dependency>
+
     </dependencies>
+
+
     
 </project>

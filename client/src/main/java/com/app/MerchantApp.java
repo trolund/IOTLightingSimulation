@@ -1,13 +1,12 @@
-package com.MerchantApp;
+package com.app;
 
-import com.CustomerApp.CustomerApp;
-import com.client.PaymentServiceClient;
+import com.client.DTUPayClient;
 import dto.PaymentRequest;
 import dto.Token;
 
 public class MerchantApp {
 
-    private final PaymentServiceClient paymentClient = new PaymentServiceClient();
+    private final DTUPayClient dtuPay = new DTUPayClient();
     private final CustomerApp customerApp = new CustomerApp();
 
     public Token requestTokenFromCustomer(String customerId) {
@@ -15,7 +14,7 @@ public class MerchantApp {
     }
 
     public boolean processPayment(PaymentRequest paymentRequest) {
-        return paymentClient.processPayment(paymentRequest);
+        return dtuPay.processPayment(paymentRequest);
     }
 
 }

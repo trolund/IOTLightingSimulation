@@ -1,5 +1,6 @@
 package services;
 
+import dto.MoneySummary;
 import dto.TransactionDTO;
 import messaging.Event;
 import messaging.EventReceiver;
@@ -24,44 +25,28 @@ public class ReportReceiverService implements EventReceiver {
         return rs.getRepo().getAll();
     }
 
-    public Map<String, BigDecimal> requestSummary() throws Exception {
-        List<TransactionDTO> transactions = requestAllTransactions();
-        return rs.requestSummary(transactions);
+    public MoneySummary requestSummary() {
+        return rs.getSummary();
     }
 
     public List<TransactionDTO> requestAllCustomerTransactions(String customerId) {
-        List<TransactionDTO> transactions = requestAllTransactions();
-        return rs.requestAllCustomerTransactions(transactions, customerId);
+        return rs.customerReport(customerId);
     }
 
     public List<TransactionDTO> requestAllCustomerTransactionsBetween(String customerId, String beg, String end) throws Exception {
-        List<TransactionDTO> transactions = requestAllTransactions();
-        return rs.requestAllCustomerTransactionsBetween(transactions, customerId, beg, end);
+        return rs.customerReport(customerId, beg, end);
     }
 
     public List<TransactionDTO> requestAllMerchantTransactions(String merchantId) {
-        List<TransactionDTO> transactions = requestAllTransactions();
-        return rs.requestAllMerchantTransactions(transactions, merchantId);
+        return rs.merchantReport(merchantId);
     }
 
     public List<TransactionDTO> requestAllMerchantTransactionsBetween(String merchantId, String beg, String end) throws Exception {
-        List<TransactionDTO> transactions = requestAllTransactions();
-        return rs.requestAllMerchantTransactionsBetween(transactions, merchantId, beg, end);
+        return rs.merchantReport(merchantId, beg, end);
     }
 
     @Override
-    public void receiveEvent(Event event) throws Exception {
-        List<TransactionDTO> transactions;
-        System.out.println("handling event: "+event);
-        switch (event.getEventType()) {
-            case "requestSummary":
-                Map<String, BigDecimal> summary = requestSummary();
-                eventSender.sendEvent(new Event("requestSummarySuccessful", new Object[]{summary}));
-                break;
-            case "requestAllCustomerTransactions":
-                transactions = requestAllCustomerTransactions((String) event.getArguments()[0]);
-                eventSender.sendEvent(new Event("requestAllCustomerTransactionsSuccessful", new Object[]{transactions}));
-                break;
-        }
+    public void receiveEvent(Event event) {
+
     }
 }

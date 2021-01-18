@@ -24,6 +24,21 @@ public class TransactionDTO implements Serializable {
 
     }
 
+    public TransactionDTO(TransactionDTO transactionDTO) {
+        this.amount = new BigDecimal(String.valueOf(transactionDTO.getAmount()));
+        this.balance = new BigDecimal(String.valueOf(transactionDTO.getBalance()));
+        this.creditor = transactionDTO.getCreditor();
+        this.debtor = transactionDTO.getDebtor();
+        this.description = transactionDTO.getDescription();
+        this.time = new Date(transactionDTO.getTime().getTime());
+        if (transactionDTO.getToken() != null) {
+            this.token = transactionDTO.getToken();
+        } else {
+            this.token = "Token was null. Value sat in copy constructor.";
+        }
+        this.isSuccessful = transactionDTO.isSuccessful;
+    }
+
     public TransactionDTO(BigDecimal amount, String creditor, String debtor) {
         this.amount = amount;
         this.creditor = creditor;

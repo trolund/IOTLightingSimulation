@@ -1,125 +1,151 @@
-/*
 package services;
 
+import com.google.gson.Gson;
+import dto.PaymentAccounts;
 import dto.PaymentRequest;
 import dto.TransactionDTO;
-import dto.Transaction;
-import dto.UserAccountDTO;
-import exceptions.account.AccountNotFoundException;
-import exceptions.token.InvalidTokenException;
-import exceptions.transaction.TransactionException;
-import exceptions.transaction.TransactionNotFoundException;
+import exceptions.SendEventFailedException;
 import infrastructure.bank.BankService;
-import interfaces.rabbitmq.payment.RabbitMQPaymentAdapterFactory;
-import interfaces.rabbitmq.token.RabbitMQTokenAdapterFactory;
-import services.interfaces.IPaymentService;
+import infrastructure.bank.BankServiceException_Exception;
+import infrastructure.bank.BankServiceService;
+import messaging.Event;
+import messaging.EventReceiver;
+import messaging.EventSender;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
+import java.util.logging.Logger;
 
-*/
 /**
- * @primary-author Troels (s161791)
- * @co-author Daniel (s151641)
- *//*
+ * @primary-author Daniel (s151641)
+ * @co-author Troels (s161791)
+ */
 
-@ApplicationScoped
-public class PaymentService implements IPaymentService {
+public class PaymentService implements EventReceiver {
 
-    BankService bs;
-    MapperService mapper;
+    private final static Logger LOGGER = Logger.getLogger(PaymentService.class.getName());
+    private final EventSender eventSender;
+    private final BankService bs = new BankServiceService().getBankServicePort();
+    private final Gson gson = new Gson();
 
-    @Inject
-    public PaymentService(Bank bank, MapperService mapper) {
-        this.bs = bank.getBankServicePort();
-        this.mapper = mapper;
+    public PaymentService(EventSender eventSender) {
+        this.eventSender = eventSender;
     }
 
     @Override
-    public void processPayment(PaymentRequest paymentRequest)
-            throws AccountNotFoundException, TransactionException, InvalidTokenException {
-        PaymentEventService eventService = new RabbitMQPaymentAdapterFactory().getService();
-
-        UserAccountDTO customer = null;
-        UserAccountDTO merchant = null;
-        String customerId = paymentRequest.getCustomerId();
-        String merchantId = paymentRequest.getMerchantId();
-        String token = paymentRequest.getToken();
-        int amount = paymentRequest.getAmount();
-        TransactionDTO dto = null;
-
-        String desc = "Transaction between Customer (" + customerId + ")" +
-                " and Merchant (" + merchantId + ") for amount " + amount +
-                " with token " + token;
-
-        try {
-            // Checks if the token is valid
-            TokenEventService service = new RabbitMQTokenAdapterFactory().getService();
-            if (!service.validateToken(token).equals(token)) {
-                throw new InvalidTokenException(token);
-            }
-
-            */
-/*
-             * This is incorrect. This should be done through
-             * rabbitMQ. However, as we're soon going to
-             * re-implement the way we use rabbitMQ,
-             * we will just use rest for now.
-             *//*
-
-            // TODO get with account service through rabbitMQ
-            AccountServiceStub accountService = new AccountServiceStub();
-            customer = accountService.getAccount(customerId);
-            merchant = accountService.getAccount(merchantId);
-
-            dto = new TransactionDTO(BigDecimal.valueOf(amount), customer.getBankAccount().getBalance(), merchantId, customerId, desc, new Date());
-
-            bs.transferMoneyFromTo(
-                    customer.getBankAccount().getId(),
-                    merchant.getBankAccount().getId(),
-                    BigDecimal.valueOf(amount),
-                    desc);
-            try {
-                eventService.sendTransactionDone(dto, true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } catch (InvalidTokenException e) {
-            throw new InvalidTokenException(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            dto = new TransactionDTO(BigDecimal.valueOf(amount), BigDecimal.valueOf(-1), merchantId, customerId, desc, new Date());
-            dto.setAmount(BigDecimal.valueOf(amount));
-
-            try {
-                eventService.sendTransactionDone(dto, false);
-
-                if (customer == null || merchant == null) {
-                    throw new AccountNotFoundException("Account with id (" + merchantId + ") is not found!");
+    public void receiveEvent(Event event) {
+        switch (event.getEventType()) {
+            case "PaymentAccountsFailed":
+                PaymentAccountFailed(event);
+                break;
+            case "TokenValidationSuccessful":
+                try {
+                    receivedTokenValidationSuccessful(event);
+                } catch (SendEventFailedException e) {
+                    LOGGER.severe(e.getMessage());
+                    e.printStackTrace();
                 }
-
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            throw new TransactionException(e.getMessage());
+                break;
+            case "TokenValidationFailed":
+                TokenValidationFailed(event);
+                break;
+            default:
+                LOGGER.info("Ignored event with type: " + event.getEventType() + ". Event: " + event.toString());
+                break;
         }
     }
 
-    @Override
-    public void refund(PaymentRequest paymentRequest)
-            throws AccountNotFoundException, TransactionException, InvalidTokenException {
-        // reverse the request
-        String tempCustomerId = paymentRequest.getCustomerId();
-        paymentRequest.setCustomerId(paymentRequest.getMerchantId());
-        paymentRequest.setMerchantId(tempCustomerId);
+    private void TokenValidationFailed(Event event) {
+        PaymentAccounts paymentAccounts = gson.fromJson(gson.toJson(event.getArguments()[0]), PaymentAccounts.class);
 
-        processPayment(paymentRequest);
+        String customerId = paymentAccounts.getCustomer().getId();
+        String merchantId = paymentAccounts.getMerchant().getId();
+        String customerBankId = paymentAccounts.getCustomer().getBankAccount().getId();
+        String merchantBankId = paymentAccounts.getMerchant().getBankAccount().getId();
+        String token = paymentAccounts.getToken();
+        int amount = paymentAccounts.getAmount();
+
+        String desc = "Transaction between Customer (Id: " + customerId + ") " +
+                " (BankId: " + customerBankId + ")" +
+                " and Merchant (Id: " + merchantId + ")" +
+                " (BankId: " + merchantBankId + " for amount " + amount +
+                " with token " + token;
+
+        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), paymentAccounts.getCustomer().getBankAccount().getBalance(), merchantId, customerId, desc, new Date(), false);
+
+        try {
+            eventSender.sendEvent(new Event("PaymentFailed", new Object[]{dto}));
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-}*/
+    private void PaymentAccountFailed(Event event) {
+        PaymentRequest paymentRequest = gson.fromJson(gson.toJson(event.getArguments()[0]), PaymentRequest.class);
+        String desc = "Transaction between Customer (Id: " + paymentRequest.getCustomerId()+ ") " +
+                " and Merchant (Id: " + paymentRequest.getMerchantId() + ")" +
+                " for amount " + paymentRequest.getAmount() +
+                " with token " + paymentRequest.getToken();
+        TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(paymentRequest.getAmount()), BigDecimal.valueOf(-1), paymentRequest.getMerchantId(), paymentRequest.getCustomerId(), desc, new Date(), false);
+        try {
+            eventSender.sendEvent(new Event("PaymentFailed", new Object[]{dto}));
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void receivedTokenValidationSuccessful(Event event) throws SendEventFailedException {
+        PaymentAccounts paymentAccounts = gson.fromJson(gson.toJson(event.getArguments()[0]), PaymentAccounts.class);
+
+        String customerId = paymentAccounts.getCustomer().getId();
+        String merchantId = paymentAccounts.getMerchant().getId();
+        String customerBankId = paymentAccounts.getCustomer().getBankAccount().getId();
+        String merchantBankId = paymentAccounts.getMerchant().getBankAccount().getId();
+        String token = paymentAccounts.getToken();
+        int amount = paymentAccounts.getAmount();
+
+        String desc = "Transaction between Customer (Id: " + customerId + ") " +
+                " (BankId: " + customerBankId + ")" +
+                " and Merchant (Id: " + merchantId + ")" +
+                " (BankId: " + merchantBankId + " for amount " + amount +
+                " with token " + token;
+
+        try {
+            bs.transferMoneyFromTo(customerBankId, merchantBankId, BigDecimal.valueOf(paymentAccounts.getAmount()), desc);
+
+            BigDecimal newCustomerBalance = BigDecimal.valueOf(paymentAccounts.getCustomer().getBankAccount().getBalance().intValue() - amount);
+            TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), newCustomerBalance, merchantId, customerId, desc, new Date(), true);
+
+            Event eventOut = new Event("PaymentSuccessful", new Object[]{dto});
+            eventSender.sendEvent(eventOut);
+        } catch (BankServiceException_Exception e) {
+            TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(amount), paymentAccounts.getCustomer().getBankAccount().getBalance(), merchantId, customerId, desc, new Date(), false);
+            Event eventOut = new Event("PaymentFailed", new Object[]{dto});
+            try {
+                eventSender.sendEvent(eventOut);
+            } catch (Exception exception) {
+                throw new SendEventFailedException(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new SendEventFailedException(e.getMessage());
+        }
+    }
+
+    public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
+        Event event = null;
+        if (successful) {
+            event = new Event("TransactionSuccessful", new Object[]{dto});
+        } else {
+            event = new Event("TransactionFailed", new Object[]{dto});
+        }
+        eventSender.sendEvent(event);
+    }
+
+    public void SendTestEvent(String type, Object[] args) throws Exception {
+        Event event = new Event(type, args);
+        eventSender.sendEvent(event);
+    }
+
+}

@@ -11,9 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface IReportService {
+    List<TransactionDTO> customerReport(String customerId);
+
     List<TransactionDTO> merchantReport(String merchantId, String start, String end) throws DatatypeConfigurationException, ParseException;
     List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException;
     MoneySummary getSummary();
+
+    List<TransactionDTO> merchantReport(String merchantId);
+
     Map<String, BigDecimal> requestSummary(List<TransactionDTO> transactions) throws Exception;
     List<TransactionDTO> requestAllCustomerTransactions(List<TransactionDTO> transactions, String customerId);
     List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws DatatypeConfigurationException, ParseException;
