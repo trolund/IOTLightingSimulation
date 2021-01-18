@@ -2,7 +2,6 @@ package services;
 
 import com.google.gson.Gson;
 import dto.PaymentAccounts;
-import dto.PaymentRequest;
 import dto.Token;
 import exceptions.TokenNotFoundException;
 import messaging.Event;
@@ -16,9 +15,9 @@ public class TokenEventService implements EventReceiver {
     EventSender eventSender;
     private final Gson gson = new Gson();
 
-    public TokenEventService(EventSender eventSender) {
+    public TokenEventService(EventSender eventSender, TokenService tokenService) {
         this.eventSender = eventSender;
-        this.rs = new TokenService();
+        this.rs = tokenService;
     }
 
     @Override
@@ -42,18 +41,18 @@ public class TokenEventService implements EventReceiver {
                 eventSender.sendEvent(new Event("GetTokenFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
         }
-        /*
-        if (event.getEventType().equals("ValidateToken")) {
+
+        /*if (event.getEventType().equals("ValidateToken")) {
             try {
                 Token token = rs.validateToken((String) event.getArguments()[0]);
                 eventSender.sendEvent(new Event("TokenValidationSuccessful", new Object[]{token.getId()}));
             } catch (Exception e) {
-                logger.severe("validateToken threw an exception: " + e.getMessage());
+                //logger.severe("validateToken threw an exception: " + e.getMessage());
                 e.printStackTrace();
                 eventSender.sendEvent(new Event("TokenValidationFailed", new Object[]{e.getMessage().split(" ")[1]}));
             }
-        }
-         */
+        }*/
+
         if (event.getEventType().equals("RetireCustomerTokens")) {
             try {
                 String customerId = rs.deleteCustomer((String) event.getArguments()[0]);

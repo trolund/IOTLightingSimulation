@@ -2,9 +2,10 @@
 
 Feature: Payment
 
-  Scenario: Payment most fail because of wring bank id's
-    When i receive a message that one or both accounts does not exist in the bank
-    Then i notify the Merchant that payment has failed
+  Scenario: Payment most fail because of wrong bank id's
+    When a colleague working with accounts is done he notify me with "PaymentAccountsFailed"
+    When i receive a message "PaymentAccountsFailed" it means that one or both accounts does not exist in the bank
+    Then i notify the merchant that payment has failed
 
   Scenario: Payment most fail because of a invalid token
     When i receive "TokenValidationFailed"

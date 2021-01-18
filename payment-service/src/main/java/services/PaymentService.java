@@ -143,4 +143,9 @@ public class PaymentService implements EventReceiver {
         eventSender.sendEvent(event);
     }
 
+    public void SendTestEvent(String type, Object[] args) throws Exception {
+        Event event = new Event(type, args);
+        eventSender.sendEvent(event);
+    }
+
 }
