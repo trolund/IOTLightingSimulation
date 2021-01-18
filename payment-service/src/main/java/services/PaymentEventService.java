@@ -24,13 +24,19 @@ public class PaymentEventService implements EventReceiver {
 
     private final static Logger LOGGER = Logger.getLogger(PaymentEventService.class.getName());
     private final EventSender eventSender;
-    private final BankService bs = new BankServiceService().getBankServicePort();
+    private final BankService bs;
     private final Gson gson = new Gson();
+
 
     public PaymentEventService(EventSender eventSender) {
         this.eventSender = eventSender;
+        bs = new BankServiceService().getBankServicePort();
     }
 
+    public PaymentEventService(EventSender eventSender, BankService bank) {
+        this.eventSender = eventSender;
+        bs = bank;
+    }
     @Override
     public void receiveEvent(Event event) {
         switch (event.getEventType()) {
