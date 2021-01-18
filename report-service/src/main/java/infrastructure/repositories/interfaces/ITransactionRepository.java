@@ -4,7 +4,7 @@ import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 
 public interface ITransactionRepository extends IRepository<TransactionDTO> {
-    void add(TransactionDTO obj);
+    void add(TransactionDTO obj) throws TransactionException;
 
     TransactionDTO get(String tokenId) throws TransactionException;
 
@@ -12,4 +12,5 @@ public interface ITransactionRepository extends IRepository<TransactionDTO> {
 
     void delete(String tokenId) throws TransactionException;
 
+    void dropEverything();
 }

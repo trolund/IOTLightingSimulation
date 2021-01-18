@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TransactionRepository implements ITransactionRepository {
 
-    private final List<TransactionDTO> transactions;
+    private List<TransactionDTO> transactions;
 
     private static TransactionRepository instance = null;
 
@@ -26,8 +26,12 @@ public class TransactionRepository implements ITransactionRepository {
     }
 
     @Override
-    public void add(TransactionDTO obj) {
-        transactions.add(obj);
+    public void add(TransactionDTO obj) throws TransactionException {
+        if (obj.getCreditor() != null || obj.getDebtor() != null || obj.getAmount() != null) {
+            transactions.add(obj);
+        } else {
+            throw new TransactionException("Minimum transaction information not found");
+        }
     }
 
     @Override
@@ -58,6 +62,11 @@ public class TransactionRepository implements ITransactionRepository {
     @Override
     public void delete(String tokenId) throws TransactionException {
         transactions.remove(get(tokenId));
+    }
+
+    @Override
+    public void dropEverything() {
+        transactions = new ArrayList<>();
     }
 
 

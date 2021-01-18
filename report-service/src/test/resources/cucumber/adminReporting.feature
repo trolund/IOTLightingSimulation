@@ -16,8 +16,8 @@ Feature: Manager of DTU Pay
       | 60     | 100     | 12345    | 23456  | test3       | 2021-01-04 | abcde |
     When a request for summary is made
     Then a summary is made based on the transactions
-      | max | min | mean | sum |
-      | 60  | 10  | 33   | 100 |
+      | min | max | mean | sum |
+      | 10  | 60  | 33   | 100 |
 
   Scenario: Transaction recorded from payment
     When the transaction is recorded

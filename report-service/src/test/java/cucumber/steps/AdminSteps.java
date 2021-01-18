@@ -1,9 +1,11 @@
 package cucumber.steps;
 
 import dto.TransactionDTO;
+import exceptions.transaction.TransactionException;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.restassured.internal.common.assertion.Assertion;
+import org.junit.After;
 import services.ReportReceiverService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -42,6 +44,8 @@ public class AdminSteps {
 
     @Given("a list of transactions")
     public void aListOfTransactions(DataTable table) throws Exception {
+        rs.getRepo().dropEverything();
+        inputTransactions = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
@@ -95,12 +99,13 @@ public class AdminSteps {
     }
 
     @When("a new broken transaction is recorded")
-    public void aNewBrokenTransactionIsRecorded() throws Exception {
+    public void aNewBrokenTransactionIsRecorded() {
+        rs.getRepo().dropEverything();
         transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
         transaction.setAmount(null);
         try {
-            tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+            tss.receiveEvent(new Event("PaymentSuccessful", new Object[] {transaction}));
         } catch (Exception e) {
             this.e = e;
         }
@@ -113,9 +118,10 @@ public class AdminSteps {
 
     @When("the transaction is recorded")
     public void theTransactionIsRecorded() throws Exception {
+        rs.getRepo().dropEverything();
         transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
-        tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+        tss.receiveEvent(new Event("PaymentSuccessful", new Object[] {transaction}));
     }
 
     @Then("a {string} is sent")
