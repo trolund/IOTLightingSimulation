@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  */
 public class MapperService extends ModelMapper {
 
+    // from stackoverflow
     <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
         return source
                 .stream()
