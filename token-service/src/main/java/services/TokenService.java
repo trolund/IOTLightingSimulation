@@ -21,9 +21,14 @@ public class TokenService implements ITokenService {
     Logger logger = Logger.getLogger(TokenService.class.getName());
 
     @Override
-    public void registerCustomer(String customerId) {
+    public void registerCustomer(String customerId) throws CustomerAlreadyRegisteredException {
         CustomerTokens customerToken = new CustomerTokens(customerId);
-        repo.add(customerToken);
+        if (!customerExists(customerId)) {
+            repo.add(customerToken);
+        }
+        else{
+           throw new CustomerAlreadyRegisteredException(customerId);
+        }
     }
 
     @Override
