@@ -138,16 +138,6 @@ public class PaymentEventService implements EventReceiver {
         }
     }
 
-    public void sendTransactionDone(TransactionDTO dto, boolean successful) throws Exception {
-        Event event = null;
-        if (successful) {
-            event = new Event("TransactionSuccessful", new Object[]{dto});
-        } else {
-            event = new Event("TransactionFailed", new Object[]{dto});
-        }
-        eventSender.sendEvent(event);
-    }
-
     public void SendTestEvent(String type, Object[] args) throws Exception {
         Event event = new Event(type, args);
         eventSender.sendEvent(event);

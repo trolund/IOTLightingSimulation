@@ -84,34 +84,12 @@ public class PaymentEventService implements EventReceiver {
         }
     }
 
-    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest){
-        paymentRequest.
+    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest)
+            throws EventFailedException, SendEventFailedException {
+        String customerId = paymentRequest.getCustomerId();
+        paymentRequest.setCustomerId(paymentRequest.getMerchantId());
+        paymentRequest.setMerchantId(customerId);
         return sendProcessPaymentEvent(paymentRequest);
     }
-
-/*    public TransactionDTO sendProcessRefundEvent(PaymentRequest paymentRequest)
-            throws SendEventFailedException, EventFailedException {
-        String eventType = "ProcessPayment";
-        Object[] arguments = new Object[]{paymentRequest};
-        Event event = new Event(eventType, arguments);
-        processRefundResult = new CompletableFuture<>();
-
-        try {
-            eventSender.sendEvent(event);
-            LOGGER.info("Sent event: " + event);
-
-            TransactionDTO transactionDTO = processRefundResult.join();
-
-            if (transactionDTO == null) {
-                throw new EventFailedException(eventType + " event has failed for paymentRequest: " + paymentRequest);
-            }
-
-            return transactionDTO;
-        } catch (EventFailedException e) {
-            throw new EventFailedException(e.getMessage());
-        } catch (Exception e) {
-            throw new SendEventFailedException(eventType + " event failed to send!");
-        }
-    }*/
 
 }

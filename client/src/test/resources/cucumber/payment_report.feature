@@ -74,7 +74,7 @@ Feature: Payment
     And a merchant that exists in the system
     When the merchant asks for a token from the customer
     Then the merchant should receive a token
-    When the merchant initiates a refund for 2000 by the customer
+    When the merchant initiates a refund for 100 by the customer
     Then the refund is successful
 
   Scenario: Customer wants a refund fails
