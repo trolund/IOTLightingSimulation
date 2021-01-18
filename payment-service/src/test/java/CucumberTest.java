@@ -1,5 +1,3 @@
-import org.junit.runner.RunWith;
-
 import io.cucumber.junit.platform.engine.Cucumber;
 
 /* Important:
@@ -9,11 +7,11 @@ For example, the class name CucumberTests (Test with an s) will be ignored by Ma
 */
 
 /**
- * @primary-author Daniel (s151641)
- * @co-author Troels (s161791)
- * <p>
- * Thanks to Hubert Baumeister (huba@dtu.dk) for initial
- * rabbitMQ implementation template.
+ * primary-author: Troels (s161791)
+ * co-author: Daniel (s151641)
+ *
+ * Thanks to Hubert Baumeister (huba@dtu.dk)
+ * for providing this class.
  */
 @Cucumber
 public class CucumberTest {

@@ -1,25 +1,23 @@
-package cucumber.steps;
+package cucumber;
 
 import dto.*;
-import infrastructure.bank.BankService;
-import infrastructure.bank.BankServiceException_Exception;
-import io.cucumber.java.an.E;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messaging.Event;
 import mock.MockBank;
-import services.PaymentService;
+import services.PaymentEventService;
+
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PaymentEventsSteps {
 
-    PaymentService s;
+    PaymentEventService s;
     Event event;
     CompletableFuture<Boolean> result = new CompletableFuture<>();
     PaymentAccounts paymentAccounts;
@@ -31,7 +29,7 @@ public class PaymentEventsSteps {
 
     public PaymentEventsSteps() {
         bs = new MockBank();
-        s = new PaymentService(ev -> event = ev, bs);
+        s = new PaymentEventService(ev -> event = ev, bs);
 
         TransactionDTO dto = new TransactionDTO(BigDecimal.valueOf(100), BigDecimal.valueOf(100), "m1", "c1", "hej", new Date(), true);
 
