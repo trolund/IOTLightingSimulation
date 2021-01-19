@@ -1,3 +1,8 @@
+/**
+ * @author Kasper (s141250)
+ * @author Sebastian (s135243)
+ */
+
 package cucumber.steps;
 
 import io.quarkus.test.junit.QuarkusTest;

@@ -1,3 +1,8 @@
+/**
+ * @author Kasper (s141250)
+ * @author Sebastian (s135243)
+ */
+
 package services;
 
 import dto.AccountInformation;
@@ -41,22 +46,16 @@ public class AccountService implements IAccountService {
         String bankId = null;
         try {
             bankId = registerBankAccount(creationRequest);
-        } catch (BankAccountException e) {
-            //throw new AccountRegistrationException(e.getMessage());
-        }
+        } catch (BankAccountException e) { }
 
         if (bankId == null) {
             // we didn't manage to create the user, try to fetch it
             try {
                 Account a = getBankAccountByCpr(creationRequest.getCprNumber());
                 bankId = a.getId();
-            } catch (BankAccountException e) {
-//                throw new AccountRegistrationException(e.getMessage());
-            }
+            } catch (BankAccountException e) { }
         }
 
-        // create an internal uuid for the user, and add them to the repository
-//        String internalId = String.valueOf(UUID.randomUUID());
         AccountInformation newAccount = new AccountInformation();
         newAccount.setId(UUID.randomUUID().toString());
         newAccount.setBankId(bankId);
@@ -110,9 +109,7 @@ public class AccountService implements IAccountService {
     public void retireAccountByCpr(String cpr) throws BankAccountException {
         AccountInformation accountInformation = repo.getByCpr(cpr);
 
-        // if it returns null,
-        // it means the user doesn't exist
-        if (accountInformation == null) {
+        if (accountInformation == null) { // user doesn't exist
             return;
         }
 
@@ -123,9 +120,7 @@ public class AccountService implements IAccountService {
     public void retireAccount(String id) throws BankAccountException {
         AccountInformation accountInformation = repo.getById(id);
 
-        // if it returns null,
-        // it means the user doesn't exist
-        if (accountInformation == null) {
+        if (accountInformation == null) { // user doesn't exist
             return;
         }
 
@@ -155,7 +150,6 @@ public class AccountService implements IAccountService {
         }
 
         return bankId;
-
     }
 
     private Account getBankAccountByCpr(String cpr) throws BankAccountException {
@@ -202,5 +196,4 @@ public class AccountService implements IAccountService {
             throw new BankAccountException(e.getMessage());
         }
     }
-
 }

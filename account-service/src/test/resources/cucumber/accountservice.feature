@@ -1,3 +1,5 @@
+# author Kasper (s141250)
+# author Sebastian (s135243)
 Feature: Account Service
     Scenario: Initializing the account service
         Given An instance of the account service has been initialized

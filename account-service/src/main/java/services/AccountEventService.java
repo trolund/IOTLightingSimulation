@@ -1,3 +1,9 @@
+/**
+ * @author Kasper (s141250)
+ * @author Sebastian (s135243)
+ * @author most other team members
+ */
+
 package services;
 
 import com.google.gson.Gson;
@@ -14,7 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// authors: help from group
 public class AccountEventService implements EventReceiver {
 
     private final static Logger LOGGER = Logger.getLogger(AccountEventService.class.getName());

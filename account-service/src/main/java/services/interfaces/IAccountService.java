@@ -1,3 +1,8 @@
+/**
+ * @author Kasper (s141250)
+ * @author Sebastian (s135243)
+ */
+
 package services.interfaces;
 
 import dto.UserAccountDTO;

@@ -1,3 +1,8 @@
+/**
+ * @author Kasper (s141250)
+ * @author Sebastian (s135243)
+ */
+
 package interfaces.rabbitmq;
 
 import com.google.gson.Gson;
