@@ -1,3 +1,11 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ * @template Hubert Baumeister
+ *
+ * Factory service for REST calls based on code given by Hubert
+ */
+
 package interfaces.rabbitmq;
 
 import messaging.EventSender;
@@ -23,16 +31,14 @@ public class ReportFactory {
         // is called dependency injection.
         // At the end, we can use the PaymentService in tests
         // without sending actual messages to RabbitMq.
-        EventSender b = new RabbitMQSender();
+        EventSender b = new ReportSender();
         reportReceiverService = new ReportReceiverService(b, reportService);
-        RabbitMQReceiver r = new RabbitMQReceiver(reportReceiverService);
-
+        ReportListener r = new ReportListener(reportReceiverService);
         try {
-            r.initConnection("report.*");
+            r.listen();
         } catch (Exception e) {
             throw new Error(e);
         }
-
         return reportReceiverService;
     }
 }

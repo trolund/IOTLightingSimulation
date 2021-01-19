@@ -1,6 +1,12 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ */
+
 package cucumber.steps;
 
 import dto.TransactionDTO;
+import exceptions.transaction.TransactionException;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
@@ -17,6 +23,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +44,9 @@ public class MerchantReportSteps {
     }
 
     @Given("a list of merchant transactions")
-    public void aListOfMerchantTransactions(DataTable table) throws DatatypeConfigurationException {
+    public void aListOfMerchantTransactions(DataTable table) throws TransactionException, DatatypeConfigurationException {
+        rs.getRepo().dropEverything();
+        inputTransactions = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
@@ -45,8 +54,9 @@ public class MerchantReportSteps {
             transaction.setCreditor((String) row.get("creditor"));
             transaction.setDebtor((String) row.get("debtor"));
             transaction.setDescription((String) row.get("description"));
-            if(row.get("time") != null) {
-                transaction.setTime(new Date());
+            if (row.get("time") != null) {
+                XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
+                transaction.setTime(calendar.toGregorianCalendar().getTime());
             }
             transaction.setToken((String) row.get("token"));
             inputTransactions.add(transaction);
@@ -64,9 +74,11 @@ public class MerchantReportSteps {
     }
 
     @When("the merchant {string} requests their transactions between {string} and {string}")
-    public void theMerchantRequestsTheirTransactionsBetweenAnd(String merchantId, String beg, String end) {
+    public void theMerchantRequestsTheirTransactionsBetweenAnd(String merchantId, String beg, String end) throws DatatypeConfigurationException {
+        XMLGregorianCalendar begTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(beg);
+        XMLGregorianCalendar endTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(end);
         new Thread(() -> {try {
-            result.complete(rr.requestAllMerchantTransactionsBetween(merchantId, beg, end));
+            result.complete(rr.requestAllMerchantTransactionsBetween(merchantId, begTime.toGregorianCalendar().getTime(), endTime.toGregorianCalendar().getTime()));
         } catch (Exception e) {
             throw new Error(e);
         }}).start();
@@ -78,9 +90,10 @@ public class MerchantReportSteps {
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
-            transaction.setDebtor((String) row.get("debtor"));
+            transaction.setCreditor((String) row.get("creditor"));
             transaction.setDescription((String) row.get("description"));
-            transaction.setTime(new Date());
+            XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar((String) row.get("time"));
+            transaction.setTime(calendar.toGregorianCalendar().getTime());
             transaction.setToken((String) row.get("token"));
             outputTransactions.add(transaction);
         }

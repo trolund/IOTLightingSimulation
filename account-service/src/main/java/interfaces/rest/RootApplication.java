@@ -1,8 +1,6 @@
 package interfaces.rest;
 
-import interfaces.rabbitmq.RabbitMqReceiver;
-import interfaces.rabbitmq.RabbitMqSender;
-import interfaces.rabbitmq.AccountEventReceiver;
+import interfaces.rabbitmq.AccountFactory;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
@@ -28,15 +26,12 @@ public class RootApplication extends Application {
     }
 
     void onStart(@Observes StartupEvent ev) {
-        LOGGER.info("The application is starting..." + System.getenv("RABBITMQ_HOST"));
+        LOGGER.info("The application is starting... RabbitMQ host: " + System.getenv("RABBITMQ_HOST"));
         try {
-            RabbitMqSender s = new RabbitMqSender();
-            LOGGER.info("RabbitMqSender up");
-            AccountEventReceiver service = new AccountEventReceiver(s);
-            LOGGER.info("AccountReceiver up");
-            new RabbitMqReceiver(service).listen();
-            LOGGER.info("RabbitMqReceiver up");
+            LOGGER.info("Starting RabbitMQ AccountEventService...");
+            new AccountFactory().getService();
         } catch (Exception e) {
+            LOGGER.severe("Failed to start RabbitMQ AccountEventService...");
             e.printStackTrace();
         }
     }

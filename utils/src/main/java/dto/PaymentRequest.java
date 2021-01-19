@@ -7,15 +7,18 @@ public class PaymentRequest implements Serializable {
     private String merchantId;
     private int amount;
     private String token;
+    private boolean isRefund;
 
     public PaymentRequest() {
+
     }
 
-    public PaymentRequest(String customerId, String merchantId, int amount, String token) {
+    public PaymentRequest(String customerId, String merchantId, int amount, String token, boolean isRefund) {
         this.customerId = customerId;
         this.merchantId = merchantId;
         this.amount = amount;
         this.token = token;
+        this.isRefund = isRefund;
     }
 
     public String getCustomerId() {
@@ -49,4 +52,24 @@ public class PaymentRequest implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public boolean isRefund() {
+        return isRefund;
+    }
+
+    public void setRefund(boolean refund) {
+        isRefund = refund;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentRequest{" +
+                "customerId='" + customerId + '\'' +
+                ", merchantId='" + merchantId + '\'' +
+                ", amount=" + amount +
+                ", token='" + token + '\'' +
+                ", isRefund=" + isRefund +
+                '}';
+    }
+
 }

@@ -1,9 +1,17 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ */
+
 package cucumber.steps;
 
+import dto.MoneySummary;
 import dto.TransactionDTO;
+import exceptions.transaction.TransactionException;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
 import io.restassured.internal.common.assertion.Assertion;
+import org.junit.After;
 import services.ReportReceiverService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -31,7 +39,7 @@ public class AdminSteps {
     Event event;
     List<TransactionDTO> inputTransactions = new ArrayList<>();
     private final CompletableFuture<List<TransactionDTO>> result = new CompletableFuture<>();
-    private final CompletableFuture<Map<String, BigDecimal>> summary = new CompletableFuture<>();
+    private final CompletableFuture<MoneySummary> summary = new CompletableFuture<>();
     TransactionDTO transaction;
     private Exception e;
 
@@ -42,6 +50,8 @@ public class AdminSteps {
 
     @Given("a list of transactions")
     public void aListOfTransactions(DataTable table) throws Exception {
+        rs.getRepo().dropEverything();
+        inputTransactions = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             TransactionDTO transaction = new TransactionDTO();
             transaction.setAmount(new BigDecimal((String) row.get("amount")));
@@ -81,7 +91,7 @@ public class AdminSteps {
 
     @Then("a summary is made based on the transactions")
     public void aSummaryIsMadeBasedOnTheTransactions(DataTable table) {
-        Assertions.assertEquals(table.asMaps(String.class, BigDecimal.class).get(0), summary.join());
+        Assertions.assertEquals(table.asMaps(String.class, BigDecimal.class).get(0), summary.join().getSummary());
     }
 
     @Then("an event {string} has been sent")
@@ -90,17 +100,18 @@ public class AdminSteps {
     }
 
     @When("an event {string} has been sent back")
-    public void anEventHasBeenSentBack(String eventType) throws Exception {
+    public void anEventHasBeenSentBack(String eventType) {
         rr.receiveEvent(new Event(eventType, new Object[] {inputTransactions}));
     }
 
     @When("a new broken transaction is recorded")
-    public void aNewBrokenTransactionIsRecorded() throws Exception {
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
+    public void aNewBrokenTransactionIsRecorded() {
+        rs.getRepo().dropEverything();
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
         transaction.setAmount(null);
         try {
-            tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+            tss.receiveEvent(new Event("PaymentSuccessful", new Object[] {transaction}));
         } catch (Exception e) {
             this.e = e;
         }
@@ -113,9 +124,10 @@ public class AdminSteps {
 
     @When("the transaction is recorded")
     public void theTransactionIsRecorded() throws Exception {
-        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date());
+        rs.getRepo().dropEverything();
+        transaction = new TransactionDTO(new BigDecimal(100), new BigDecimal(1000), "1234", "2345", "thistest", new Date(), false);
         transaction.setToken("1234");
-        tss.receiveEvent(new Event("TransactionSuccessful", new Object[] {transaction}));
+        tss.receiveEvent(new Event("PaymentSuccessful", new Object[] {transaction}));
     }
 
     @Then("a {string} is sent")

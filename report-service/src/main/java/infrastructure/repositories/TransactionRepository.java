@@ -1,39 +1,42 @@
+/**
+ * @primary-author Tobias (s173899)
+ * @co-author Emil (s174265)
+ *
+ * Repository for transactions
+ */
+
 package infrastructure.repositories;
 
+import dto.AccountInformation;
+import dto.Transaction;
 import dto.TransactionDTO;
 import exceptions.transaction.TransactionException;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
-@Singleton
 public class TransactionRepository implements ITransactionRepository {
 
-    private final List<TransactionDTO> transactions;
+    private List<TransactionDTO> transactions;
 
-    public TransactionRepository() {
+    private static TransactionRepository instance = null;
+
+    private TransactionRepository() {
         transactions = new ArrayList<>();
     }
 
-    @Override
-    public void add(TransactionDTO obj) {
-        transactions.add(obj);
+    public static TransactionRepository getInstance() {
+        if (instance == null)
+            instance = new TransactionRepository();
+        return instance;
     }
 
     @Override
-    public TransactionDTO get(String tokenId) throws TransactionException {
-        TransactionDTO transaction = transactions.stream()
-                .filter(obj -> obj.getToken().equals(tokenId))
-                .findAny()
-                .orElse(null);
-
-        if (transaction == null) {
-            throw new TransactionException("Transactions with tokenid " + tokenId + " was not found");
+    public void add(TransactionDTO obj) throws TransactionException {
+        if (obj.getCreditor() != null || obj.getDebtor() != null || obj.getAmount() != null) {
+            transactions.add(obj);
         }
-
-        return transaction;
     }
 
     @Override
@@ -42,14 +45,10 @@ public class TransactionRepository implements ITransactionRepository {
     }
 
     @Override
-    public void update(TransactionDTO transaction) throws TransactionException {
-        delete(transaction.getToken());
-        add(transaction);
+    public void dropEverything() {
+        transactions = new ArrayList<>();
     }
 
-    @Override
-    public void delete(String tokenId) throws TransactionException {
-        transactions.remove(get(tokenId));
-    }
+
 
 }

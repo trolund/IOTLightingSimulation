@@ -1,7 +1,8 @@
 package infrastructure.token.interfaces;
 
 /**
- * @author Troels (s161791)
+ * @primary-author Troels (s161791)
+ * @co-author Daniel (s151641)
  */
 public interface ITokenService {
     String getToken();

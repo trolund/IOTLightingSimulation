@@ -10,6 +10,7 @@ public class MockBank implements BankService {
 
     private List<Account> accounts;
     private List<Transaction> transactions;
+    public boolean haveBeenNotified = false;
 
     public MockBank() {
         accounts = new ArrayList<>();
@@ -67,7 +68,10 @@ public class MockBank implements BankService {
 
     @Override
     public void transferMoneyFromTo(String debtor, String creditor, BigDecimal amount, String description) throws BankServiceException_Exception {
-
+        haveBeenNotified = true;
+        if(amount.equals(new BigDecimal(-1))){
+                throw new BankServiceException_Exception("fail", new BankServiceException());
+        }
     }
 
 }

@@ -51,4 +51,15 @@ public class UserRegistrationDTO implements Serializable {
     public void setBankAccount(BankRegistrationDTO bankAccount) {
         this.bankAccount = bankAccount;
     }
+
+    @Override
+    public String toString() {
+        return "UserRegistrationDTO{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", cprNumber='" + cprNumber + '\'' +
+                ", bankAccount=" + bankAccount +
+                '}';
+    }
+
 }

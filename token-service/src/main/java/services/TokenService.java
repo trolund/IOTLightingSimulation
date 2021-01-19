@@ -1,9 +1,18 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ *
+ *  Main service for token, handles business logic
+ */
+
 package services;
 
 import dto.CustomerTokens;
 import dto.Token;
-import exceptions.*;
-import exceptions.token.InvalidTokenException;
+import exceptions.CustomerHasNoTokensException;
+import exceptions.CustomerNotFoundException;
+import exceptions.TokenNotFoundException;
+import exceptions.TooManyTokensException;
 import infrastructure.repositories.CustomerTokensRepository;
 import org.jboss.logmanager.Level;
 import services.interfaces.ITokenService;
@@ -27,7 +36,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public String requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException, CustomerAlreadyRegisteredException {
+    public String requestTokens(String customerId, int amount) throws CustomerNotFoundException, TooManyTokensException {
         logger.log(Level.SEVERE, "REQUEST TOKENS: CustomerId: " + customerId + ", amount: " + amount);
 
         if (!customerExists(customerId)) {
@@ -58,7 +67,7 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Token validateToken(String tokenId) throws TokenNotFoundException, InvalidTokenException {
+    public Token validateToken(String tokenId) throws TokenNotFoundException {
         return validateTokenLogic(tokenId, repo.getCustomerWithTokenId(tokenId));
     }
 
@@ -109,7 +118,7 @@ public class TokenService implements ITokenService {
     }
 
     private String generateTokenId() {
-        return String.valueOf(Math.random() * 8100352);
+        return String.valueOf(Math.random() * 6972593);
     }
 
     private List<Token> generateTokens(Integer amount) {
@@ -120,7 +129,7 @@ public class TokenService implements ITokenService {
         return newTokens;
     }
 
-    private Token validateTokenLogic(String tokenId, CustomerTokens customerTokens) throws InvalidTokenException {
+    private Token validateTokenLogic(String tokenId, CustomerTokens customerTokens) {
 
         StringBuilder sb = new StringBuilder();
         for (Token token : customerTokens.getTokens()) {
@@ -133,11 +142,6 @@ public class TokenService implements ITokenService {
                 .filter(obj -> obj.getId().equals(tokenId))
                 .findAny()
                 .orElse(null);
-
-        if (token == null) {
-            logger.log(Level.SEVERE, "TOKEN IS NULL! throwing invalid-token-exception");
-            throw new InvalidTokenException(tokenId);
-        }
 
         customerTokens.getTokens().removeIf(obj -> obj.getId().equals(tokenId));
 

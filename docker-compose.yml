@@ -15,6 +15,20 @@ services:
         interval: 30s
         timeout: 10s
         retries: 5
+  rest:
+    image: rest:0.1
+    container_name: rest
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.rest
+    restart: on-failure
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    links: 
+      - rabbitmq
+    ports:
+      - "8080:8080"
   payment:
     image: payment:0.1
     container_name: payment
@@ -27,8 +41,8 @@ services:
         condition: service_healthy
     links: 
       - rabbitmq
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
   token:
     image: token:0.1
     container_name: token
@@ -71,19 +85,21 @@ services:
       - rabbitmq
     ports:
       - "8083:8083"
-  client:
-    image: client:0.1
-    container_name: client
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.client
-    depends_on:
-      - token
-      - payment
-      - account
-      - report
-    links:
-     - token
-     - payment
-     - account
-     - report
+  # client:
+  #   image: client:0.1
+  #   container_name: client
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile.client
+  #   depends_on:
+  #     - rest
+  #     - token
+  #     - payment
+  #     - account
+  #     - report
+  #   links:
+  #    - rest
+  #    - token
+  #    - payment
+  #    - account
+  #    - report

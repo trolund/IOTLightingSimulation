@@ -1,12 +1,17 @@
+/**
+ *  @primary-author Emil (s174265)
+ *  @co-author Tobias (s173899)
+ */
 package interfaces.rest;
 
-import interfaces.TokenReceiver;
-import interfaces.rabbitmq.RabbitMQReceiver;
-import interfaces.rabbitmq.RabbitMQSender;
+import services.TokenEventService;
+import interfaces.rabbitmq.TokenListener;
+import interfaces.rabbitmq.TokenSender;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
+import services.TokenService;
 
 import javax.enterprise.event.Observes;
 import javax.ws.rs.ApplicationPath;
@@ -31,10 +36,10 @@ public class RootApplication extends Application {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
         try {
-            RabbitMQSender sender = new RabbitMQSender();
+            TokenSender sender = new TokenSender();
             sender.initConnection();
-            TokenReceiver tokenReceiver = new TokenReceiver(sender);
-            RabbitMQReceiver receiver = new RabbitMQReceiver(tokenReceiver);
+            TokenEventService tokenEventService = new TokenEventService(sender, new TokenService());
+            TokenListener receiver = new TokenListener(tokenEventService);
             receiver.initConnection();
             LOGGER.log(Level.INFO, "RabbitMQ initConnection() started successfully.");
         } catch (Exception e) {

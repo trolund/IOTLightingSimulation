@@ -10,10 +10,23 @@ import java.util.List;
 @ApplicationScoped
 public class AccountRepository implements IAccountRepository {
 
+    private static AccountRepository instance = null;
+
     private final List<AccountInformation> accountInformations;
 
-    public AccountRepository() {
+    private AccountRepository() {
         accountInformations = new ArrayList<>();
+    }
+
+    public static AccountRepository getInstance() {
+        if (instance == null)
+            instance = new AccountRepository();
+        return instance;
+    }
+
+    @Override
+    public void clear() {
+        accountInformations.clear();
     }
 
     @Override
