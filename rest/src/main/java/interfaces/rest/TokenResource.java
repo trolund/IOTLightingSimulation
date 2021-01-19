@@ -1,6 +1,7 @@
 package interfaces.rest;
 
 import dto.Token;
+import dto.TokenRequest;
 import exceptions.EventFailedException;
 import exceptions.SendEventFailedException;
 import infrastructure.rabbitmq.token.TokenFactory;
@@ -23,10 +24,9 @@ public class TokenResource {
 
     @Tag(ref = "requestTokens")
     @POST
-    public Response requestTokens(@QueryParam("id") String id,
-                                  @QueryParam("amount") int amount) {
+    public Response requestTokens(TokenRequest model) {
         try {
-            service.sendRequestTokensEvent(id, amount);
+            service.sendRequestTokensEvent(model.getId(), model.getAmount());
             return Response.ok().build();
         } catch (SendEventFailedException e) {
             throw new InternalServerErrorException(e.getMessage());

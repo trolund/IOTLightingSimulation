@@ -1,9 +1,6 @@
 package com.client;
 
-import dto.PaymentRequest;
-import dto.Token;
-import dto.UserAccountDTO;
-import dto.UserRegistrationDTO;
+import dto.*;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -104,11 +101,13 @@ public class DTUPayClient {
     }
 
     public boolean requestTokens(String id, int amount) {
+        TokenRequest request = new TokenRequest();
+        request.setAmount(amount);
+        request.setId(id);
+
         Response r = baseUrl.path("token")
-                .queryParam("id", id)
-                .queryParam("amount", amount)
                 .request()
-                .post(null);
+                .post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
         return r.getStatus() == Response.Status.OK.getStatusCode();
     }
 
