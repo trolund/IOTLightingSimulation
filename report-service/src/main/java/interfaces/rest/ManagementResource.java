@@ -62,7 +62,7 @@ public class ManagementResource {
     }
 
     private Date fixDate(String date) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
         return sdf.parse(date);
     }
 
