@@ -40,7 +40,7 @@ public class ReportClient {
         String startDateStr = formatter.format(startDate);
         String endDateStr = formatter.format(endDate);
 
-        Response r = baseUrl.path("management/report/costumer/" + id)
+        Response r = baseUrl.path("management/report/customer/" + id)
                 .queryParam("start", startDateStr)
                 .queryParam("end", endDateStr)
                 .request()
