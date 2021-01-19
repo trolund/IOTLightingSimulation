@@ -62,7 +62,7 @@ public class ManagementResource {
     }
 
     private Date fixDate(String date) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
         return sdf.parse(date);
     }
 
@@ -82,9 +82,9 @@ public class ManagementResource {
             return Response.status(400).entity(e.getMessage()).build();
         }
         if(customer) {
-            return Response.ok().entity(service.customerReport(id, new Date(), endDateFixed)).build();
+            return Response.ok().entity(service.customerReport(id, new Date(0), endDateFixed)).build();
         } else {
-            return Response.ok().entity(service.merchantReport(id, new Date(), endDateFixed)).build();
+            return Response.ok().entity(service.merchantReport(id, new Date(0), endDateFixed)).build();
         }
     }
 
