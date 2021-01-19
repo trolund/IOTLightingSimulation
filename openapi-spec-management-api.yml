@@ -11,12 +11,12 @@ paths:
       responses:
         "200":
           description: OK
-  /api/v1/management/report/costumer/{costumerId}:
+  /api/v1/management/report/customer/{customerId}:
     get:
       tags:
       - Get costumer report for a given period
       parameters:
-      - name: costumerId
+      - name: customerId
         in: path
         required: true
         schema:

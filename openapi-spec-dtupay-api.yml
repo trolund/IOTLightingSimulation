@@ -102,16 +102,11 @@ paths:
     post:
       tags:
       - requestTokens
-      parameters:
-      - name: amount
-        in: query
-        schema:
-          format: int32
-          type: integer
-      - name: id
-        in: query
-        schema:
-          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
       responses:
         "200":
           description: OK
@@ -157,6 +152,14 @@ components:
         firstName:
           type: string
         lastName:
+          type: string
+    TokenRequest:
+      type: object
+      properties:
+        amount:
+          format: int32
+          type: integer
+        id:
           type: string
     PaymentRequest:
       type: object
