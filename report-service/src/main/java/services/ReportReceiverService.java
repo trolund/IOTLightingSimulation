@@ -14,9 +14,8 @@ import messaging.EventReceiver;
 import messaging.EventSender;
 import services.interfaces.IReportService;
 
-import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ReportReceiverService implements EventReceiver {
 
@@ -40,7 +39,7 @@ public class ReportReceiverService implements EventReceiver {
         return rs.customerReport(customerId);
     }
 
-    public List<TransactionDTO> requestAllCustomerTransactionsBetween(String customerId, String beg, String end) throws Exception {
+    public List<TransactionDTO> requestAllCustomerTransactionsBetween(String customerId, Date beg, Date end) throws Exception {
         return rs.customerReport(customerId, beg, end);
     }
 
@@ -48,7 +47,7 @@ public class ReportReceiverService implements EventReceiver {
         return rs.merchantReport(merchantId);
     }
 
-    public List<TransactionDTO> requestAllMerchantTransactionsBetween(String merchantId, String beg, String end) throws Exception {
+    public List<TransactionDTO> requestAllMerchantTransactionsBetween(String merchantId, Date beg, Date end) throws Exception {
         return rs.merchantReport(merchantId, beg, end);
     }
 

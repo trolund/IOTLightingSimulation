@@ -14,7 +14,6 @@ import infrastructure.repositories.TransactionRepository;
 import infrastructure.repositories.interfaces.ITransactionRepository;
 import services.interfaces.IReportService;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,9 +33,9 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TransactionDTO> customerReport(String customerId, String start, String end) throws DatatypeConfigurationException, ParseException {
+    public List<TransactionDTO> customerReport(String customerId, Date startDate, Date endDate) {
         List<TransactionDTO> list = repo.getAll();
-        return requestAllCustomerTransactionsBetween(list, customerId, start, end);
+        return requestAllCustomerTransactionsBetween(list, customerId, startDate, endDate);
     }
 
     @Override
@@ -46,9 +45,9 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TransactionDTO> merchantReport(String merchantId, String start, String end) throws DatatypeConfigurationException, ParseException {
+    public List<TransactionDTO> merchantReport(String merchantId, Date startDate, Date endDate) {
         List<TransactionDTO> list = repo.getAll();
-        return requestAllMerchantTransactionsBetween(list, merchantId, start, end);
+        return requestAllMerchantTransactionsBetween(list, merchantId, startDate, endDate);
     }
 
     @Override
@@ -89,13 +88,10 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, String beg, String end) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
+    public List<TransactionDTO> requestAllCustomerTransactionsBetween(List<TransactionDTO> transactions, String customerId, Date beg, Date end) {
 
-        Date startDate = formatter.parse(beg);
-        Date endDate = formatter.parse(end);
         transactions.removeIf(obj -> obj.getTime() == null);
-        transactions.removeIf(obj -> !obj.getDebtor().equals(customerId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
+        transactions.removeIf(obj -> !obj.getDebtor().equals(customerId) || obj.getTime().compareTo(beg) < 0 || obj.getTime().compareTo(end) > 0);
         return transactions;
     }
 
@@ -124,14 +120,10 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, String beg, String end) throws ParseException {
+    public List<TransactionDTO> requestAllMerchantTransactionsBetween(List<TransactionDTO> transactions, String merchantId, Date beg, Date end) {
         List<TransactionDTO> transactionsCopy = deepCopyTransactions(transactions);
-        SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
-
-        Date startDate = formatter.parse(beg);
-        Date endDate = formatter.parse(end);
         transactionsCopy.removeIf(obj -> obj.getTime() == null);
-        transactionsCopy.removeIf(obj -> !obj.getCreditor().equals(merchantId) || obj.getTime().compareTo(startDate) < 0 || obj.getTime().compareTo(endDate) > 0);
+        transactionsCopy.removeIf(obj -> !obj.getCreditor().equals(merchantId) || obj.getTime().compareTo(beg) < 0 || obj.getTime().compareTo(end) > 0);
 
         for (TransactionDTO transaction : transactionsCopy) {
             transaction.setDebtor(null);

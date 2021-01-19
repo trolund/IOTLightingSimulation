@@ -103,7 +103,7 @@ public class CustomerReportSteps {
         XMLGregorianCalendar begTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(beg);
         XMLGregorianCalendar endTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(end);
         new Thread(() -> {try {
-            result.complete(rr.requestAllCustomerTransactionsBetween(customerId, timeFormat(begTime.toGregorianCalendar().getTime()), timeFormat(endTime.toGregorianCalendar().getTime())));
+            result.complete(rr.requestAllCustomerTransactionsBetween(customerId, begTime.toGregorianCalendar().getTime(), endTime.toGregorianCalendar().getTime()));
         } catch (Exception e) {
             throw new Error(e);
         }}).start();

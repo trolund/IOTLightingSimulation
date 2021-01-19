@@ -78,7 +78,7 @@ public class MerchantReportSteps {
         XMLGregorianCalendar begTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(beg);
         XMLGregorianCalendar endTime = DatatypeFactory.newInstance().newXMLGregorianCalendar(end);
         new Thread(() -> {try {
-            result.complete(rr.requestAllMerchantTransactionsBetween(merchantId, timeFormat(begTime.toGregorianCalendar().getTime()), timeFormat(endTime.toGregorianCalendar().getTime())));
+            result.complete(rr.requestAllMerchantTransactionsBetween(merchantId, begTime.toGregorianCalendar().getTime(), endTime.toGregorianCalendar().getTime()));
         } catch (Exception e) {
             throw new Error(e);
         }}).start();
@@ -98,10 +98,5 @@ public class MerchantReportSteps {
             outputTransactions.add(transaction);
         }
         Assertions.assertEquals(outputTransactions.toString(), result.join().toString());
-    }
-
-    public String timeFormat(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy HH:mm:ss");
-        return formatter.format(date);
     }
 }
