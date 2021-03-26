@@ -23,7 +23,13 @@ public class EventService implements IEventReceiver {
         }
     }
 
-
+    public void sendMyGroups(){
+        try {
+            eventSender.sendEvent(new Event("MyGroups", new Object[]{lamp.getGroups()}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void receiveEvent(Event eventIn) throws Exception {
@@ -51,6 +57,9 @@ public class EventService implements IEventReceiver {
             case "RemoveGroup":
                 modifyGroup(eventIn, false);
                 break;
+            case "GetGroups":
+                sendMyGroups();
+                break;
             default:
               //  System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
                 break;
@@ -58,7 +67,7 @@ public class EventService implements IEventReceiver {
     }
 
     private void modifyGroup(Event eventIn, boolean isAdd) {
-        float lampId = (float) eventIn.getArguments()[0];
+        int lampId = (int) eventIn.getArguments()[0];
         if(lampId == lamp.getId()){
             String name = (String) eventIn.getArguments()[1];
             if(isAdd){

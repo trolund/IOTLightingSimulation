@@ -2,9 +2,9 @@ package lamp;
 
 public class Color {
 
-    private int R;
-    private int G;
-    private int B;
+    private byte R;
+    private byte G;
+    private byte B;
 
     public Color() {
         R = 0;
@@ -12,13 +12,19 @@ public class Color {
         B = 0;
     }
 
-    public Color(int r, int g, int b) {
+    public Color(byte r, byte g, byte b) {
         R = r;
         G = g;
         B = b;
     }
 
-    private void setColor(int r, int g, int b){
+    public Color(int r, int g, int b) {
+        R = Integer.valueOf(r).byteValue();
+        G = Integer.valueOf(g).byteValue();
+        B = Integer.valueOf(b).byteValue();
+    }
+
+    private void setColor(byte r, byte g, byte b){
         R = r;
         G = g;
         B = b;

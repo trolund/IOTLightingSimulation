@@ -8,7 +8,7 @@ public class LampInfo {
     private int id;
     private String name;
     private float intensity;
-    private Color color = new Color();
+    private Color color;
     private List<String> groups = new ArrayList<>();
 
     public LampInfo() {
