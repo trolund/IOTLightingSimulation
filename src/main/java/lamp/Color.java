@@ -2,9 +2,9 @@ package lamp;
 
 public class Color {
 
-    private byte R;
-    private byte G;
-    private byte B;
+    private Byte R;
+    private Byte G;
+    private Byte B;
 
     public Color() {
         R = 0;
@@ -30,4 +30,16 @@ public class Color {
         B = b;
     }
 
+    public int unsignedToBytes(byte b) {
+        return b & 0xFF;
+    }
+
+    @Override
+    public String toString() {
+        return "(" +
+                "R=" + unsignedToBytes(R) +
+                ", G=" + unsignedToBytes(G) +
+                ", B=" + unsignedToBytes(B) +
+                ')';
+    }
 }

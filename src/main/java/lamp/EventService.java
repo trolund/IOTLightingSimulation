@@ -9,10 +9,15 @@ public class EventService implements IEventReceiver {
 
     private final IEventSender eventSender;
     private final Gson gson = new Gson();
-    LampInfo lamp = new LampInfo();
+    private LampInfo lamp = new LampInfo();
 
     public EventService(IEventSender eventSender) {
         this.eventSender = eventSender;
+    }
+
+    public EventService(IEventSender eventSender, LampInfo lamp) {
+        this.eventSender = eventSender;
+        this.lamp = lamp;
     }
 
     public void sendMyInfo(){
@@ -34,28 +39,24 @@ public class EventService implements IEventReceiver {
     @Override
     public void receiveEvent(Event eventIn) throws Exception {
         switch (eventIn.getEventType()) {
-            case "ChangeSettings":
-                int id = (int) eventIn.getArguments()[1];
-                if(id == -1 || id == lamp.getId()){
-                    LampInfo info = (LampInfo) eventIn.getArguments()[1];
-                    lamp = info;
-                }
+            case "AdjustIntensity":
+                String s = (String) eventIn.getArguments()[0];
+                adjustIntensity((int) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
                 break;
-            case "ChangeSettingsGroup":
-                String groupName = (String) eventIn.getArguments()[0];
-                if(lamp.getGroups().contains(groupName)){
-                    LampInfo info = (LampInfo) eventIn.getArguments()[1];
-                    lamp = info;
-                }
+            case "AdjustColor":
+                Color color = gson.fromJson(gson.toJson(eventIn.getArguments()[1]), Color.class);
+                adjustColor((int) eventIn.getArguments()[0], color);
                 break;
             case "GetInfo":
                 sendMyInfo();
                 break;
             case "AddGroup":
-                modifyGroup(eventIn, true);
+                addGroup(((Double) eventIn.getArguments()[0]).intValue(), (String) eventIn.getArguments()[1]);
+                sendMyInfo();
                 break;
             case "RemoveGroup":
-                modifyGroup(eventIn, false);
+                removeGroup(((Double) eventIn.getArguments()[0]).intValue(), (String) eventIn.getArguments()[1]);
+                sendMyInfo();
                 break;
             case "GetGroups":
                 sendMyGroups();
@@ -66,15 +67,27 @@ public class EventService implements IEventReceiver {
         }
     }
 
-    private void modifyGroup(Event eventIn, boolean isAdd) {
-        int lampId = (int) eventIn.getArguments()[0];
-        if(lampId == lamp.getId()){
-            String name = (String) eventIn.getArguments()[1];
-            if(isAdd){
-                lamp.addToGroup(name);
-            }else {
-                lamp.removeToGroup(name);
-            }
+    private void addGroup(int id, String groupName) {
+        if(id == lamp.getId()){
+            lamp.addToGroup(groupName);
+        }
+    }
+
+    private void adjustIntensity(int id, float intensity){
+        if(id == lamp.getId()){
+            lamp.setIntensity(intensity);
+        }
+    }
+
+    private void adjustColor(int id, Color c){
+        if(id == lamp.getId()){
+            lamp.setColor(c);
+        }
+    }
+
+    private void removeGroup(int id, String groupName){
+        if(id == lamp.getId() && lamp.getGroups().contains(groupName)){
+            lamp.removeToGroup(groupName);
         }
     }
 }

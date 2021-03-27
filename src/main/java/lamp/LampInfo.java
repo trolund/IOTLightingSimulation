@@ -1,7 +1,7 @@
 package lamp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LampInfo {
 
@@ -9,10 +9,10 @@ public class LampInfo {
     private String name;
     private float intensity;
     private Color color;
-    private List<String> groups = new ArrayList<>();
+    private Set<String> groups = new HashSet<>();
 
     public LampInfo() {
-        this.id = (int) Math.floor(Math.random() * Math.floor(100));
+        this.id = (int) Math.floor(Math.random() * Math.floor(1000));
         this.name = "Unknown";
         this.intensity = 100;
         this.color = new Color();
@@ -33,7 +33,7 @@ public class LampInfo {
         groups.remove(groupName);
     }
 
-    public List<String> getGroups() {
+    public Set<String> getGroups() {
         return groups;
     }
 
@@ -71,8 +71,9 @@ public class LampInfo {
 
     @Override
     public String toString() {
-        return "id: " + id + ", name: " + name + '\'' +
+        return "id: " + id + ", name: " + name +
                 ", intensity: " + intensity +
-                ", color: " + color;
+                ", color: " + color +
+                ", groups:" + groups;
     }
 }

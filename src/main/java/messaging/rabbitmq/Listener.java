@@ -7,6 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import messaging.Event;
 import messaging.rabbitmq.interfaces.IEventReceiver;
+import messaging.rabbitmq.interfaces.IEventSender;
 
 public class Listener {
 
@@ -37,9 +38,11 @@ public class Listener {
 			try {
 				service.receiveEvent(event);
 			} catch (Exception e) {
-				throw new Error(e);
+				// throw new Error(e);
+				System.out.println(e.getMessage());
 			}
 		};
+
 		channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
 		});
 	}

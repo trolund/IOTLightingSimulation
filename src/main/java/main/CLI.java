@@ -1,13 +1,14 @@
 package main;
 
 import lamp.Color;
+import lamp.LampInfo;
 import lamp.LampRunner;
 import messaging.IController;
 import messaging.rabbitmq.ControllerFactory;
 
 import java.util.Scanner;
 
-public class main {
+public class CLI {
 
     static IController s = new ControllerFactory().getService();
 
@@ -20,11 +21,7 @@ public class main {
     }
 
     private static void processCommand(String input){
-        if(input.equals("")){
-            return;
-        }
         if(input.contains("new")){
-            String[] i = input.split(" ");
             addLamp();
             return;
         }
@@ -124,6 +121,21 @@ public class main {
         thread.start();
     }
 
+    public static void addLamp(LampInfo lampInfo) throws InterruptedException {
+        // System.out.println("Inside : " + Thread.currentThread().getName());
+
+        // System.out.println("Creating Runnable...");
+        LampRunner runnable = new LampRunner();
+        runnable.setInfo(lampInfo);
+
+        // System.out.println("Creating Thread...");
+        Thread thread = new Thread(runnable);
+
+        // System.out.println("Starting Thread...");
+        thread.start();
+        Thread.sleep(100);
+    }
+
     public static Color parseColor(String c){
         String input = c.substring(1, c.length() -1);
         String[] parts = input.split(",");
@@ -131,8 +143,24 @@ public class main {
     }
 
     public static void addTestLamps(){
-        addLamp();
-        addLamp();
-        addLamp();
+        System.out.println("Adding test lamps");
+        String house = "Hus";
+        LampInfo l1 = new LampInfo("Enhed_1", 50, new Color(200,250,100));
+        l1.addToGroup("Stue");
+        l1.addToGroup(house);
+        LampInfo l2 = new LampInfo("Enhed_2", 100, new Color(200,240,80));
+        l2.addToGroup("Stue");
+        l2.addToGroup(house);
+        LampInfo l3 = new LampInfo("Enhed_3", 75, new Color(210,220,10));
+        l3.addToGroup("Køkken");
+        l3.addToGroup(house);
+
+        try {
+            addLamp(l1);
+            addLamp(l2);
+            addLamp(l3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

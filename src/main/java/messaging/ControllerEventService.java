@@ -1,6 +1,8 @@
 package messaging;
 
+import com.google.gson.Gson;
 import lamp.Color;
+import lamp.LampInfo;
 import messaging.rabbitmq.interfaces.IEventReceiver;
 import messaging.rabbitmq.interfaces.IEventSender;
 
@@ -11,6 +13,7 @@ import java.util.Set;
 public class ControllerEventService implements IEventReceiver, IController {
 
     private final IEventSender eventSender;
+    private final Gson gson = new Gson();
 
     private Set<String> groupsCache = new HashSet<>();
 
@@ -38,7 +41,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void changeName(int id, String name){
         try {
-            eventSender.sendEvent(new Event("changeName", new Object[]{id, name}));
+            eventSender.sendEvent(new Event("ChangeName", new Object[]{id, name}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,7 +49,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void changeGroupName(String groupName, String newName){
         try {
-            eventSender.sendEvent(new Event("changeGroupName", new Object[]{groupName, newName}));
+            eventSender.sendEvent(new Event("ChangeGroupName", new Object[]{groupName, newName}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +73,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void adjustIntensity(String groupName, int intensity){
         try {
-            eventSender.sendEvent(new Event("adjustIntensity", new Object[]{groupName, intensity}));
+            eventSender.sendEvent(new Event("AdjustIntensity", new Object[]{groupName, intensity}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +81,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void adjustColor(String groupName, Color color){
         try {
-            eventSender.sendEvent(new Event("adjustColor", new Object[]{groupName, color}));
+            eventSender.sendEvent(new Event("AdjustColor", new Object[]{groupName, color}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +89,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void adjustIntensity(int id, int intensity){
         try {
-            eventSender.sendEvent(new Event("adjustIntensity", new Object[]{id, intensity}));
+            eventSender.sendEvent(new Event("AdjustIntensity", new Object[]{id, intensity}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,7 +97,7 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void adjustColor(int id, Color color){
         try {
-            eventSender.sendEvent(new Event("adjustColor", new Object[]{id, color}));
+            eventSender.sendEvent(new Event("AdjustColor", new Object[]{id, color}));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,12 +107,16 @@ public class ControllerEventService implements IEventReceiver, IController {
     public void receiveEvent(Event eventIn) throws Exception {
         switch (eventIn.getEventType()) {
             case "Info":
-                System.out.println(eventIn.getArguments()[0].toString());
+                LampInfo info = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), LampInfo.class);
+                System.out.println(info.toString());
               break;
             case "MyGroups":
                 List<String> groups = (List<String>) eventIn.getArguments()[0];
                 groupsCache.addAll(groups);
                 System.out.println(groups);
+            case "Error":
+                String msg = (String) eventIn.getArguments()[0];
+                System.err.println(msg);
             default:
                 // System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
                 break;
