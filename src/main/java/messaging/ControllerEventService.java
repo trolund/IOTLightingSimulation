@@ -39,6 +39,14 @@ public class ControllerEventService implements IEventReceiver, IController {
         }
     }
 
+    public void setOn(int id, boolean isOn){
+        try {
+            eventSender.sendEvent(new Event("SetIsOn", new Object[]{id, isOn}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void changeName(int id, String name){
         try {
             eventSender.sendEvent(new Event("ChangeName", new Object[]{id, name}));

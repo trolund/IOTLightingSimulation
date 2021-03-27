@@ -29,6 +29,13 @@ public class CLI {
             s.getAllLampInfo();
             return;
         }
+        if(input.contains("on")){
+            String[] parts = input.split(" ");
+            int id = Integer.parseInt(parts[1]);
+            boolean isOn = Boolean.parseBoolean(parts[2]);
+            s.setOn(id, isOn);
+            return;
+        }
         if(input.contains("groups")){
             s.getAllGroups();
             return;
@@ -145,13 +152,13 @@ public class CLI {
     public static void addTestLamps(){
         System.out.println("Adding test lamps");
         String house = "Hus";
-        LampInfo l1 = new LampInfo("Enhed_1", 50, new Color(200,250,100));
+        LampInfo l1 = new LampInfo(1, "Enhed_1", 50, new Color(200,250,100));
         l1.addToGroup("Stue");
         l1.addToGroup(house);
-        LampInfo l2 = new LampInfo("Enhed_2", 100, new Color(200,240,80));
+        LampInfo l2 = new LampInfo(2, "Enhed_2", 100, new Color(200,240,80));
         l2.addToGroup("Stue");
         l2.addToGroup(house);
-        LampInfo l3 = new LampInfo("Enhed_3", 75, new Color(210,220,10));
+        LampInfo l3 = new LampInfo(3, "Enhed_3", 75, new Color(210,220,10));
         l3.addToGroup("Køkken");
         l3.addToGroup(house);
 

@@ -7,7 +7,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import messaging.Event;
 import messaging.rabbitmq.interfaces.IEventReceiver;
-import messaging.rabbitmq.interfaces.IEventSender;
 
 public class Listener {
 
@@ -33,13 +32,12 @@ public class Listener {
 		DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 			String message = new String(delivery.getBody(), "UTF-8");
 		//	System.out.println("[x] receiving "+message);
-
 			Event event = new Gson().fromJson(message, Event.class);
 			try {
 				service.receiveEvent(event);
 			} catch (Exception e) {
 				// throw new Error(e);
-				System.out.println(e.getMessage());
+				System.out.println("Lamp error: " + e.getMessage());
 			}
 		};
 

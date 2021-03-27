@@ -14,5 +14,6 @@ public interface IController {
     void adjustColor(String groupName, Color color);
     void adjustIntensity(int id, int intensity);
     void adjustColor(int id, Color color);
+    void setOn(int id, boolean isOn);
 
 }

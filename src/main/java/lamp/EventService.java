@@ -40,12 +40,24 @@ public class EventService implements IEventReceiver {
     public void receiveEvent(Event eventIn) throws Exception {
         switch (eventIn.getEventType()) {
             case "AdjustIntensity":
-                String s = (String) eventIn.getArguments()[0];
-                adjustIntensity((int) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
+                if(eventIn.getArguments()[0] instanceof Double){
+                    adjustIntensity((int) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
+                }else {
+                    adjustIntensity((String) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
+                }
                 break;
             case "AdjustColor":
                 Color color = gson.fromJson(gson.toJson(eventIn.getArguments()[1]), Color.class);
-                adjustColor((int) eventIn.getArguments()[0], color);
+                if(eventIn.getArguments()[0] instanceof Double){
+                    adjustColor((int) eventIn.getArguments()[0], color);
+                }else {
+                    adjustColor((String) eventIn.getArguments()[0], color);
+                }
+                break;
+            case "SetIsOn":
+                boolean b = (Boolean) eventIn.getArguments()[1];
+                setOn(((Double) eventIn.getArguments()[0]).intValue(), b);
+                sendMyInfo();
                 break;
             case "GetInfo":
                 sendMyInfo();
@@ -62,8 +74,14 @@ public class EventService implements IEventReceiver {
                 sendMyGroups();
                 break;
             default:
-              //  System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
+              // System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
                 break;
+        }
+    }
+
+    private void setOn(int id, boolean isOn){
+        if(id == lamp.getId()){
+            lamp.setOn(isOn);
         }
     }
 
@@ -79,8 +97,20 @@ public class EventService implements IEventReceiver {
         }
     }
 
+    private void adjustIntensity(String groupName, float intensity){
+        if(lamp.getGroups().contains(groupName)){
+            lamp.setIntensity(intensity);
+        }
+    }
+
     private void adjustColor(int id, Color c){
         if(id == lamp.getId()){
+            lamp.setColor(c);
+        }
+    }
+
+    private void adjustColor(String groupName, Color c){
+        if(lamp.getGroups().contains(groupName)){
             lamp.setColor(c);
         }
     }

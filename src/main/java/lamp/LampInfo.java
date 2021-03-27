@@ -9,13 +9,21 @@ public class LampInfo {
     private String name;
     private float intensity;
     private Color color;
+    private boolean isOn = false;
     private Set<String> groups = new HashSet<>();
 
     public LampInfo() {
         this.id = (int) Math.floor(Math.random() * Math.floor(1000));
-        this.name = "Unknown";
+        this.name = "Unknown device";
         this.intensity = 100;
-        this.color = new Color();
+        this.color = new Color(255,255,255);
+    }
+
+    public LampInfo(int id, String name, float intensity, Color color) {
+        this.id = id;
+        this.name = name;
+        this.intensity = intensity;
+        this.color = color;
     }
 
     public LampInfo(String name, float intensity, Color color) {
@@ -23,6 +31,14 @@ public class LampInfo {
         this.name = name;
         this.intensity = intensity;
         this.color = color;
+    }
+
+    public boolean isOn() {
+        return isOn;
+    }
+
+    public void setOn(boolean on) {
+        isOn = on;
     }
 
     public void addToGroup(String groupName){
@@ -72,8 +88,11 @@ public class LampInfo {
     @Override
     public String toString() {
         return "id: " + id + ", name: " + name +
+                ", isOn: " + (isOn ? "ON" : "OFF") +
                 ", intensity: " + intensity +
                 ", color: " + color +
                 ", groups:" + groups;
     }
+
+
 }
