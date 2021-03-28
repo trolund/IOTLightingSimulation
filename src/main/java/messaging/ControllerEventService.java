@@ -1,7 +1,6 @@
 package messaging;
 
 import com.google.gson.Gson;
-import io.cucumber.java.en.Then;
 import lamp.Color;
 import lamp.LampInfo;
 import messaging.rabbitmq.interfaces.IEventReceiver;
@@ -166,7 +165,7 @@ public class ControllerEventService implements IEventReceiver, IController {
                 System.out.println(groups);
             case "Error":
                 String msg = (String) eventIn.getArguments()[0];
-                System.err.println(msg);
+                // System.err.println(msg);
             default:
                 // System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
                 break;

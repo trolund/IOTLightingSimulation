@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PaymentEventsSteps {
+public class TurnOnAndOffEventsSteps {
 
     ControllerEventService service;
     ControlService helper;
@@ -27,7 +27,7 @@ public class PaymentEventsSteps {
     Event event;
 
 
-    public PaymentEventsSteps() {
+    public TurnOnAndOffEventsSteps() {
         service = new ControllerFactory().getService();
         helper = new ControlService();
         lamps = new ArrayList<>();

@@ -1,4 +1,4 @@
-Feature: add new
+Feature: Turn ON and OFF lamps
 
   Background: Lamp have been connected
     Given a list of test devices
