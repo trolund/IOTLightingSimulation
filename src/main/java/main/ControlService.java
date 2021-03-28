@@ -6,6 +6,8 @@ import lamp.LampRunner;
 import messaging.IController;
 import messaging.rabbitmq.ControllerFactory;
 
+import java.util.List;
+
 public class ControlService {
 
     static IController s = new ControllerFactory().getService();
@@ -68,8 +70,8 @@ public class ControlService {
         s.setOn(id, isOn);
     }
 
-    public void all(String input){
-        s.getAllLampInfo();
+    public List<LampInfo> all(){
+        return s.getAllLampInfo();
     }
 
     public void getAllGroups(){

@@ -1,10 +1,13 @@
 package messaging;
 
 import lamp.Color;
+import lamp.LampInfo;
+
+import java.util.List;
 
 public interface IController {
 
-    void getAllLampInfo();
+    List<LampInfo> getAllLampInfo();
     void getAllGroups();
     void changeName(int id, String name);
     void changeGroupName(String groupName, String newName);

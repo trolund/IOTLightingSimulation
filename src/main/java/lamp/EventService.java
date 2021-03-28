@@ -73,9 +73,18 @@ public class EventService implements IEventReceiver {
             case "GetGroups":
                 sendMyGroups();
                 break;
+            case "Exit":
+                // only for testing
+                Exit(((Double) eventIn.getArguments()[0]).intValue());
             default:
               // System.out.println("Ignored event with type: " + eventIn.getEventType() + ". Event: " + eventIn.toString());
                 break;
+        }
+    }
+
+    private void Exit(int id){
+        if(id == lamp.getId()){
+            Thread.currentThread().interrupt();
         }
     }
 

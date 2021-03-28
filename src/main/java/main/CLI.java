@@ -1,5 +1,8 @@
 package main;
 
+import lamp.LampInfo;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class CLI {
@@ -20,7 +23,9 @@ public class CLI {
             return;
         }
         if(input.contains("all")){
-            service.all(input);
+            List<LampInfo> res = service.all();
+            System.out.println("All lamps:");
+            System.out.println(res);
             return;
         }
         if(input.contains("on")){

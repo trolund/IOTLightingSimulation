@@ -27,7 +27,7 @@ public class ControllerEventService implements IEventReceiver, IController {
         this.eventSender = eventSender;
     }
 
-    public void getAllLampInfo(){
+    public List<LampInfo> getAllLampInfo(){
         try {
             // clear current view of the lamps
             curLamps = new ArrayList<>();
@@ -39,11 +39,12 @@ public class ControllerEventService implements IEventReceiver, IController {
             eventSender.sendEvent(new Event("GetInfo", new Object[]{}));
 
             // block until all have been received
+            System.out.println("Loading....");
             List<LampInfo> res = lampsResult.join();
-            System.out.println("All lamps:");
-            System.out.println(res);
+            return res;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -124,6 +125,14 @@ public class ControllerEventService implements IEventReceiver, IController {
     public void adjustColor(int id, Color color){
         try {
             eventSender.sendEvent(new Event("AdjustColor", new Object[]{id, color}));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendExit(int id){
+        try {
+            eventSender.sendEvent(new Event("Exit", new Object[]{id}));
         } catch (Exception e) {
             e.printStackTrace();
         }

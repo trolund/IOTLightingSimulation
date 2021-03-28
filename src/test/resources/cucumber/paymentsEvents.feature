@@ -17,6 +17,7 @@ Feature: add new
     Then i turn "ON" all lamps
     Then i lookup all lamps
     And then i check all lamps is know "ON"
+    Then disconnect all devices
 
   Scenario: turn OFF lamp
     Given a list of lamps
@@ -27,3 +28,4 @@ Feature: add new
     Then i turn "OFF" all lamps
     Then i lookup all lamps
     And then i check all lamps is know "OFF"
+    Then disconnect all devices

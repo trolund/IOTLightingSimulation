@@ -1,5 +1,6 @@
 package cucumber;
 
+import cucumber.models.LampID;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -9,7 +10,6 @@ import lamp.LampInfo;
 import main.ControlService;
 import messaging.ControllerEventService;
 import messaging.Event;
-import messaging.IController;
 import messaging.rabbitmq.ControllerFactory;
 
 import java.util.ArrayList;
@@ -20,14 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PaymentEventsSteps {
 
-    ControllerEventService s;
+    ControllerEventService service;
     ControlService helper;
     List<LampInfo> lamps;
+    List<LampID> ids;
     Event event;
 
 
     public PaymentEventsSteps() {
-        s = new ControllerFactory().getService();
+        service = new ControllerFactory().getService();
         helper = new ControlService();
         lamps = new ArrayList<>();
     }
@@ -59,16 +60,16 @@ public class PaymentEventsSteps {
 
     @Then("i lookup all lamps")
     public void lookup(){
-
+        lamps = helper.all();
     }
 
     @Given("a list of lamps")
     public void listOfLamps(DataTable table){
+        ids = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             int id = Integer.parseInt((String) row.get("id"));
             String name = (String) row.get("name");
-
-
+            ids.add(new LampID(id, name));
         }
     }
 
@@ -76,12 +77,36 @@ public class PaymentEventsSteps {
     public void turnAll(String s){
         boolean isOn = s.equals("ON");
 
+        // send event for all lamps
+        for (LampID l: ids) {
+            service.setOn(l.getId(), isOn);
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @And("then i check all lamps is know {string}")
     public void checkTurnAll(String s){
         boolean isOn = s.equals("ON");
+        boolean res = lamps.stream().allMatch(l -> l.isOn() == isOn);
+        lamps = new ArrayList<>();
+        assertTrue(res);
+    }
 
+    @Then("disconnect all devices")
+    public void exit(){
+        for (LampID l: ids) {
+            service.sendExit(l.getId());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
