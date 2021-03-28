@@ -26,6 +26,14 @@ public class LampInfo {
         this.color = color;
     }
 
+    public LampInfo(int id, String name, float intensity, Color color, boolean isOn) {
+        this.id = id;
+        this.name = name;
+        this.intensity = intensity;
+        this.color = color;
+        this.isOn = isOn;
+    }
+
     public LampInfo(String name, float intensity, Color color) {
         this.id = (int) Math.floor(Math.random() * Math.floor(100));
         this.name = name;

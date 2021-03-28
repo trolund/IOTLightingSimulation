@@ -1,21 +1,27 @@
 package messaging;
 
 import com.google.gson.Gson;
+import io.cucumber.java.en.Then;
 import lamp.Color;
 import lamp.LampInfo;
 import messaging.rabbitmq.interfaces.IEventReceiver;
 import messaging.rabbitmq.interfaces.IEventSender;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class ControllerEventService implements IEventReceiver, IController {
 
     private final IEventSender eventSender;
     private final Gson gson = new Gson();
 
+    private CompletableFuture<List<LampInfo>> lampsResult;
+
     private Set<String> groupsCache = new HashSet<>();
+    private List<LampInfo> curLamps = new ArrayList<>();
 
     public ControllerEventService(IEventSender eventSender) {
         this.eventSender = eventSender;
@@ -23,8 +29,19 @@ public class ControllerEventService implements IEventReceiver, IController {
 
     public void getAllLampInfo(){
         try {
-            System.out.println("All lamps:");
+            // clear current view of the lamps
+            curLamps = new ArrayList<>();
+
+            // create new CompletableFuture to wait for the result
+            lampsResult = new CompletableFuture();
+
+            // send event to all devices
             eventSender.sendEvent(new Event("GetInfo", new Object[]{}));
+
+            // block until all have been received
+            List<LampInfo> res = lampsResult.join();
+            System.out.println("All lamps:");
+            System.out.println(res);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,6 +51,7 @@ public class ControllerEventService implements IEventReceiver, IController {
         try {
             System.out.println("All groups:");
             eventSender.sendEvent(new Event("GetGroups", new Object[]{}));
+            //lampsResult.complete(curLamps);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,7 +134,22 @@ public class ControllerEventService implements IEventReceiver, IController {
         switch (eventIn.getEventType()) {
             case "Info":
                 LampInfo info = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), LampInfo.class);
-                System.out.println(info.toString());
+                curLamps.add(info);
+                // System.out.println(info.toString());
+
+                // wait for the devices to send there info.
+                if(!lampsResult.isDone()){
+                    Thread newThread = new Thread(() -> {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        lampsResult.complete(curLamps);
+                    });
+                    newThread.start();
+                }
+
               break;
             case "MyGroups":
                 List<String> groups = (List<String>) eventIn.getArguments()[0];

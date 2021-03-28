@@ -41,15 +41,15 @@ public class EventService implements IEventReceiver {
         switch (eventIn.getEventType()) {
             case "AdjustIntensity":
                 if(eventIn.getArguments()[0] instanceof Double){
-                    adjustIntensity((int) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
+                    adjustIntensity(((Double) eventIn.getArguments()[0]).intValue(), ((Double) eventIn.getArguments()[1]).intValue());
                 }else {
-                    adjustIntensity((String) eventIn.getArguments()[0], (float) eventIn.getArguments()[1]);
+                    adjustIntensity((String) eventIn.getArguments()[0], ((Double) eventIn.getArguments()[1]).intValue());
                 }
                 break;
             case "AdjustColor":
                 Color color = gson.fromJson(gson.toJson(eventIn.getArguments()[1]), Color.class);
                 if(eventIn.getArguments()[0] instanceof Double){
-                    adjustColor((int) eventIn.getArguments()[0], color);
+                    adjustColor(((Double) eventIn.getArguments()[0]).intValue(), color);
                 }else {
                     adjustColor((String) eventIn.getArguments()[0], color);
                 }

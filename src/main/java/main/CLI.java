@@ -1,16 +1,10 @@
 package main;
 
-import lamp.Color;
-import lamp.LampInfo;
-import lamp.LampRunner;
-import messaging.IController;
-import messaging.rabbitmq.ControllerFactory;
-
 import java.util.Scanner;
 
 public class CLI {
 
-    static IController s = new ControllerFactory().getService();
+    static ControlService service = new ControlService();
 
     public static void main(String[] args) {
         run();
@@ -22,81 +16,54 @@ public class CLI {
 
     private static void processCommand(String input){
         if(input.contains("new")){
-            addLamp();
+            service.runLamp();
             return;
         }
         if(input.contains("all")){
-            s.getAllLampInfo();
+            service.all(input);
             return;
         }
         if(input.contains("on")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[1]);
-            boolean isOn = Boolean.parseBoolean(parts[2]);
-            s.setOn(id, isOn);
+            service.on(input);
             return;
         }
         if(input.contains("groups")){
-            s.getAllGroups();
+            service.getAllGroups();
             return;
         }
         if(input.contains("add-group")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[1]);
-            String groupName = parts[2];
-            s.addToGroup(id, groupName);
+            service.addGroup(input);
             return;
         }
         if(input.contains("remove-group")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[1]);
-            String groupName = parts[2];
-            s.removeFromGroup(id, groupName);
+            service.removeGroup(input);
             return;
         }
         if(input.contains("adjust-color")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[1]);
-            String color = parts[2];
-            Color c = parseColor(color);
-            s.adjustColor(id, c);
+            service.adjustColor(input);
             return;
         }
         if(input.contains("adjust-group-color")){
-            String[] parts = input.split(" ");
-            String groupName = parts[1];
-            String color = parts[2];
-            Color c = parseColor(color);
-            s.adjustColor(groupName, c);
+            service.adjustGroupColor(input);
             return;
         }
         if(input.contains("adjust-intensity")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[1]);
-            int intensity = Integer.parseInt(parts[2]);
-            s.adjustIntensity(id, intensity);
+            service.adjustIntensity(input);
             return;
         }
         if(input.contains("adjust-group-intensity")){
-            String[] parts = input.split(" ");
-            String groupName = parts[1];
-            int intensity = Integer.parseInt(parts[2]);
-            s.adjustIntensity(groupName, intensity);
+            service.adjustGroupIntensity(input);
             return;
         }
         if(input.contains("change-name")){
-            String[] parts = input.split(" ");
-            int id = Integer.parseInt(parts[0]);
-            String newName = parts[2];
-            s.changeName(id, newName);
+            service.changeName(input);
             return;
         }
         System.out.println("unknown command");
     }
 
     public static void run() {
-        addTestLamps();
-
+        // addTestLamps();
         Scanner input = new Scanner(System.in);
         try {
             Thread.sleep(500);
@@ -115,7 +82,7 @@ public class CLI {
         }
     }
 
-    public static void addLamp(){
+   /* public static void addLamp(){
         // System.out.println("Inside : " + Thread.currentThread().getName());
 
         // System.out.println("Creating Runnable...");
@@ -169,5 +136,5 @@ public class CLI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
