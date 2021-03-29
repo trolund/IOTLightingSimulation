@@ -15,7 +15,9 @@ import messaging.rabbitmq.ControllerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TurnOnAndOffEventsSteps {
@@ -101,6 +103,30 @@ public class TurnOnAndOffEventsSteps {
     public void exit(){
         for (LampID l: ids) {
             service.sendExit(l.getId());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @And("then i check all lamps is know have the new intensity")
+    public void checkIntensity(){
+        for (LampID l: ids) {
+            int id = l.getId();
+            int in = l.getNew_intensity();
+
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+
+            assertEquals(l.getNew_intensity(), lamp.getIntensity());
+        }
+    }
+
+    @Then("i set the intensity of all lamps")
+    public  void setIntensity(){
+        for (LampID l: ids) {
+            service.adjustIntensity(l.getId(), l.getNew_intensity());
         }
         try {
             Thread.sleep(1000);
