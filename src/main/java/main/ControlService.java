@@ -14,7 +14,7 @@ public class ControlService {
 
     public void changeName(String input){
         String[] parts = input.split(" ");
-        int id = Integer.parseInt(parts[0]);
+        int id = Integer.parseInt(parts[1]);
         String newName = parts[2];
         s.changeName(id, newName);
     }

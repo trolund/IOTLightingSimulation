@@ -73,6 +73,8 @@ public class EventService implements IEventReceiver {
             case "GetGroups":
                 sendMyGroups();
                 break;
+            case "ChangeName":
+                setName(((Double) eventIn.getArguments()[0]).intValue(), (String) eventIn.getArguments()[1]);
             case "Exit":
                 // only for testing
                 Exit(((Double) eventIn.getArguments()[0]).intValue());
@@ -85,6 +87,12 @@ public class EventService implements IEventReceiver {
     private void Exit(int id){
         if(id == lamp.getId()){
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private void setName(int id, String name){
+        if(id == lamp.getId()){
+            lamp.setName(name);
         }
     }
 

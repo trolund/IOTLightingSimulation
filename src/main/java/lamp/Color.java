@@ -42,4 +42,10 @@ public class Color {
                 ", B=" + unsignedToBytes(B) +
                 ')';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Color c = (Color) obj;
+        return this.R.equals(c.R) && this.G.equals(c.G) && this.B.equals(c.B);
+    }
 }

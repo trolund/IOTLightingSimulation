@@ -1,6 +1,8 @@
 package cucumber;
 
-import cucumber.models.LampID;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import cucumber.models.GroupDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -12,20 +14,19 @@ import messaging.ControllerEventService;
 import messaging.Event;
 import messaging.rabbitmq.ControllerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TurnOnAndOffEventsSteps {
 
     ControllerEventService service;
     ControlService helper;
     List<LampInfo> lamps;
-    List<LampID> ids;
+    List<LampInfo> ids;
+    List<GroupDTO> groups;
     Event event;
 
 
@@ -44,7 +45,10 @@ public class TurnOnAndOffEventsSteps {
             Color color = helper.parseColor((String) row.get("color"));
             boolean isOn = ((String) row.get("isOn")).equals("ON");
 
-            LampInfo lamp = new LampInfo(id, name, intensity, color, isOn);
+            Type listType = new TypeToken<Set<String>>() {}.getType();
+            Set<String> groups = new Gson().fromJson((String) row.get("group"), listType);
+
+            LampInfo lamp = new LampInfo(id, name, intensity, color, isOn, groups);
             lamps.add(lamp);
         }
     }
@@ -71,7 +75,42 @@ public class TurnOnAndOffEventsSteps {
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             int id = Integer.parseInt((String) row.get("id"));
             String name = (String) row.get("name");
-            ids.add(new LampID(id, name));
+
+            float intensity;
+            Color color;
+            boolean isOn;
+            if(row.get("intensity") != null){
+                intensity = Float.parseFloat((String) row.get("intensity"));
+            }else {
+                intensity = 100;
+            }
+            if(row.get("color") != null){
+                color = helper.parseColor((String) row.get("color"));
+            }else{
+                color = new Color();
+            }
+            if(row.get("isOn") != null){
+                isOn = ((String) row.get("isOn")).equals("ON");
+            }else {
+                isOn = true;
+            }
+
+            ids.add(new LampInfo(id, name, intensity, color, isOn));
+        }
+    }
+
+
+    @Given("a list of groups")
+    public void listOfGroups(DataTable table){
+        groups = new ArrayList<>();
+        for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
+            String name = (String) row.get("groupName");
+            float intensity = Float.parseFloat((String) row.get("intensity"));
+
+            LampInfo l = new LampInfo();
+            l.setIntensity(intensity);
+
+            groups.add(new GroupDTO(name, l));
         }
     }
 
@@ -80,7 +119,7 @@ public class TurnOnAndOffEventsSteps {
         boolean isOn = s.equals("ON");
 
         // send event for all lamps
-        for (LampID l: ids) {
+        for (LampInfo l: ids) {
             service.setOn(l.getId(), isOn);
         }
 
@@ -101,7 +140,7 @@ public class TurnOnAndOffEventsSteps {
 
     @Then("disconnect all devices")
     public void exit(){
-        for (LampID l: ids) {
+        for (LampInfo l: ids) {
             service.sendExit(l.getId());
         }
         try {
@@ -113,20 +152,159 @@ public class TurnOnAndOffEventsSteps {
 
     @And("then i check all lamps is know have the new intensity")
     public void checkIntensity(){
-        for (LampID l: ids) {
+        for (LampInfo l: ids) {
             int id = l.getId();
-            int in = l.getNew_intensity();
+            // float in = l.getIntensity();
 
             LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
 
-            assertEquals(l.getNew_intensity(), lamp.getIntensity());
+            assertEquals(l.getIntensity(), lamp.getIntensity());
+        }
+    }
+
+    @And("then i check all lamps is know have the new color")
+    public void checkColor(){
+        for (LampInfo l: ids) {
+            int id = l.getId();
+            // float in = l.getIntensity();
+
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+
+            assertEquals(l.getColor(), lamp.getColor());
+        }
+    }
+
+    @And("then i check all lamps is know have the new name")
+    public void checkName(){
+        for (LampInfo l: ids) {
+            int id = l.getId();
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+
+            assertEquals(l.getName(), lamp.getName());
+        }
+    }
+
+    @And("then i check all groups are there")
+    public void checkAllGroups(){
+        for (LampInfo l: ids) {
+            int id = l.getId();
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+
+            Set<String> expectedGroups = l.getGroups();
+            assertTrue(lamp.getGroups().containsAll(expectedGroups));
+        }
+    }
+
+    @And("then i check the removed groups are deleted")
+    public void CheckGroups(){
+        for (LampInfo l: ids) {
+            int id = l.getId();
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+            Set<String> expectedNotToBeThereGroups = l.getGroups();
+
+            for (String g: expectedNotToBeThereGroups) {
+                assertFalse(lamp.getGroups().contains(g));
+            }
+        }
+    }
+
+    @And("then i check that all lamps in the group know have the new intensity")
+    public void CheckGroupsIntensity(){
+        for (LampInfo l: ids) {
+            int id = l.getId();
+            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
+            Set<String> lampGroups = l.getGroups();
+
+            for (GroupDTO g: groups) {
+                if(lampGroups.contains(g)){
+                    assertEquals(lamp.getIntensity(), g.getLampInfo().getIntensity());
+                }
+            }
         }
     }
 
     @Then("i set the intensity of all lamps")
     public  void setIntensity(){
-        for (LampID l: ids) {
-            service.adjustIntensity(l.getId(), l.getNew_intensity());
+        for (LampInfo l: ids) {
+            service.adjustIntensity(l.getId(), (int) l.getIntensity());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("i set the intensity of all lamps in the group")
+    public void setGroupIntensity(){
+        for (GroupDTO group: groups) {
+            service.adjustIntensity(group.getGroupName(), (int) group.getLampInfo().getIntensity());
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Then("i remove all groups to all the lamps")
+    public void removeGroup(){
+        for (LampInfo l: ids) {
+            Set<String> groupsToRemove = l.getGroups();
+
+            for (String group: groupsToRemove) {
+                service.removeFromGroup(l.getId(), group);
+            }
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("i add a group to all the lamps")
+    public void addGroup(){
+        for (LampInfo l: ids) {
+            Set<String> groups = l.getGroups();
+
+            for (String g: groups) {
+                service.addToGroup(l.getId(), g);
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("i set the color of all lamps")
+    public void setColor(){
+        for (LampInfo l: ids) {
+            service.adjustColor(l.getId(), l.getColor());
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("i set the name of all lamps")
+    public void setName(){
+        for (LampInfo l: ids) {
+            service.changeName(l.getId(), l.getName());
         }
         try {
             Thread.sleep(1000);

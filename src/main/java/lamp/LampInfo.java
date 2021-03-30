@@ -1,6 +1,7 @@
 package lamp;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class LampInfo {
@@ -32,6 +33,15 @@ public class LampInfo {
         this.intensity = intensity;
         this.color = color;
         this.isOn = isOn;
+    }
+
+    public LampInfo(int id, String name, float intensity, Color color, boolean isOn, Set<String> groups) {
+        this.id = id;
+        this.name = name;
+        this.intensity = intensity;
+        this.color = color;
+        this.isOn = isOn;
+        this.groups = groups;
     }
 
     public LampInfo(String name, float intensity, Color color) {
