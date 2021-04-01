@@ -25,6 +25,7 @@ public class TurnOnAndOffEventsSteps {
     ControllerEventService service;
     ControlService helper;
     List<LampInfo> lamps;
+    List<LampInfo> singlelamps;
     List<LampInfo> ids;
     List<GroupDTO> groups;
     Event event;
@@ -67,6 +68,18 @@ public class TurnOnAndOffEventsSteps {
     @Then("i lookup all lamps")
     public void lookup(){
         lamps = helper.all();
+    }
+
+    @Then("i lookup each lamp")
+    public void lookupEach(){
+        singlelamps = new ArrayList<>();
+
+        for (LampInfo l: ids) {
+            LampInfo lamp = service.get(l.getId());
+            if(l.getId() == lamp.getId()){
+                singlelamps.add(lamp);
+            }
+        }
     }
 
     @Given("a list of lamps")
@@ -245,6 +258,14 @@ public class TurnOnAndOffEventsSteps {
             for (LampInfo l: lampsInGroup) {
                 assertEquals(l.getColor(), g.getLampInfo().getColor());
             }
+        }
+    }
+
+    @And("then i check all lamps is there")
+    public void checkLampsIsThere(){
+        for (LampInfo l: ids) {
+            LampInfo lamp = singlelamps.stream().filter(a -> a.getId() == l.getId()).findFirst().get();
+            assertNotNull(lamp);
         }
     }
 

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ControllerEventService implements IEventReceiver, IController {
 
@@ -18,12 +19,26 @@ public class ControllerEventService implements IEventReceiver, IController {
     private final Gson gson = new Gson();
 
     private CompletableFuture<List<LampInfo>> lampsResult;
+    private CompletableFuture<LampInfo> lampResult;
+
+    private ReentrantLock idMutex = new ReentrantLock();
+    private int lampID;
+
 
     private Set<String> groupsCache = new HashSet<>();
     private List<LampInfo> curLamps = new ArrayList<>();
 
     public ControllerEventService(IEventSender eventSender) {
         this.eventSender = eventSender;
+    }
+
+    private int getLampID() {
+        return lampID;
+    }
+
+    private void setLampID(int lampID) {
+        idMutex.lock();
+        this.lampID = lampID;
     }
 
     public List<LampInfo> getAllLampInfo(){
@@ -40,6 +55,25 @@ public class ControllerEventService implements IEventReceiver, IController {
             // block until all have been received
             System.out.println("Loading....");
             List<LampInfo> res = lampsResult.join();
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public synchronized LampInfo get(int id){
+        try {
+            // create new CompletableFuture to wait for the result
+            lampResult = new CompletableFuture();
+            setLampID(id);
+
+            // send event to all devices
+            eventSender.sendEvent(new Event("GetInfo", new Object[]{id}));
+
+            // block until all have been received
+            LampInfo res = lampResult.join();
+            idMutex.unlock();
             return res;
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,6 +178,10 @@ public class ControllerEventService implements IEventReceiver, IController {
                 LampInfo info = gson.fromJson(gson.toJson(eventIn.getArguments()[0]), LampInfo.class);
                 curLamps.add(info);
                 // System.out.println(info.toString());
+
+                if(info.getId() == lampID){
+                    lampResult.complete(info);
+                }
 
                 // wait for the devices to send there info.
                 if(!lampsResult.isDone()){

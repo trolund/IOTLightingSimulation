@@ -60,7 +60,14 @@ public class EventService implements IEventReceiver {
                 sendMyInfo();
                 break;
             case "GetInfo":
-                sendMyInfo();
+                if(eventIn.getArguments().length > 0){
+                    int id = ((Double) eventIn.getArguments()[0]).intValue();
+                    if(id == lamp.getId()){
+                        sendMyInfo();
+                    }
+                }else {
+                    sendMyInfo();
+                }
                 break;
             case "AddGroup":
                 addGroup(((Double) eventIn.getArguments()[0]).intValue(), (String) eventIn.getArguments()[1]);

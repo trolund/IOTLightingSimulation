@@ -28,6 +28,10 @@ public class CLI {
             System.out.println(res);
             return;
         }
+        if(input.contains("get")){
+            service.get(input);
+            return;
+        }
         if(input.contains("on")){
             service.on(input);
             return;

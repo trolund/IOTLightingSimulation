@@ -11,6 +11,19 @@ Feature: Basic lamp functionality
       | 90 | Test_6  | 80        | (100,50,150)  | ON   | ["Hus", "Bad"]           |
     Then I connect the all lamps
 
+  Scenario: Get device information
+    Given a list of lamps
+      | id | name    |
+      | 10 | Test_1  |
+      | 30 | Test_2  |
+      | 60 | Test_3  |
+      | 70 | Test_4  |
+      | 80 | Test_5  |
+      | 90 | Test_6  |
+    Then i lookup each lamp
+    And then i check all lamps is there
+    Then disconnect all devices
+
   Scenario: Turn ON lamp
     Given a list of lamps
       | id | name    |

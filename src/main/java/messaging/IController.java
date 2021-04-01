@@ -6,7 +6,7 @@ import lamp.LampInfo;
 import java.util.List;
 
 public interface IController {
-
+    LampInfo get(int id);
     List<LampInfo> getAllLampInfo();
     void getAllGroups();
     void changeName(int id, String name);

@@ -12,6 +12,12 @@ public class ControlService {
 
     static IController s = new ControllerFactory().getService();
 
+    public LampInfo get(String input){
+        String[] parts = input.split(" ");
+        int id = Integer.parseInt(parts[1]);
+        return s.get(id);
+    }
+
     public void changeName(String input){
         String[] parts = input.split(" ");
         int id = Integer.parseInt(parts[1]);
