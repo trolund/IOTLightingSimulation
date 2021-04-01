@@ -105,10 +105,21 @@ public class TurnOnAndOffEventsSteps {
         groups = new ArrayList<>();
         for (Map<Object, Object> row : table.asMaps(String.class, String.class)) {
             String name = (String) row.get("groupName");
-            float intensity = Float.parseFloat((String) row.get("intensity"));
+            float intensity = 0;
+            Color c = new Color(0,0,0);
+
+            if(row.get("intensity") != null){
+                intensity = Float.parseFloat((String) row.get("intensity"));
+            }
+
+            if(row.get("color") != null){
+                c = helper.parseColor((String) row.get("color"));
+            }
+
 
             LampInfo l = new LampInfo();
             l.setIntensity(intensity);
+            l.setColor(c);
 
             groups.add(new GroupDTO(name, l));
         }
@@ -140,9 +151,16 @@ public class TurnOnAndOffEventsSteps {
 
     @Then("disconnect all devices")
     public void exit(){
-        for (LampInfo l: ids) {
-            service.sendExit(l.getId());
+        if(ids != null){
+            for (LampInfo l: ids) {
+                service.sendExit(l.getId());
+            }
+        }else {
+            for (LampInfo l: lamps) {
+                service.sendExit(l.getId());
+            }
         }
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -210,15 +228,22 @@ public class TurnOnAndOffEventsSteps {
 
     @And("then i check that all lamps in the group know have the new intensity")
     public void CheckGroupsIntensity(){
-        for (LampInfo l: ids) {
-            int id = l.getId();
-            LampInfo lamp = lamps.stream().filter(a -> a.getId() == id).collect(Collectors.toList()).get(0);
-            Set<String> lampGroups = l.getGroups();
+        for (GroupDTO g: groups) {
+            List<LampInfo> lampsInGroup = lamps.stream().filter(a -> a.getGroups().contains(g.getGroupName())).collect(Collectors.toList());
 
-            for (GroupDTO g: groups) {
-                if(lampGroups.contains(g)){
-                    assertEquals(lamp.getIntensity(), g.getLampInfo().getIntensity());
-                }
+            for (LampInfo l: lampsInGroup) {
+                assertEquals(l.getIntensity(), g.getLampInfo().getIntensity());
+            }
+        }
+    }
+
+    @And("then i check that all lamps in the group know have the new color")
+    public void CheckGroupsColor(){
+        for (GroupDTO g: groups) {
+            List<LampInfo> lampsInGroup = lamps.stream().filter(a -> a.getGroups().contains(g.getGroupName())).collect(Collectors.toList());
+
+            for (LampInfo l: lampsInGroup) {
+                assertEquals(l.getColor(), g.getLampInfo().getColor());
             }
         }
     }
@@ -235,12 +260,24 @@ public class TurnOnAndOffEventsSteps {
         }
     }
 
+    @Then("i set the color of all lamps in the group")
+    public void setGroupColor(){
+        for (GroupDTO group: groups) {
+            service.adjustColor(group.getGroupName(), group.getLampInfo().getColor());
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Then("i set the intensity of all lamps in the group")
     public void setGroupIntensity(){
         for (GroupDTO group: groups) {
             service.adjustIntensity(group.getGroupName(), (int) group.getLampInfo().getIntensity());
             try {
-                Thread.sleep(200);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

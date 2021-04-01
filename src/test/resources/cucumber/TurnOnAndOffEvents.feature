@@ -5,10 +5,10 @@ Feature: Basic lamp functionality
       | id | name    | intensity | color         | isOn | group             |
       | 10 | Test_1  | 10        | (100,80,250)  | ON   | ["Stue", "Hus"]   |
       | 30 | Test_2  | 40        | (100,100,100) | OFF  | ["Stue", "Hus"]   |
-      | 60 | Test_3  | 80        | (100,50,150)  | ON   | ["kokken", "Hus"] |
+      | 60 | Test_3  | 80        | (100,50,150)  | ON   | ["Kokken", "Hus"] |
       | 70 | Test_4  | 80        | (100,50,150)  | ON   | ["Hus"]           |
       | 80 | Test_5  | 80        | (100,50,150)  | ON   | []                |
-      | 90 | Test_6  | 80        | (100,50,150)  | ON   | ["Hus", "bad"]           |
+      | 90 | Test_6  | 80        | (100,50,150)  | ON   | ["Hus", "Bad"]           |
     Then I connect the all lamps
 
   Scenario: Turn ON lamp
@@ -118,5 +118,16 @@ Feature: Basic lamp functionality
     Then i set the intensity of all lamps in the group
     Then i lookup all lamps
     And then i check that all lamps in the group know have the new intensity
+    Then disconnect all devices
+
+  Scenario: Adjust group color
+    Given a list of groups
+      | groupName | color        |
+      | Stue      | (80,250,200) |
+      | Kokken    | (80,250,200) |
+      | Bad       | (80,250,200) |
+    Then i set the color of all lamps in the group
+    Then i lookup all lamps
+    And then i check that all lamps in the group know have the new color
     Then disconnect all devices
 
